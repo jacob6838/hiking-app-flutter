@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:hiking_app/hiker_service.dart';
+import 'package:hiking_app/hiking_service.dart';
 import 'package:hiking_app/models/location_status.dart';
 import 'package:hiking_app/providers.dart';
 import 'package:provider/provider.dart';
 
-import 'models/hiker_status.dart';
+import 'models/hike_metrics.dart';
 
 void main() {
   runApp(MultiProvider(providers: globalProviders(), child: MyApp()));
@@ -45,11 +45,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  HikerService _hikerService;
+  HikingService _hikingService;
 
   @override
   Widget build(BuildContext context) {
-    _hikerService = Provider.of<HikerService>(context);
+    _hikingService = Provider.of<HikingService>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -79,7 +79,7 @@ class MyHomePageState extends State<MyHomePage> {
 
           children: <Widget>[
             StreamBuilder<bool>(
-                stream: _hikerService.hikerStatus$,
+                stream: _hikingService.hikingMetrics$,
                 builder: (context, AsyncSnapshot<bool> snapshot) {
                   final bool activeStatus = snapshot?.data ?? false;
                   return RaisedButton(onPressed: () => onEnableBtnClicked(), child: Text(_enableBtnName(activeStatus)));
@@ -95,7 +95,7 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   void onEnableBtnClicked() {
-    _hikerService.toggleStatus();
+    _hikingService.toggleStatus();
   }
 
   String _enableBtnName(bool activeStatus) {
@@ -113,22 +113,22 @@ class MyHomePageState extends State<MyHomePage> {
         "accuracy: ${locationStatus.hdop} m";
   }
 
-  String _toDistanceTraveledString(HikerStatus hikerStatus) {
-    if (hikerStatus == null) return "stuff";
+  String _toDistanceTraveledString(HikeMetrics hikeMetrics) {
+    if (hikeMetrics == null) return "stuff";
 
-    return "Distance traveled: ${hikerStatus.distanceTraveledTotal} m";
+    return "Distance traveled: ${hikeMetrics.distanceTraveledTotal} m";
   }
 
-  String _toElevationChangeString(HikerStatus hikerStatus) {
-    if (hikerStatus == null) return "stuff";
+  String _toElevationChangeString(HikeMetrics hikeMetrics) {
+    if (hikeMetrics == null) return "stuff";
 
-    return "Elevation change: ${hikerStatus.positiveElevationGainTotal} m";
+    return "Elevation change: ${hikeMetrics.positiveElevationGainTotal} m";
   }
 
-  String _toTimeElapsedString(HikerStatus hikerStatus) {
-    if (hikerStatus == null) return "stuff";
+  String _toTimeElapsedString(HikeMetrics hikeMetrics) {
+    if (hikeMetrics == null) return "stuff";
 
-    return "time Elapsed: ${hikerStatus.timeElapsedTotalSec} s";
+    return "time Elapsed: ${hikeMetrics.timeElapsedTotalSec} s";
   }
 }
 

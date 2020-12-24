@@ -1,7 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies
 
-part of 'hiker_status.dart';
+part of 'hike_metrics.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -10,11 +10,11 @@ part of 'hiker_status.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-class _$HikerStatusTearOff {
-  const _$HikerStatusTearOff();
+class _$HikeMetricsTearOff {
+  const _$HikeMetricsTearOff();
 
 // ignore: unused_element
-  _HikerStatus call(
+  _HikeMetrics call(
       {double latitude = 0.0,
       double longitude = 0.0,
       double currentElevation = 0.0,
@@ -29,7 +29,7 @@ class _$HikerStatusTearOff {
       int timeElapsedTotalSec = 0,
       int timePeriodSec = 0,
       LocationAccuracyType locationAccuracyType = LocationAccuracyType.low}) {
-    return _HikerStatus(
+    return _HikeMetrics(
       latitude: latitude,
       longitude: longitude,
       currentElevation: currentElevation,
@@ -50,10 +50,10 @@ class _$HikerStatusTearOff {
 
 /// @nodoc
 // ignore: unused_element
-const $HikerStatus = _$HikerStatusTearOff();
+const $HikeMetrics = _$HikeMetricsTearOff();
 
 /// @nodoc
-mixin _$HikerStatus {
+mixin _$HikeMetrics {
   double get latitude;
   double get longitude;
   double get currentElevation;
@@ -69,14 +69,14 @@ mixin _$HikerStatus {
   int get timePeriodSec;
   LocationAccuracyType get locationAccuracyType;
 
-  $HikerStatusCopyWith<HikerStatus> get copyWith;
+  $HikeMetricsCopyWith<HikeMetrics> get copyWith;
 }
 
 /// @nodoc
-abstract class $HikerStatusCopyWith<$Res> {
-  factory $HikerStatusCopyWith(
-          HikerStatus value, $Res Function(HikerStatus) then) =
-      _$HikerStatusCopyWithImpl<$Res>;
+abstract class $HikeMetricsCopyWith<$Res> {
+  factory $HikeMetricsCopyWith(
+          HikeMetrics value, $Res Function(HikeMetrics) then) =
+      _$HikeMetricsCopyWithImpl<$Res>;
   $Res call(
       {double latitude,
       double longitude,
@@ -95,12 +95,12 @@ abstract class $HikerStatusCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$HikerStatusCopyWithImpl<$Res> implements $HikerStatusCopyWith<$Res> {
-  _$HikerStatusCopyWithImpl(this._value, this._then);
+class _$HikeMetricsCopyWithImpl<$Res> implements $HikeMetricsCopyWith<$Res> {
+  _$HikeMetricsCopyWithImpl(this._value, this._then);
 
-  final HikerStatus _value;
+  final HikeMetrics _value;
   // ignore: unused_field
-  final $Res Function(HikerStatus) _then;
+  final $Res Function(HikeMetrics) _then;
 
   @override
   $Res call({
@@ -163,11 +163,11 @@ class _$HikerStatusCopyWithImpl<$Res> implements $HikerStatusCopyWith<$Res> {
 }
 
 /// @nodoc
-abstract class _$HikerStatusCopyWith<$Res>
-    implements $HikerStatusCopyWith<$Res> {
-  factory _$HikerStatusCopyWith(
-          _HikerStatus value, $Res Function(_HikerStatus) then) =
-      __$HikerStatusCopyWithImpl<$Res>;
+abstract class _$HikeMetricsCopyWith<$Res>
+    implements $HikeMetricsCopyWith<$Res> {
+  factory _$HikeMetricsCopyWith(
+          _HikeMetrics value, $Res Function(_HikeMetrics) then) =
+      __$HikeMetricsCopyWithImpl<$Res>;
   @override
   $Res call(
       {double latitude,
@@ -187,14 +187,14 @@ abstract class _$HikerStatusCopyWith<$Res>
 }
 
 /// @nodoc
-class __$HikerStatusCopyWithImpl<$Res> extends _$HikerStatusCopyWithImpl<$Res>
-    implements _$HikerStatusCopyWith<$Res> {
-  __$HikerStatusCopyWithImpl(
-      _HikerStatus _value, $Res Function(_HikerStatus) _then)
-      : super(_value, (v) => _then(v as _HikerStatus));
+class __$HikeMetricsCopyWithImpl<$Res> extends _$HikeMetricsCopyWithImpl<$Res>
+    implements _$HikeMetricsCopyWith<$Res> {
+  __$HikeMetricsCopyWithImpl(
+      _HikeMetrics _value, $Res Function(_HikeMetrics) _then)
+      : super(_value, (v) => _then(v as _HikeMetrics));
 
   @override
-  _HikerStatus get _value => super._value as _HikerStatus;
+  _HikeMetrics get _value => super._value as _HikeMetrics;
 
   @override
   $Res call({
@@ -213,7 +213,7 @@ class __$HikerStatusCopyWithImpl<$Res> extends _$HikerStatusCopyWithImpl<$Res>
     Object timePeriodSec = freezed,
     Object locationAccuracyType = freezed,
   }) {
-    return _then(_HikerStatus(
+    return _then(_HikeMetrics(
       latitude: latitude == freezed ? _value.latitude : latitude as double,
       longitude: longitude == freezed ? _value.longitude : longitude as double,
       currentElevation: currentElevation == freezed
@@ -257,8 +257,8 @@ class __$HikerStatusCopyWithImpl<$Res> extends _$HikerStatusCopyWithImpl<$Res>
 }
 
 /// @nodoc
-class _$_HikerStatus implements _HikerStatus {
-  const _$_HikerStatus(
+class _$_HikeMetrics implements _HikeMetrics {
+  const _$_HikeMetrics(
       {this.latitude = 0.0,
       this.longitude = 0.0,
       this.currentElevation = 0.0,
@@ -333,13 +333,13 @@ class _$_HikerStatus implements _HikerStatus {
 
   @override
   String toString() {
-    return 'HikerStatus(latitude: $latitude, longitude: $longitude, currentElevation: $currentElevation, distanceTraveledTotal: $distanceTraveledTotal, distanceTraveledPeriod: $distanceTraveledPeriod, positiveElevationGainTotal: $positiveElevationGainTotal, positiveElevationGainPeriod: $positiveElevationGainPeriod, negativeElevationGainTotal: $negativeElevationGainTotal, negativeElevationGainPeriod: $negativeElevationGainPeriod, netElevationChangeTotal: $netElevationChangeTotal, netElevationChangePeriod: $netElevationChangePeriod, timeElapsedTotalSec: $timeElapsedTotalSec, timePeriodSec: $timePeriodSec, locationAccuracyType: $locationAccuracyType)';
+    return 'HikeMetrics(latitude: $latitude, longitude: $longitude, currentElevation: $currentElevation, distanceTraveledTotal: $distanceTraveledTotal, distanceTraveledPeriod: $distanceTraveledPeriod, positiveElevationGainTotal: $positiveElevationGainTotal, positiveElevationGainPeriod: $positiveElevationGainPeriod, negativeElevationGainTotal: $negativeElevationGainTotal, negativeElevationGainPeriod: $negativeElevationGainPeriod, netElevationChangeTotal: $netElevationChangeTotal, netElevationChangePeriod: $netElevationChangePeriod, timeElapsedTotalSec: $timeElapsedTotalSec, timePeriodSec: $timePeriodSec, locationAccuracyType: $locationAccuracyType)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _HikerStatus &&
+        (other is _HikeMetrics &&
             (identical(other.latitude, latitude) ||
                 const DeepCollectionEquality()
                     .equals(other.latitude, latitude)) &&
@@ -404,12 +404,12 @@ class _$_HikerStatus implements _HikerStatus {
       const DeepCollectionEquality().hash(locationAccuracyType);
 
   @override
-  _$HikerStatusCopyWith<_HikerStatus> get copyWith =>
-      __$HikerStatusCopyWithImpl<_HikerStatus>(this, _$identity);
+  _$HikeMetricsCopyWith<_HikeMetrics> get copyWith =>
+      __$HikeMetricsCopyWithImpl<_HikeMetrics>(this, _$identity);
 }
 
-abstract class _HikerStatus implements HikerStatus {
-  const factory _HikerStatus(
+abstract class _HikeMetrics implements HikeMetrics {
+  const factory _HikeMetrics(
       {double latitude,
       double longitude,
       double currentElevation,
@@ -423,7 +423,7 @@ abstract class _HikerStatus implements HikerStatus {
       double netElevationChangePeriod,
       int timeElapsedTotalSec,
       int timePeriodSec,
-      LocationAccuracyType locationAccuracyType}) = _$_HikerStatus;
+      LocationAccuracyType locationAccuracyType}) = _$_HikeMetrics;
 
   @override
   double get latitude;
@@ -454,5 +454,5 @@ abstract class _HikerStatus implements HikerStatus {
   @override
   LocationAccuracyType get locationAccuracyType;
   @override
-  _$HikerStatusCopyWith<_HikerStatus> get copyWith;
+  _$HikeMetricsCopyWith<_HikeMetrics> get copyWith;
 }

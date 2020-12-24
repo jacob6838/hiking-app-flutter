@@ -7,15 +7,15 @@ import 'package:hiking_app/location_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
-import 'hiker_service.dart';
+import 'hiking_service.dart';
 
 List<SingleChildWidget> globalProviders() {
   return [
     Provider(create: _locationServiceCreator, lazy: false),
-    ProxyProvider<LocationService, HikerService>(update: _hikerServiceCreator, lazy: false),
+    ProxyProvider<LocationService, HikingService>(update: _hikingServiceCreator, lazy: false),
   ];
 }
 
 LocationService _locationServiceCreator(BuildContext context) => LocationService();
 
-HikerService _hikerServiceCreator(_, LocationService locationService, __) => HikerService(locationService: locationService);
+HikingService _hikingServiceCreator(_, LocationService locationService, __) => HikingService(locationService: locationService);

@@ -1,5 +1,5 @@
 import 'package:hiking_app/location_service.dart';
-import 'package:hiking_app/models/hiker_status.dart';
+import 'package:hiking_app/models/hike_metrics.dart';
 import 'package:hiking_app/models/location_status.dart';
 import 'package:kt_dart/collection.dart';
 import 'package:location/location.dart';
@@ -15,7 +15,7 @@ const int updateIntervalSec = 10;
 /// TODO: Dynamically update this based on instantaneous accuracy.
 const int minimumDistanceThreshold = 4;
 
-class HikerService {
+class HikingService {
   final LocationService _locationService;
   bool _hikingActive = false;
   int _startTimeSec = 0;
@@ -30,19 +30,19 @@ class HikerService {
 
   final BehaviorSubject<bool> _activeStatusSub = BehaviorSubject.seeded(false);
   final BehaviorSubject<LocationStatus> _currentLocationStatusSub = BehaviorSubject.seeded(const LocationStatus());
-  final BehaviorSubject<HikerStatus> _currentHikerStatusSub = BehaviorSubject.seeded(const HikerStatus());
+  final BehaviorSubject<HikeMetrics> _currentHikerStatusSub = BehaviorSubject.seeded(const HikeMetrics());
 
-  HikerService({LocationService locationService})
+  HikingService({LocationService locationService})
       : _lastUpdateTimeSec = 0,
         _locationService = locationService {
     _locationService.locationStream.where((_) => _hikingActive).listen(_handleLocationUpdate);
   }
 
-  Stream<bool> get hikerStatus$ => _activeStatusSub.stream.asBroadcastStream();
+  Stream<bool> get hikingMetrics$ => _activeStatusSub.stream.asBroadcastStream();
 
   Stream<LocationStatus> get currentLocationStatus$ => _currentLocationStatusSub.stream.asBroadcastStream();
 
-  Stream<HikerStatus> get currentHikerStatus$ => _currentHikerStatusSub.stream.asBroadcastStream();
+  Stream<HikeMetrics> get currentHikerStatus$ => _currentHikerStatusSub.stream.asBroadcastStream();
 
   void toggleStatus() {
     _hikingActive = !_hikingActive;
@@ -93,9 +93,9 @@ LocationStatus toLocationStatus(LocationData locationData) {
 }
 
 /// Calculate hiker status update data
-HikerStatus calculateHikerStatusUpdate(
-    HikerStatus prevHikerStatus, LocationStatus currLoc, KtList<LocationStatus> locationHistory, int reportPeriodSec) {
-  return const HikerStatus();
+HikeMetrics calculateHikerStatusUpdate(
+    HikeMetrics prevHikerStatus, LocationStatus currLoc, KtList<LocationStatus> locationHistory, int reportPeriodSec) {
+  return const HikeMetrics();
   // _distanceTraveled += _distanceDelta.abs();
   // final hikerData = HikerStatus(
   //   latitude: _distanceTraveled.roundToDouble(),

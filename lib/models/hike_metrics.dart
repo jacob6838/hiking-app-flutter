@@ -2,11 +2,11 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'location_accuracy_type.dart';
 
-part 'hiker_status.freezed.dart';
+part 'hike_metrics.freezed.dart';
 
 @freezed
-abstract class HikerStatus with _$HikerStatus {
-  const factory HikerStatus({
+abstract class HikeMetrics with _$HikeMetrics {
+  const factory HikeMetrics({
     @Default(0.0) double latitude,
     @Default(0.0) double longitude,
     @Default(0.0) double currentElevation,
@@ -21,5 +21,5 @@ abstract class HikerStatus with _$HikerStatus {
     @Default(0) int timeElapsedTotalSec,
     @Default(0) int timePeriodSec,
     @Default(LocationAccuracyType.low) LocationAccuracyType locationAccuracyType,
-  }) = _HikerStatus;
+  }) = _HikeMetrics;
 }
