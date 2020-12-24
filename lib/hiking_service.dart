@@ -69,7 +69,7 @@ class HikingService {
 
     _prevLocation = locationData;
 
-    /// Save location update to curent hike
+    /// Save location update to current hike
     final currLocation = toLocationStatus(locationData);
     _currentHike.add(currLocation);
 
@@ -82,13 +82,14 @@ class HikingService {
 /// Create LocationStatus object from Device location data
 LocationStatus toLocationStatus(LocationData locationData) {
   return LocationStatus(
-    latitude: locationData.latitude,
-    longitude: locationData.longitude,
-    altitude: locationData.altitude,
-    bearingDegrees: locationData.heading,
-    speedMetersPerSec: locationData.speed,
-    hdop: locationData.accuracy,
-    timeStampSec: (locationData.time / millisecondsPerSecond).round(),
+    latitude: locationData.latitude ?? 0.0,
+    longitude: locationData.longitude ?? 0.0,
+    accuracyHdop: locationData.accuracy ?? 0.0,
+    altitude: locationData.altitude ?? 0.0,
+    speedMetersPerSec: locationData.speed ?? 0.0,
+    speedAccuracyHdop: locationData.speedAccuracy ?? 0.0,
+    headingDegrees: locationData.heading ?? 0.0,
+    timeStampSec: ((locationData.time ?? 0) / millisecondsPerSecond).round(),
   );
 }
 

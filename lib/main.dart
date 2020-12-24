@@ -110,25 +110,25 @@ class MyHomePageState extends State<MyHomePage> {
     if (locationStatus == null) return "Invalid Location";
     return "${locationStatus.latitude}, ${locationStatus.longitude}\n"
         "${locationStatus.altitude} m, ${metersToFeet(locationStatus.altitude)} ft\n"
-        "accuracy: ${locationStatus.hdop} m";
+        "accuracy: ${locationStatus.accuracyHdop} m";
   }
 
   String _toDistanceTraveledString(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
 
-    return "Distance traveled: ${hikeMetrics.distanceTraveledTotal} m";
+    return "Distance traveled: ${hikeMetrics.distanceTraveled} m";
   }
 
   String _toElevationChangeString(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
 
-    return "Elevation change: ${hikeMetrics.positiveElevationGainTotal} m";
+    return "Elevation change: ${hikeMetrics.netElevationChange} m";
   }
 
   String _toTimeElapsedString(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
 
-    return "time Elapsed: ${hikeMetrics.timeElapsedTotalSec} s";
+    return "time Elapsed: ${hikeMetrics.metricPeriodSeconds} s";
   }
 }
 

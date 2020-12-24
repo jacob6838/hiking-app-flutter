@@ -15,35 +15,45 @@ class _$HikeMetricsTearOff {
 
 // ignore: unused_element
   _HikeMetrics call(
-      {double latitude = 0.0,
-      double longitude = 0.0,
-      double currentElevation = 0.0,
-      double distanceTraveledTotal = 0.0,
-      double distanceTraveledPeriod = 0.0,
-      double positiveElevationGainTotal = 0.0,
-      double positiveElevationGainPeriod = 0.0,
-      double negativeElevationGainTotal = 0.0,
-      double negativeElevationGainPeriod = 0.0,
-      double netElevationChangeTotal = 0.0,
-      double netElevationChangePeriod = 0.0,
-      int timeElapsedTotalSec = 0,
-      int timePeriodSec = 0,
-      LocationAccuracyType locationAccuracyType = LocationAccuracyType.low}) {
+      {double latitudeStart = 0.0,
+      double longitudeStart = 0.0,
+      double latitudeEnd = 0.0,
+      double longitudeEnd = 0.0,
+      double altitude = 0.0,
+      double speedMetersPerSec = 0.0,
+      double headingDegrees = 0.0,
+      LocationAccuracyType locationAccuracy = LocationAccuracyType.low,
+      LocationAccuracyType speedAccuracy = LocationAccuracyType.low,
+      double altitudeMax = 0.0,
+      double altitudeMin = 0.0,
+      double averageSpeedMetersPerSec = 0.0,
+      double averageHeadingDegrees = 0.0,
+      double distanceTraveled = 0.0,
+      double netElevationChange = 0.0,
+      double cumulativeClimbMeters = 0.0,
+      double cumulativeDescentMeters = 0.0,
+      int startTimeSeconds = 0,
+      int metricPeriodSeconds = 0}) {
     return _HikeMetrics(
-      latitude: latitude,
-      longitude: longitude,
-      currentElevation: currentElevation,
-      distanceTraveledTotal: distanceTraveledTotal,
-      distanceTraveledPeriod: distanceTraveledPeriod,
-      positiveElevationGainTotal: positiveElevationGainTotal,
-      positiveElevationGainPeriod: positiveElevationGainPeriod,
-      negativeElevationGainTotal: negativeElevationGainTotal,
-      negativeElevationGainPeriod: negativeElevationGainPeriod,
-      netElevationChangeTotal: netElevationChangeTotal,
-      netElevationChangePeriod: netElevationChangePeriod,
-      timeElapsedTotalSec: timeElapsedTotalSec,
-      timePeriodSec: timePeriodSec,
-      locationAccuracyType: locationAccuracyType,
+      latitudeStart: latitudeStart,
+      longitudeStart: longitudeStart,
+      latitudeEnd: latitudeEnd,
+      longitudeEnd: longitudeEnd,
+      altitude: altitude,
+      speedMetersPerSec: speedMetersPerSec,
+      headingDegrees: headingDegrees,
+      locationAccuracy: locationAccuracy,
+      speedAccuracy: speedAccuracy,
+      altitudeMax: altitudeMax,
+      altitudeMin: altitudeMin,
+      averageSpeedMetersPerSec: averageSpeedMetersPerSec,
+      averageHeadingDegrees: averageHeadingDegrees,
+      distanceTraveled: distanceTraveled,
+      netElevationChange: netElevationChange,
+      cumulativeClimbMeters: cumulativeClimbMeters,
+      cumulativeDescentMeters: cumulativeDescentMeters,
+      startTimeSeconds: startTimeSeconds,
+      metricPeriodSeconds: metricPeriodSeconds,
     );
   }
 }
@@ -54,20 +64,25 @@ const $HikeMetrics = _$HikeMetricsTearOff();
 
 /// @nodoc
 mixin _$HikeMetrics {
-  double get latitude;
-  double get longitude;
-  double get currentElevation;
-  double get distanceTraveledTotal;
-  double get distanceTraveledPeriod;
-  double get positiveElevationGainTotal;
-  double get positiveElevationGainPeriod;
-  double get negativeElevationGainTotal;
-  double get negativeElevationGainPeriod;
-  double get netElevationChangeTotal;
-  double get netElevationChangePeriod;
-  int get timeElapsedTotalSec;
-  int get timePeriodSec;
-  LocationAccuracyType get locationAccuracyType;
+  double get latitudeStart;
+  double get longitudeStart;
+  double get latitudeEnd;
+  double get longitudeEnd;
+  double get altitude;
+  double get speedMetersPerSec;
+  double get headingDegrees;
+  LocationAccuracyType get locationAccuracy;
+  LocationAccuracyType get speedAccuracy;
+  double get altitudeMax;
+  double get altitudeMin;
+  double get averageSpeedMetersPerSec;
+  double get averageHeadingDegrees;
+  double get distanceTraveled;
+  double get netElevationChange;
+  double get cumulativeClimbMeters;
+  double get cumulativeDescentMeters;
+  int get startTimeSeconds;
+  int get metricPeriodSeconds;
 
   $HikeMetricsCopyWith<HikeMetrics> get copyWith;
 }
@@ -78,20 +93,25 @@ abstract class $HikeMetricsCopyWith<$Res> {
           HikeMetrics value, $Res Function(HikeMetrics) then) =
       _$HikeMetricsCopyWithImpl<$Res>;
   $Res call(
-      {double latitude,
-      double longitude,
-      double currentElevation,
-      double distanceTraveledTotal,
-      double distanceTraveledPeriod,
-      double positiveElevationGainTotal,
-      double positiveElevationGainPeriod,
-      double negativeElevationGainTotal,
-      double negativeElevationGainPeriod,
-      double netElevationChangeTotal,
-      double netElevationChangePeriod,
-      int timeElapsedTotalSec,
-      int timePeriodSec,
-      LocationAccuracyType locationAccuracyType});
+      {double latitudeStart,
+      double longitudeStart,
+      double latitudeEnd,
+      double longitudeEnd,
+      double altitude,
+      double speedMetersPerSec,
+      double headingDegrees,
+      LocationAccuracyType locationAccuracy,
+      LocationAccuracyType speedAccuracy,
+      double altitudeMax,
+      double altitudeMin,
+      double averageSpeedMetersPerSec,
+      double averageHeadingDegrees,
+      double distanceTraveled,
+      double netElevationChange,
+      double cumulativeClimbMeters,
+      double cumulativeDescentMeters,
+      int startTimeSeconds,
+      int metricPeriodSeconds});
 }
 
 /// @nodoc
@@ -104,60 +124,79 @@ class _$HikeMetricsCopyWithImpl<$Res> implements $HikeMetricsCopyWith<$Res> {
 
   @override
   $Res call({
-    Object latitude = freezed,
-    Object longitude = freezed,
-    Object currentElevation = freezed,
-    Object distanceTraveledTotal = freezed,
-    Object distanceTraveledPeriod = freezed,
-    Object positiveElevationGainTotal = freezed,
-    Object positiveElevationGainPeriod = freezed,
-    Object negativeElevationGainTotal = freezed,
-    Object negativeElevationGainPeriod = freezed,
-    Object netElevationChangeTotal = freezed,
-    Object netElevationChangePeriod = freezed,
-    Object timeElapsedTotalSec = freezed,
-    Object timePeriodSec = freezed,
-    Object locationAccuracyType = freezed,
+    Object latitudeStart = freezed,
+    Object longitudeStart = freezed,
+    Object latitudeEnd = freezed,
+    Object longitudeEnd = freezed,
+    Object altitude = freezed,
+    Object speedMetersPerSec = freezed,
+    Object headingDegrees = freezed,
+    Object locationAccuracy = freezed,
+    Object speedAccuracy = freezed,
+    Object altitudeMax = freezed,
+    Object altitudeMin = freezed,
+    Object averageSpeedMetersPerSec = freezed,
+    Object averageHeadingDegrees = freezed,
+    Object distanceTraveled = freezed,
+    Object netElevationChange = freezed,
+    Object cumulativeClimbMeters = freezed,
+    Object cumulativeDescentMeters = freezed,
+    Object startTimeSeconds = freezed,
+    Object metricPeriodSeconds = freezed,
   }) {
     return _then(_value.copyWith(
-      latitude: latitude == freezed ? _value.latitude : latitude as double,
-      longitude: longitude == freezed ? _value.longitude : longitude as double,
-      currentElevation: currentElevation == freezed
-          ? _value.currentElevation
-          : currentElevation as double,
-      distanceTraveledTotal: distanceTraveledTotal == freezed
-          ? _value.distanceTraveledTotal
-          : distanceTraveledTotal as double,
-      distanceTraveledPeriod: distanceTraveledPeriod == freezed
-          ? _value.distanceTraveledPeriod
-          : distanceTraveledPeriod as double,
-      positiveElevationGainTotal: positiveElevationGainTotal == freezed
-          ? _value.positiveElevationGainTotal
-          : positiveElevationGainTotal as double,
-      positiveElevationGainPeriod: positiveElevationGainPeriod == freezed
-          ? _value.positiveElevationGainPeriod
-          : positiveElevationGainPeriod as double,
-      negativeElevationGainTotal: negativeElevationGainTotal == freezed
-          ? _value.negativeElevationGainTotal
-          : negativeElevationGainTotal as double,
-      negativeElevationGainPeriod: negativeElevationGainPeriod == freezed
-          ? _value.negativeElevationGainPeriod
-          : negativeElevationGainPeriod as double,
-      netElevationChangeTotal: netElevationChangeTotal == freezed
-          ? _value.netElevationChangeTotal
-          : netElevationChangeTotal as double,
-      netElevationChangePeriod: netElevationChangePeriod == freezed
-          ? _value.netElevationChangePeriod
-          : netElevationChangePeriod as double,
-      timeElapsedTotalSec: timeElapsedTotalSec == freezed
-          ? _value.timeElapsedTotalSec
-          : timeElapsedTotalSec as int,
-      timePeriodSec: timePeriodSec == freezed
-          ? _value.timePeriodSec
-          : timePeriodSec as int,
-      locationAccuracyType: locationAccuracyType == freezed
-          ? _value.locationAccuracyType
-          : locationAccuracyType as LocationAccuracyType,
+      latitudeStart: latitudeStart == freezed
+          ? _value.latitudeStart
+          : latitudeStart as double,
+      longitudeStart: longitudeStart == freezed
+          ? _value.longitudeStart
+          : longitudeStart as double,
+      latitudeEnd:
+          latitudeEnd == freezed ? _value.latitudeEnd : latitudeEnd as double,
+      longitudeEnd: longitudeEnd == freezed
+          ? _value.longitudeEnd
+          : longitudeEnd as double,
+      altitude: altitude == freezed ? _value.altitude : altitude as double,
+      speedMetersPerSec: speedMetersPerSec == freezed
+          ? _value.speedMetersPerSec
+          : speedMetersPerSec as double,
+      headingDegrees: headingDegrees == freezed
+          ? _value.headingDegrees
+          : headingDegrees as double,
+      locationAccuracy: locationAccuracy == freezed
+          ? _value.locationAccuracy
+          : locationAccuracy as LocationAccuracyType,
+      speedAccuracy: speedAccuracy == freezed
+          ? _value.speedAccuracy
+          : speedAccuracy as LocationAccuracyType,
+      altitudeMax:
+          altitudeMax == freezed ? _value.altitudeMax : altitudeMax as double,
+      altitudeMin:
+          altitudeMin == freezed ? _value.altitudeMin : altitudeMin as double,
+      averageSpeedMetersPerSec: averageSpeedMetersPerSec == freezed
+          ? _value.averageSpeedMetersPerSec
+          : averageSpeedMetersPerSec as double,
+      averageHeadingDegrees: averageHeadingDegrees == freezed
+          ? _value.averageHeadingDegrees
+          : averageHeadingDegrees as double,
+      distanceTraveled: distanceTraveled == freezed
+          ? _value.distanceTraveled
+          : distanceTraveled as double,
+      netElevationChange: netElevationChange == freezed
+          ? _value.netElevationChange
+          : netElevationChange as double,
+      cumulativeClimbMeters: cumulativeClimbMeters == freezed
+          ? _value.cumulativeClimbMeters
+          : cumulativeClimbMeters as double,
+      cumulativeDescentMeters: cumulativeDescentMeters == freezed
+          ? _value.cumulativeDescentMeters
+          : cumulativeDescentMeters as double,
+      startTimeSeconds: startTimeSeconds == freezed
+          ? _value.startTimeSeconds
+          : startTimeSeconds as int,
+      metricPeriodSeconds: metricPeriodSeconds == freezed
+          ? _value.metricPeriodSeconds
+          : metricPeriodSeconds as int,
     ));
   }
 }
@@ -170,20 +209,25 @@ abstract class _$HikeMetricsCopyWith<$Res>
       __$HikeMetricsCopyWithImpl<$Res>;
   @override
   $Res call(
-      {double latitude,
-      double longitude,
-      double currentElevation,
-      double distanceTraveledTotal,
-      double distanceTraveledPeriod,
-      double positiveElevationGainTotal,
-      double positiveElevationGainPeriod,
-      double negativeElevationGainTotal,
-      double negativeElevationGainPeriod,
-      double netElevationChangeTotal,
-      double netElevationChangePeriod,
-      int timeElapsedTotalSec,
-      int timePeriodSec,
-      LocationAccuracyType locationAccuracyType});
+      {double latitudeStart,
+      double longitudeStart,
+      double latitudeEnd,
+      double longitudeEnd,
+      double altitude,
+      double speedMetersPerSec,
+      double headingDegrees,
+      LocationAccuracyType locationAccuracy,
+      LocationAccuracyType speedAccuracy,
+      double altitudeMax,
+      double altitudeMin,
+      double averageSpeedMetersPerSec,
+      double averageHeadingDegrees,
+      double distanceTraveled,
+      double netElevationChange,
+      double cumulativeClimbMeters,
+      double cumulativeDescentMeters,
+      int startTimeSeconds,
+      int metricPeriodSeconds});
 }
 
 /// @nodoc
@@ -198,60 +242,79 @@ class __$HikeMetricsCopyWithImpl<$Res> extends _$HikeMetricsCopyWithImpl<$Res>
 
   @override
   $Res call({
-    Object latitude = freezed,
-    Object longitude = freezed,
-    Object currentElevation = freezed,
-    Object distanceTraveledTotal = freezed,
-    Object distanceTraveledPeriod = freezed,
-    Object positiveElevationGainTotal = freezed,
-    Object positiveElevationGainPeriod = freezed,
-    Object negativeElevationGainTotal = freezed,
-    Object negativeElevationGainPeriod = freezed,
-    Object netElevationChangeTotal = freezed,
-    Object netElevationChangePeriod = freezed,
-    Object timeElapsedTotalSec = freezed,
-    Object timePeriodSec = freezed,
-    Object locationAccuracyType = freezed,
+    Object latitudeStart = freezed,
+    Object longitudeStart = freezed,
+    Object latitudeEnd = freezed,
+    Object longitudeEnd = freezed,
+    Object altitude = freezed,
+    Object speedMetersPerSec = freezed,
+    Object headingDegrees = freezed,
+    Object locationAccuracy = freezed,
+    Object speedAccuracy = freezed,
+    Object altitudeMax = freezed,
+    Object altitudeMin = freezed,
+    Object averageSpeedMetersPerSec = freezed,
+    Object averageHeadingDegrees = freezed,
+    Object distanceTraveled = freezed,
+    Object netElevationChange = freezed,
+    Object cumulativeClimbMeters = freezed,
+    Object cumulativeDescentMeters = freezed,
+    Object startTimeSeconds = freezed,
+    Object metricPeriodSeconds = freezed,
   }) {
     return _then(_HikeMetrics(
-      latitude: latitude == freezed ? _value.latitude : latitude as double,
-      longitude: longitude == freezed ? _value.longitude : longitude as double,
-      currentElevation: currentElevation == freezed
-          ? _value.currentElevation
-          : currentElevation as double,
-      distanceTraveledTotal: distanceTraveledTotal == freezed
-          ? _value.distanceTraveledTotal
-          : distanceTraveledTotal as double,
-      distanceTraveledPeriod: distanceTraveledPeriod == freezed
-          ? _value.distanceTraveledPeriod
-          : distanceTraveledPeriod as double,
-      positiveElevationGainTotal: positiveElevationGainTotal == freezed
-          ? _value.positiveElevationGainTotal
-          : positiveElevationGainTotal as double,
-      positiveElevationGainPeriod: positiveElevationGainPeriod == freezed
-          ? _value.positiveElevationGainPeriod
-          : positiveElevationGainPeriod as double,
-      negativeElevationGainTotal: negativeElevationGainTotal == freezed
-          ? _value.negativeElevationGainTotal
-          : negativeElevationGainTotal as double,
-      negativeElevationGainPeriod: negativeElevationGainPeriod == freezed
-          ? _value.negativeElevationGainPeriod
-          : negativeElevationGainPeriod as double,
-      netElevationChangeTotal: netElevationChangeTotal == freezed
-          ? _value.netElevationChangeTotal
-          : netElevationChangeTotal as double,
-      netElevationChangePeriod: netElevationChangePeriod == freezed
-          ? _value.netElevationChangePeriod
-          : netElevationChangePeriod as double,
-      timeElapsedTotalSec: timeElapsedTotalSec == freezed
-          ? _value.timeElapsedTotalSec
-          : timeElapsedTotalSec as int,
-      timePeriodSec: timePeriodSec == freezed
-          ? _value.timePeriodSec
-          : timePeriodSec as int,
-      locationAccuracyType: locationAccuracyType == freezed
-          ? _value.locationAccuracyType
-          : locationAccuracyType as LocationAccuracyType,
+      latitudeStart: latitudeStart == freezed
+          ? _value.latitudeStart
+          : latitudeStart as double,
+      longitudeStart: longitudeStart == freezed
+          ? _value.longitudeStart
+          : longitudeStart as double,
+      latitudeEnd:
+          latitudeEnd == freezed ? _value.latitudeEnd : latitudeEnd as double,
+      longitudeEnd: longitudeEnd == freezed
+          ? _value.longitudeEnd
+          : longitudeEnd as double,
+      altitude: altitude == freezed ? _value.altitude : altitude as double,
+      speedMetersPerSec: speedMetersPerSec == freezed
+          ? _value.speedMetersPerSec
+          : speedMetersPerSec as double,
+      headingDegrees: headingDegrees == freezed
+          ? _value.headingDegrees
+          : headingDegrees as double,
+      locationAccuracy: locationAccuracy == freezed
+          ? _value.locationAccuracy
+          : locationAccuracy as LocationAccuracyType,
+      speedAccuracy: speedAccuracy == freezed
+          ? _value.speedAccuracy
+          : speedAccuracy as LocationAccuracyType,
+      altitudeMax:
+          altitudeMax == freezed ? _value.altitudeMax : altitudeMax as double,
+      altitudeMin:
+          altitudeMin == freezed ? _value.altitudeMin : altitudeMin as double,
+      averageSpeedMetersPerSec: averageSpeedMetersPerSec == freezed
+          ? _value.averageSpeedMetersPerSec
+          : averageSpeedMetersPerSec as double,
+      averageHeadingDegrees: averageHeadingDegrees == freezed
+          ? _value.averageHeadingDegrees
+          : averageHeadingDegrees as double,
+      distanceTraveled: distanceTraveled == freezed
+          ? _value.distanceTraveled
+          : distanceTraveled as double,
+      netElevationChange: netElevationChange == freezed
+          ? _value.netElevationChange
+          : netElevationChange as double,
+      cumulativeClimbMeters: cumulativeClimbMeters == freezed
+          ? _value.cumulativeClimbMeters
+          : cumulativeClimbMeters as double,
+      cumulativeDescentMeters: cumulativeDescentMeters == freezed
+          ? _value.cumulativeDescentMeters
+          : cumulativeDescentMeters as double,
+      startTimeSeconds: startTimeSeconds == freezed
+          ? _value.startTimeSeconds
+          : startTimeSeconds as int,
+      metricPeriodSeconds: metricPeriodSeconds == freezed
+          ? _value.metricPeriodSeconds
+          : metricPeriodSeconds as int,
     ));
   }
 }
@@ -259,149 +322,193 @@ class __$HikeMetricsCopyWithImpl<$Res> extends _$HikeMetricsCopyWithImpl<$Res>
 /// @nodoc
 class _$_HikeMetrics implements _HikeMetrics {
   const _$_HikeMetrics(
-      {this.latitude = 0.0,
-      this.longitude = 0.0,
-      this.currentElevation = 0.0,
-      this.distanceTraveledTotal = 0.0,
-      this.distanceTraveledPeriod = 0.0,
-      this.positiveElevationGainTotal = 0.0,
-      this.positiveElevationGainPeriod = 0.0,
-      this.negativeElevationGainTotal = 0.0,
-      this.negativeElevationGainPeriod = 0.0,
-      this.netElevationChangeTotal = 0.0,
-      this.netElevationChangePeriod = 0.0,
-      this.timeElapsedTotalSec = 0,
-      this.timePeriodSec = 0,
-      this.locationAccuracyType = LocationAccuracyType.low})
-      : assert(latitude != null),
-        assert(longitude != null),
-        assert(currentElevation != null),
-        assert(distanceTraveledTotal != null),
-        assert(distanceTraveledPeriod != null),
-        assert(positiveElevationGainTotal != null),
-        assert(positiveElevationGainPeriod != null),
-        assert(negativeElevationGainTotal != null),
-        assert(negativeElevationGainPeriod != null),
-        assert(netElevationChangeTotal != null),
-        assert(netElevationChangePeriod != null),
-        assert(timeElapsedTotalSec != null),
-        assert(timePeriodSec != null),
-        assert(locationAccuracyType != null);
+      {this.latitudeStart = 0.0,
+      this.longitudeStart = 0.0,
+      this.latitudeEnd = 0.0,
+      this.longitudeEnd = 0.0,
+      this.altitude = 0.0,
+      this.speedMetersPerSec = 0.0,
+      this.headingDegrees = 0.0,
+      this.locationAccuracy = LocationAccuracyType.low,
+      this.speedAccuracy = LocationAccuracyType.low,
+      this.altitudeMax = 0.0,
+      this.altitudeMin = 0.0,
+      this.averageSpeedMetersPerSec = 0.0,
+      this.averageHeadingDegrees = 0.0,
+      this.distanceTraveled = 0.0,
+      this.netElevationChange = 0.0,
+      this.cumulativeClimbMeters = 0.0,
+      this.cumulativeDescentMeters = 0.0,
+      this.startTimeSeconds = 0,
+      this.metricPeriodSeconds = 0})
+      : assert(latitudeStart != null),
+        assert(longitudeStart != null),
+        assert(latitudeEnd != null),
+        assert(longitudeEnd != null),
+        assert(altitude != null),
+        assert(speedMetersPerSec != null),
+        assert(headingDegrees != null),
+        assert(locationAccuracy != null),
+        assert(speedAccuracy != null),
+        assert(altitudeMax != null),
+        assert(altitudeMin != null),
+        assert(averageSpeedMetersPerSec != null),
+        assert(averageHeadingDegrees != null),
+        assert(distanceTraveled != null),
+        assert(netElevationChange != null),
+        assert(cumulativeClimbMeters != null),
+        assert(cumulativeDescentMeters != null),
+        assert(startTimeSeconds != null),
+        assert(metricPeriodSeconds != null);
 
   @JsonKey(defaultValue: 0.0)
   @override
-  final double latitude;
+  final double latitudeStart;
   @JsonKey(defaultValue: 0.0)
   @override
-  final double longitude;
+  final double longitudeStart;
   @JsonKey(defaultValue: 0.0)
   @override
-  final double currentElevation;
+  final double latitudeEnd;
   @JsonKey(defaultValue: 0.0)
   @override
-  final double distanceTraveledTotal;
+  final double longitudeEnd;
   @JsonKey(defaultValue: 0.0)
   @override
-  final double distanceTraveledPeriod;
+  final double altitude;
   @JsonKey(defaultValue: 0.0)
   @override
-  final double positiveElevationGainTotal;
+  final double speedMetersPerSec;
   @JsonKey(defaultValue: 0.0)
   @override
-  final double positiveElevationGainPeriod;
-  @JsonKey(defaultValue: 0.0)
-  @override
-  final double negativeElevationGainTotal;
-  @JsonKey(defaultValue: 0.0)
-  @override
-  final double negativeElevationGainPeriod;
-  @JsonKey(defaultValue: 0.0)
-  @override
-  final double netElevationChangeTotal;
-  @JsonKey(defaultValue: 0.0)
-  @override
-  final double netElevationChangePeriod;
-  @JsonKey(defaultValue: 0)
-  @override
-  final int timeElapsedTotalSec;
-  @JsonKey(defaultValue: 0)
-  @override
-  final int timePeriodSec;
+  final double headingDegrees;
   @JsonKey(defaultValue: LocationAccuracyType.low)
   @override
-  final LocationAccuracyType locationAccuracyType;
+  final LocationAccuracyType locationAccuracy;
+  @JsonKey(defaultValue: LocationAccuracyType.low)
+  @override
+  final LocationAccuracyType speedAccuracy;
+  @JsonKey(defaultValue: 0.0)
+  @override
+  final double altitudeMax;
+  @JsonKey(defaultValue: 0.0)
+  @override
+  final double altitudeMin;
+  @JsonKey(defaultValue: 0.0)
+  @override
+  final double averageSpeedMetersPerSec;
+  @JsonKey(defaultValue: 0.0)
+  @override
+  final double averageHeadingDegrees;
+  @JsonKey(defaultValue: 0.0)
+  @override
+  final double distanceTraveled;
+  @JsonKey(defaultValue: 0.0)
+  @override
+  final double netElevationChange;
+  @JsonKey(defaultValue: 0.0)
+  @override
+  final double cumulativeClimbMeters;
+  @JsonKey(defaultValue: 0.0)
+  @override
+  final double cumulativeDescentMeters;
+  @JsonKey(defaultValue: 0)
+  @override
+  final int startTimeSeconds;
+  @JsonKey(defaultValue: 0)
+  @override
+  final int metricPeriodSeconds;
 
   @override
   String toString() {
-    return 'HikeMetrics(latitude: $latitude, longitude: $longitude, currentElevation: $currentElevation, distanceTraveledTotal: $distanceTraveledTotal, distanceTraveledPeriod: $distanceTraveledPeriod, positiveElevationGainTotal: $positiveElevationGainTotal, positiveElevationGainPeriod: $positiveElevationGainPeriod, negativeElevationGainTotal: $negativeElevationGainTotal, negativeElevationGainPeriod: $negativeElevationGainPeriod, netElevationChangeTotal: $netElevationChangeTotal, netElevationChangePeriod: $netElevationChangePeriod, timeElapsedTotalSec: $timeElapsedTotalSec, timePeriodSec: $timePeriodSec, locationAccuracyType: $locationAccuracyType)';
+    return 'HikeMetrics(latitudeStart: $latitudeStart, longitudeStart: $longitudeStart, latitudeEnd: $latitudeEnd, longitudeEnd: $longitudeEnd, altitude: $altitude, speedMetersPerSec: $speedMetersPerSec, headingDegrees: $headingDegrees, locationAccuracy: $locationAccuracy, speedAccuracy: $speedAccuracy, altitudeMax: $altitudeMax, altitudeMin: $altitudeMin, averageSpeedMetersPerSec: $averageSpeedMetersPerSec, averageHeadingDegrees: $averageHeadingDegrees, distanceTraveled: $distanceTraveled, netElevationChange: $netElevationChange, cumulativeClimbMeters: $cumulativeClimbMeters, cumulativeDescentMeters: $cumulativeDescentMeters, startTimeSeconds: $startTimeSeconds, metricPeriodSeconds: $metricPeriodSeconds)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _HikeMetrics &&
-            (identical(other.latitude, latitude) ||
+            (identical(other.latitudeStart, latitudeStart) ||
                 const DeepCollectionEquality()
-                    .equals(other.latitude, latitude)) &&
-            (identical(other.longitude, longitude) ||
+                    .equals(other.latitudeStart, latitudeStart)) &&
+            (identical(other.longitudeStart, longitudeStart) ||
                 const DeepCollectionEquality()
-                    .equals(other.longitude, longitude)) &&
-            (identical(other.currentElevation, currentElevation) ||
+                    .equals(other.longitudeStart, longitudeStart)) &&
+            (identical(other.latitudeEnd, latitudeEnd) ||
                 const DeepCollectionEquality()
-                    .equals(other.currentElevation, currentElevation)) &&
-            (identical(other.distanceTraveledTotal, distanceTraveledTotal) ||
-                const DeepCollectionEquality().equals(
-                    other.distanceTraveledTotal, distanceTraveledTotal)) &&
-            (identical(other.distanceTraveledPeriod, distanceTraveledPeriod) ||
-                const DeepCollectionEquality().equals(
-                    other.distanceTraveledPeriod, distanceTraveledPeriod)) &&
-            (identical(other.positiveElevationGainTotal, positiveElevationGainTotal) ||
-                const DeepCollectionEquality().equals(
-                    other.positiveElevationGainTotal,
-                    positiveElevationGainTotal)) &&
-            (identical(other.positiveElevationGainPeriod, positiveElevationGainPeriod) ||
-                const DeepCollectionEquality().equals(
-                    other.positiveElevationGainPeriod,
-                    positiveElevationGainPeriod)) &&
-            (identical(other.negativeElevationGainTotal, negativeElevationGainTotal) ||
-                const DeepCollectionEquality().equals(
-                    other.negativeElevationGainTotal,
-                    negativeElevationGainTotal)) &&
-            (identical(other.negativeElevationGainPeriod, negativeElevationGainPeriod) ||
-                const DeepCollectionEquality().equals(
-                    other.negativeElevationGainPeriod,
-                    negativeElevationGainPeriod)) &&
-            (identical(other.netElevationChangeTotal, netElevationChangeTotal) ||
-                const DeepCollectionEquality().equals(
-                    other.netElevationChangeTotal, netElevationChangeTotal)) &&
-            (identical(other.netElevationChangePeriod, netElevationChangePeriod) ||
-                const DeepCollectionEquality().equals(
-                    other.netElevationChangePeriod,
-                    netElevationChangePeriod)) &&
-            (identical(other.timeElapsedTotalSec, timeElapsedTotalSec) ||
+                    .equals(other.latitudeEnd, latitudeEnd)) &&
+            (identical(other.longitudeEnd, longitudeEnd) ||
                 const DeepCollectionEquality()
-                    .equals(other.timeElapsedTotalSec, timeElapsedTotalSec)) &&
-            (identical(other.timePeriodSec, timePeriodSec) || const DeepCollectionEquality().equals(other.timePeriodSec, timePeriodSec)) &&
-            (identical(other.locationAccuracyType, locationAccuracyType) || const DeepCollectionEquality().equals(other.locationAccuracyType, locationAccuracyType)));
+                    .equals(other.longitudeEnd, longitudeEnd)) &&
+            (identical(other.altitude, altitude) ||
+                const DeepCollectionEquality()
+                    .equals(other.altitude, altitude)) &&
+            (identical(other.speedMetersPerSec, speedMetersPerSec) ||
+                const DeepCollectionEquality()
+                    .equals(other.speedMetersPerSec, speedMetersPerSec)) &&
+            (identical(other.headingDegrees, headingDegrees) ||
+                const DeepCollectionEquality()
+                    .equals(other.headingDegrees, headingDegrees)) &&
+            (identical(other.locationAccuracy, locationAccuracy) ||
+                const DeepCollectionEquality()
+                    .equals(other.locationAccuracy, locationAccuracy)) &&
+            (identical(other.speedAccuracy, speedAccuracy) ||
+                const DeepCollectionEquality()
+                    .equals(other.speedAccuracy, speedAccuracy)) &&
+            (identical(other.altitudeMax, altitudeMax) ||
+                const DeepCollectionEquality()
+                    .equals(other.altitudeMax, altitudeMax)) &&
+            (identical(other.altitudeMin, altitudeMin) ||
+                const DeepCollectionEquality()
+                    .equals(other.altitudeMin, altitudeMin)) &&
+            (identical(other.averageSpeedMetersPerSec, averageSpeedMetersPerSec) ||
+                const DeepCollectionEquality().equals(
+                    other.averageSpeedMetersPerSec,
+                    averageSpeedMetersPerSec)) &&
+            (identical(other.averageHeadingDegrees, averageHeadingDegrees) ||
+                const DeepCollectionEquality().equals(
+                    other.averageHeadingDegrees, averageHeadingDegrees)) &&
+            (identical(other.distanceTraveled, distanceTraveled) ||
+                const DeepCollectionEquality()
+                    .equals(other.distanceTraveled, distanceTraveled)) &&
+            (identical(other.netElevationChange, netElevationChange) ||
+                const DeepCollectionEquality()
+                    .equals(other.netElevationChange, netElevationChange)) &&
+            (identical(other.cumulativeClimbMeters, cumulativeClimbMeters) ||
+                const DeepCollectionEquality().equals(
+                    other.cumulativeClimbMeters, cumulativeClimbMeters)) &&
+            (identical(other.cumulativeDescentMeters, cumulativeDescentMeters) ||
+                const DeepCollectionEquality().equals(
+                    other.cumulativeDescentMeters, cumulativeDescentMeters)) &&
+            (identical(other.startTimeSeconds, startTimeSeconds) ||
+                const DeepCollectionEquality()
+                    .equals(other.startTimeSeconds, startTimeSeconds)) &&
+            (identical(other.metricPeriodSeconds, metricPeriodSeconds) ||
+                const DeepCollectionEquality().equals(other.metricPeriodSeconds, metricPeriodSeconds)));
   }
 
   @override
   int get hashCode =>
       runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(latitude) ^
-      const DeepCollectionEquality().hash(longitude) ^
-      const DeepCollectionEquality().hash(currentElevation) ^
-      const DeepCollectionEquality().hash(distanceTraveledTotal) ^
-      const DeepCollectionEquality().hash(distanceTraveledPeriod) ^
-      const DeepCollectionEquality().hash(positiveElevationGainTotal) ^
-      const DeepCollectionEquality().hash(positiveElevationGainPeriod) ^
-      const DeepCollectionEquality().hash(negativeElevationGainTotal) ^
-      const DeepCollectionEquality().hash(negativeElevationGainPeriod) ^
-      const DeepCollectionEquality().hash(netElevationChangeTotal) ^
-      const DeepCollectionEquality().hash(netElevationChangePeriod) ^
-      const DeepCollectionEquality().hash(timeElapsedTotalSec) ^
-      const DeepCollectionEquality().hash(timePeriodSec) ^
-      const DeepCollectionEquality().hash(locationAccuracyType);
+      const DeepCollectionEquality().hash(latitudeStart) ^
+      const DeepCollectionEquality().hash(longitudeStart) ^
+      const DeepCollectionEquality().hash(latitudeEnd) ^
+      const DeepCollectionEquality().hash(longitudeEnd) ^
+      const DeepCollectionEquality().hash(altitude) ^
+      const DeepCollectionEquality().hash(speedMetersPerSec) ^
+      const DeepCollectionEquality().hash(headingDegrees) ^
+      const DeepCollectionEquality().hash(locationAccuracy) ^
+      const DeepCollectionEquality().hash(speedAccuracy) ^
+      const DeepCollectionEquality().hash(altitudeMax) ^
+      const DeepCollectionEquality().hash(altitudeMin) ^
+      const DeepCollectionEquality().hash(averageSpeedMetersPerSec) ^
+      const DeepCollectionEquality().hash(averageHeadingDegrees) ^
+      const DeepCollectionEquality().hash(distanceTraveled) ^
+      const DeepCollectionEquality().hash(netElevationChange) ^
+      const DeepCollectionEquality().hash(cumulativeClimbMeters) ^
+      const DeepCollectionEquality().hash(cumulativeDescentMeters) ^
+      const DeepCollectionEquality().hash(startTimeSeconds) ^
+      const DeepCollectionEquality().hash(metricPeriodSeconds);
 
   @override
   _$HikeMetricsCopyWith<_HikeMetrics> get copyWith =>
@@ -410,49 +517,64 @@ class _$_HikeMetrics implements _HikeMetrics {
 
 abstract class _HikeMetrics implements HikeMetrics {
   const factory _HikeMetrics(
-      {double latitude,
-      double longitude,
-      double currentElevation,
-      double distanceTraveledTotal,
-      double distanceTraveledPeriod,
-      double positiveElevationGainTotal,
-      double positiveElevationGainPeriod,
-      double negativeElevationGainTotal,
-      double negativeElevationGainPeriod,
-      double netElevationChangeTotal,
-      double netElevationChangePeriod,
-      int timeElapsedTotalSec,
-      int timePeriodSec,
-      LocationAccuracyType locationAccuracyType}) = _$_HikeMetrics;
+      {double latitudeStart,
+      double longitudeStart,
+      double latitudeEnd,
+      double longitudeEnd,
+      double altitude,
+      double speedMetersPerSec,
+      double headingDegrees,
+      LocationAccuracyType locationAccuracy,
+      LocationAccuracyType speedAccuracy,
+      double altitudeMax,
+      double altitudeMin,
+      double averageSpeedMetersPerSec,
+      double averageHeadingDegrees,
+      double distanceTraveled,
+      double netElevationChange,
+      double cumulativeClimbMeters,
+      double cumulativeDescentMeters,
+      int startTimeSeconds,
+      int metricPeriodSeconds}) = _$_HikeMetrics;
 
   @override
-  double get latitude;
+  double get latitudeStart;
   @override
-  double get longitude;
+  double get longitudeStart;
   @override
-  double get currentElevation;
+  double get latitudeEnd;
   @override
-  double get distanceTraveledTotal;
+  double get longitudeEnd;
   @override
-  double get distanceTraveledPeriod;
+  double get altitude;
   @override
-  double get positiveElevationGainTotal;
+  double get speedMetersPerSec;
   @override
-  double get positiveElevationGainPeriod;
+  double get headingDegrees;
   @override
-  double get negativeElevationGainTotal;
+  LocationAccuracyType get locationAccuracy;
   @override
-  double get negativeElevationGainPeriod;
+  LocationAccuracyType get speedAccuracy;
   @override
-  double get netElevationChangeTotal;
+  double get altitudeMax;
   @override
-  double get netElevationChangePeriod;
+  double get altitudeMin;
   @override
-  int get timeElapsedTotalSec;
+  double get averageSpeedMetersPerSec;
   @override
-  int get timePeriodSec;
+  double get averageHeadingDegrees;
   @override
-  LocationAccuracyType get locationAccuracyType;
+  double get distanceTraveled;
+  @override
+  double get netElevationChange;
+  @override
+  double get cumulativeClimbMeters;
+  @override
+  double get cumulativeDescentMeters;
+  @override
+  int get startTimeSeconds;
+  @override
+  int get metricPeriodSeconds;
   @override
   _$HikeMetricsCopyWith<_HikeMetrics> get copyWith;
 }
