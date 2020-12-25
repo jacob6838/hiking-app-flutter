@@ -33,7 +33,8 @@ class _$HikeMetricsTearOff {
       double cumulativeClimbMeters = 0.0,
       double cumulativeDescentMeters = 0.0,
       int startTimeSeconds = 0,
-      int metricPeriodSeconds = 0}) {
+      int metricPeriodSeconds = 0,
+      KtList<LocationStatus> path = const KtList.empty()}) {
     return _HikeMetrics(
       latitudeStart: latitudeStart,
       longitudeStart: longitudeStart,
@@ -54,6 +55,7 @@ class _$HikeMetricsTearOff {
       cumulativeDescentMeters: cumulativeDescentMeters,
       startTimeSeconds: startTimeSeconds,
       metricPeriodSeconds: metricPeriodSeconds,
+      path: path,
     );
   }
 }
@@ -83,6 +85,7 @@ mixin _$HikeMetrics {
   double get cumulativeDescentMeters;
   int get startTimeSeconds;
   int get metricPeriodSeconds;
+  KtList<LocationStatus> get path;
 
   $HikeMetricsCopyWith<HikeMetrics> get copyWith;
 }
@@ -111,7 +114,8 @@ abstract class $HikeMetricsCopyWith<$Res> {
       double cumulativeClimbMeters,
       double cumulativeDescentMeters,
       int startTimeSeconds,
-      int metricPeriodSeconds});
+      int metricPeriodSeconds,
+      KtList<LocationStatus> path});
 }
 
 /// @nodoc
@@ -143,6 +147,7 @@ class _$HikeMetricsCopyWithImpl<$Res> implements $HikeMetricsCopyWith<$Res> {
     Object cumulativeDescentMeters = freezed,
     Object startTimeSeconds = freezed,
     Object metricPeriodSeconds = freezed,
+    Object path = freezed,
   }) {
     return _then(_value.copyWith(
       latitudeStart: latitudeStart == freezed
@@ -197,6 +202,7 @@ class _$HikeMetricsCopyWithImpl<$Res> implements $HikeMetricsCopyWith<$Res> {
       metricPeriodSeconds: metricPeriodSeconds == freezed
           ? _value.metricPeriodSeconds
           : metricPeriodSeconds as int,
+      path: path == freezed ? _value.path : path as KtList<LocationStatus>,
     ));
   }
 }
@@ -227,7 +233,8 @@ abstract class _$HikeMetricsCopyWith<$Res>
       double cumulativeClimbMeters,
       double cumulativeDescentMeters,
       int startTimeSeconds,
-      int metricPeriodSeconds});
+      int metricPeriodSeconds,
+      KtList<LocationStatus> path});
 }
 
 /// @nodoc
@@ -261,6 +268,7 @@ class __$HikeMetricsCopyWithImpl<$Res> extends _$HikeMetricsCopyWithImpl<$Res>
     Object cumulativeDescentMeters = freezed,
     Object startTimeSeconds = freezed,
     Object metricPeriodSeconds = freezed,
+    Object path = freezed,
   }) {
     return _then(_HikeMetrics(
       latitudeStart: latitudeStart == freezed
@@ -315,6 +323,7 @@ class __$HikeMetricsCopyWithImpl<$Res> extends _$HikeMetricsCopyWithImpl<$Res>
       metricPeriodSeconds: metricPeriodSeconds == freezed
           ? _value.metricPeriodSeconds
           : metricPeriodSeconds as int,
+      path: path == freezed ? _value.path : path as KtList<LocationStatus>,
     ));
   }
 }
@@ -340,7 +349,8 @@ class _$_HikeMetrics implements _HikeMetrics {
       this.cumulativeClimbMeters = 0.0,
       this.cumulativeDescentMeters = 0.0,
       this.startTimeSeconds = 0,
-      this.metricPeriodSeconds = 0})
+      this.metricPeriodSeconds = 0,
+      this.path = const KtList.empty()})
       : assert(latitudeStart != null),
         assert(longitudeStart != null),
         assert(latitudeEnd != null),
@@ -359,7 +369,8 @@ class _$_HikeMetrics implements _HikeMetrics {
         assert(cumulativeClimbMeters != null),
         assert(cumulativeDescentMeters != null),
         assert(startTimeSeconds != null),
-        assert(metricPeriodSeconds != null);
+        assert(metricPeriodSeconds != null),
+        assert(path != null);
 
   @JsonKey(defaultValue: 0.0)
   @override
@@ -418,10 +429,13 @@ class _$_HikeMetrics implements _HikeMetrics {
   @JsonKey(defaultValue: 0)
   @override
   final int metricPeriodSeconds;
+  @JsonKey(defaultValue: const KtList.empty())
+  @override
+  final KtList<LocationStatus> path;
 
   @override
   String toString() {
-    return 'HikeMetrics(latitudeStart: $latitudeStart, longitudeStart: $longitudeStart, latitudeEnd: $latitudeEnd, longitudeEnd: $longitudeEnd, altitude: $altitude, speedMetersPerSec: $speedMetersPerSec, headingDegrees: $headingDegrees, locationAccuracy: $locationAccuracy, speedAccuracy: $speedAccuracy, altitudeMax: $altitudeMax, altitudeMin: $altitudeMin, averageSpeedMetersPerSec: $averageSpeedMetersPerSec, averageHeadingDegrees: $averageHeadingDegrees, distanceTraveled: $distanceTraveled, netElevationChange: $netElevationChange, cumulativeClimbMeters: $cumulativeClimbMeters, cumulativeDescentMeters: $cumulativeDescentMeters, startTimeSeconds: $startTimeSeconds, metricPeriodSeconds: $metricPeriodSeconds)';
+    return 'HikeMetrics(latitudeStart: $latitudeStart, longitudeStart: $longitudeStart, latitudeEnd: $latitudeEnd, longitudeEnd: $longitudeEnd, altitude: $altitude, speedMetersPerSec: $speedMetersPerSec, headingDegrees: $headingDegrees, locationAccuracy: $locationAccuracy, speedAccuracy: $speedAccuracy, altitudeMax: $altitudeMax, altitudeMin: $altitudeMin, averageSpeedMetersPerSec: $averageSpeedMetersPerSec, averageHeadingDegrees: $averageHeadingDegrees, distanceTraveled: $distanceTraveled, netElevationChange: $netElevationChange, cumulativeClimbMeters: $cumulativeClimbMeters, cumulativeDescentMeters: $cumulativeDescentMeters, startTimeSeconds: $startTimeSeconds, metricPeriodSeconds: $metricPeriodSeconds, path: $path)';
   }
 
   @override
@@ -484,7 +498,8 @@ class _$_HikeMetrics implements _HikeMetrics {
                 const DeepCollectionEquality()
                     .equals(other.startTimeSeconds, startTimeSeconds)) &&
             (identical(other.metricPeriodSeconds, metricPeriodSeconds) ||
-                const DeepCollectionEquality().equals(other.metricPeriodSeconds, metricPeriodSeconds)));
+                const DeepCollectionEquality().equals(other.metricPeriodSeconds, metricPeriodSeconds)) &&
+            (identical(other.path, path) || const DeepCollectionEquality().equals(other.path, path)));
   }
 
   @override
@@ -508,7 +523,8 @@ class _$_HikeMetrics implements _HikeMetrics {
       const DeepCollectionEquality().hash(cumulativeClimbMeters) ^
       const DeepCollectionEquality().hash(cumulativeDescentMeters) ^
       const DeepCollectionEquality().hash(startTimeSeconds) ^
-      const DeepCollectionEquality().hash(metricPeriodSeconds);
+      const DeepCollectionEquality().hash(metricPeriodSeconds) ^
+      const DeepCollectionEquality().hash(path);
 
   @override
   _$HikeMetricsCopyWith<_HikeMetrics> get copyWith =>
@@ -535,7 +551,8 @@ abstract class _HikeMetrics implements HikeMetrics {
       double cumulativeClimbMeters,
       double cumulativeDescentMeters,
       int startTimeSeconds,
-      int metricPeriodSeconds}) = _$_HikeMetrics;
+      int metricPeriodSeconds,
+      KtList<LocationStatus> path}) = _$_HikeMetrics;
 
   @override
   double get latitudeStart;
@@ -575,6 +592,8 @@ abstract class _HikeMetrics implements HikeMetrics {
   int get startTimeSeconds;
   @override
   int get metricPeriodSeconds;
+  @override
+  KtList<LocationStatus> get path;
   @override
   _$HikeMetricsCopyWith<_HikeMetrics> get copyWith;
 }

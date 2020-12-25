@@ -110,7 +110,7 @@ class MyHomePageState extends State<MyHomePage> {
     if (locationStatus == null) return "Invalid Location";
     return "${locationStatus.latitude}, ${locationStatus.longitude}\n"
         "${locationStatus.altitude} m, ${metersToFeet(locationStatus.altitude)} ft\n"
-        "accuracy: ${locationStatus.accuracyHdop} m";
+        "accuracy: ${locationStatus.accuracy} m";
   }
 
   String _toDistanceTraveledString(HikeMetrics hikeMetrics) {

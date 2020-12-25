@@ -25,6 +25,8 @@ class LocationService {
 
   Stream<LocationData> get locationStream => _locationController.stream.asBroadcastStream();
 
+  Future<LocationData> get location async => _location.getLocation();
+
   LocationService() {
     // Request permission to use location
     _location.requestPermission().then((granted) {

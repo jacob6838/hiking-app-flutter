@@ -1,6 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:kt_dart/collection.dart';
 
 import 'location_accuracy_type.dart';
+import 'location_status.dart';
 
 part 'hike_metrics.freezed.dart';
 
@@ -26,5 +28,6 @@ abstract class HikeMetrics with _$HikeMetrics {
     @Default(0.0) double cumulativeDescentMeters,
     @Default(0) int startTimeSeconds,
     @Default(0) int metricPeriodSeconds,
+    @Default(KtList.empty()) KtList<LocationStatus> path,
   }) = _HikeMetrics;
 }

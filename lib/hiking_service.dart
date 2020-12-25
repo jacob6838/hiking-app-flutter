@@ -1,5 +1,6 @@
 import 'package:hiking_app/location_service.dart';
 import 'package:hiking_app/models/hike_metrics.dart';
+import 'package:hiking_app/models/location_accuracy_type.dart';
 import 'package:hiking_app/models/location_status.dart';
 import 'package:kt_dart/collection.dart';
 import 'package:location/location.dart';
@@ -17,16 +18,17 @@ const int minimumDistanceThreshold = 4;
 
 class HikingService {
   final LocationService _locationService;
-  bool _hikingActive = false;
-  int _startTimeSec = 0;
+  bool _hikeIsActive = false;
+  HikeMetrics _hikeMetricsTotal = const HikeMetrics();
   int _lastUpdateTimeSec = 0;
-  double _distanceTraveled = 0.0;
 
   /// List of all points for the current hike
-  final KtMutableList<LocationStatus> _currentHike = mutableListOf();
+  final KtMutableList<LocationStatus> _currentPath = mutableListOf();
+
   int reportPeriodSec;
 
-  LocationData _prevLocation;
+  /// Previous position used to determine when a location change is sufficiently large to warrant a hiker status update.
+  LocationStatus _prevLocation;
 
   final BehaviorSubject<bool> _activeStatusSub = BehaviorSubject.seeded(false);
   final BehaviorSubject<LocationStatus> _currentLocationStatusSub = BehaviorSubject.seeded(const LocationStatus());
@@ -35,7 +37,7 @@ class HikingService {
   HikingService({LocationService locationService})
       : _lastUpdateTimeSec = 0,
         _locationService = locationService {
-    _locationService.locationStream.where((_) => _hikingActive).listen(_handleLocationUpdate);
+    _locationService.locationStream.where((_) => _hikeIsActive).map(toLocationStatus).listen(_handleLocationUpdate);
   }
 
   Stream<bool> get hikingMetrics$ => _activeStatusSub.stream.asBroadcastStream();
@@ -44,39 +46,55 @@ class HikingService {
 
   Stream<HikeMetrics> get currentHikerStatus$ => _currentHikerStatusSub.stream.asBroadcastStream();
 
-  void toggleStatus() {
-    _hikingActive = !_hikingActive;
-    if (_hikingActive) {
-      _startTimeSec = DateTime.now().millisecondsSinceEpoch ~/ millisecondsPerSecond;
-      _currentHike.clear();
-      _distanceTraveled = 0.0;
+  Future<void> toggleStatus() async {
+    _hikeIsActive = !_hikeIsActive;
+    if (_hikeIsActive) {
+      _prevLocation = toLocationStatus(await _locationService.location);
+      _hikeMetricsTotal = getInitialMetrics(_prevLocation);
+      _currentPath.clear();
     }
-    _activeStatusSub.add(_hikingActive);
+    _activeStatusSub.add(_hikeIsActive);
   }
 
   /// Process an updated location from device
-  void _handleLocationUpdate(LocationData locationData) {
-    if (_prevLocation != null) {
-      final deltaSec = toSeconds(locationData.time) - toSeconds(_prevLocation.time);
-      if (deltaSec < updateIntervalSec) return;
+  void _handleLocationUpdate(LocationStatus locationStatus) {
+    final deltaSec = locationStatus.timeStampSec - _prevLocation.timeStampSec;
+    if (deltaSec < updateIntervalSec) return;
 
-      final deltaDistance = SphericalUtil.computeDistanceBetween(
-        LatLng(locationData.latitude, locationData.longitude),
-        LatLng(_prevLocation.latitude, _prevLocation.longitude),
-      );
-      if (deltaDistance < minimumDistanceThreshold) return;
-    }
+    final deltaDistance = SphericalUtil.computeDistanceBetween(
+      LatLng(locationStatus.latitude, locationStatus.longitude),
+      LatLng(_prevLocation.latitude, _prevLocation.longitude),
+    );
+    if (deltaDistance < minimumDistanceThreshold) return;
 
-    _prevLocation = locationData;
+    _prevLocation = locationStatus;
 
     /// Save location update to current hike
-    final currLocation = toLocationStatus(locationData);
-    _currentHike.add(currLocation);
+    _currentPath.add(_prevLocation);
 
     /// Calculate hiker status update and publish value for UI
-    final currStatus = calculateHikerStatusUpdate(_currentHikerStatusSub.value, currLocation, _currentHike, reportPeriodSec);
+    final currStatus = accumulateMetrics(_currentHikerStatusSub.value, _prevLocation, _currentPath, reportPeriodSec);
     _currentHikerStatusSub.add(currStatus);
   }
+}
+
+/// Return initial hike metrics based on current location
+HikeMetrics getInitialMetrics(LocationStatus curLoc) {
+  return HikeMetrics(
+    latitudeStart: curLoc.latitude,
+    longitudeStart: curLoc.longitude,
+    latitudeEnd: curLoc.latitude,
+    longitudeEnd: curLoc.longitude,
+    altitude: curLoc.altitude,
+    altitudeMax: curLoc.altitude,
+    altitudeMin: curLoc.altitude,
+    speedMetersPerSec: curLoc.speedMetersPerSec,
+    averageSpeedMetersPerSec: curLoc.speedMetersPerSec,
+    headingDegrees: curLoc.headingDegrees,
+    locationAccuracy: curLoc.accuracy,
+    speedAccuracy: curLoc.speedAccuracy,
+    startTimeSeconds: getCurrentTimeSeconds(),
+  );
 }
 
 /// Create LocationStatus object from Device location data
@@ -84,18 +102,22 @@ LocationStatus toLocationStatus(LocationData locationData) {
   return LocationStatus(
     latitude: locationData.latitude ?? 0.0,
     longitude: locationData.longitude ?? 0.0,
-    accuracyHdop: locationData.accuracy ?? 0.0,
+    accuracy: toAccuracyType(locationData.accuracy ?? 0.0),
     altitude: locationData.altitude ?? 0.0,
     speedMetersPerSec: locationData.speed ?? 0.0,
-    speedAccuracyHdop: locationData.speedAccuracy ?? 0.0,
+    speedAccuracy: toAccuracyType(locationData.speedAccuracy ?? 0.0),
     headingDegrees: locationData.heading ?? 0.0,
     timeStampSec: ((locationData.time ?? 0) / millisecondsPerSecond).round(),
   );
 }
 
 /// Calculate hiker status update data
-HikeMetrics calculateHikerStatusUpdate(
-    HikeMetrics prevHikerStatus, LocationStatus currLoc, KtList<LocationStatus> locationHistory, int reportPeriodSec) {
+HikeMetrics accumulateMetrics(
+  HikeMetrics prevMetrics,
+  LocationStatus currLoc,
+  KtList<LocationStatus> locationHistory,
+  int reportPeriodSec,
+) {
   return const HikeMetrics();
   // _distanceTraveled += _distanceDelta.abs();
   // final hikerData = HikerStatus(
@@ -107,3 +129,11 @@ HikeMetrics calculateHikerStatusUpdate(
 
 /// Convert milliseconds since epoch value to seconds
 int toSeconds(double timeStamp) => timeStamp ~/ millisecondsPerSecond;
+
+/// Return the current time in seconds since epoch.
+int getCurrentTimeSeconds() => DateTime.now().millisecondsSinceEpoch ~/ millisecondsPerSecond;
+
+/// Convert an accuracy value from Flutter location API to an enum
+LocationAccuracyType toAccuracyType(double accuracy) {
+  return LocationAccuracyType.low;
+}

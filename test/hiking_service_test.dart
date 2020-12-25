@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hiking_app/hiking_service.dart';
+import 'package:hiking_app/models/location_accuracy_type.dart';
+import 'package:hiking_app/models/location_status.dart';
 import 'package:location/location.dart';
 
 void main() {
@@ -19,11 +21,28 @@ void main() {
 
     expect(actual.latitude, 1.2);
     expect(actual.longitude, 2.4);
-    expect(actual.accuracyHdop, 3.5);
+    expect(actual.accuracy, LocationAccuracyType.low);
     expect(actual.altitude, 4.6);
     expect(actual.speedMetersPerSec, 5.7);
-    expect(actual.speedAccuracyHdop, 6.8);
+    expect(actual.speedAccuracy, LocationAccuracyType.low);
     expect(actual.headingDegrees, 7.4);
     expect(actual.timeStampSec, 9);
+  });
+
+  test('Verify getInitialMetrics generates correct initial values', () {
+    const loc = LocationStatus(
+      latitude: 1.2,
+      longitude: 2.3,
+      accuracy: LocationAccuracyType.high,
+      altitude: 4.3,
+      speedMetersPerSec: 5.1,
+      speedAccuracy: LocationAccuracyType.medium,
+      headingDegrees: 7.1,
+      timeStampSec: 456,
+    );
+    final actual = getInitialMetrics(loc);
+
+    expect(actual.latitudeStart, 1.2);
+    expect(actual.latitudeEnd, 1.2);
   });
 }
