@@ -50,7 +50,7 @@ class HikingService {
     _hikeIsActive = !_hikeIsActive;
     if (_hikeIsActive) {
       _prevLocation = toLocationStatus(await _locationService.location);
-      _hikeMetricsTotal = getInitialMetrics(_prevLocation);
+      _hikeMetricsTotal = getInitialMetrics(_prevLocation, getCurrentTimeSeconds());
       _currentPath.clear();
     }
     _activeStatusSub.add(_hikeIsActive);
@@ -79,7 +79,7 @@ class HikingService {
 }
 
 /// Return initial hike metrics based on current location
-HikeMetrics getInitialMetrics(LocationStatus curLoc) {
+HikeMetrics getInitialMetrics(LocationStatus curLoc, int currTimeSeconds) {
   return HikeMetrics(
     latitudeStart: curLoc.latitude,
     longitudeStart: curLoc.longitude,
@@ -93,7 +93,7 @@ HikeMetrics getInitialMetrics(LocationStatus curLoc) {
     headingDegrees: curLoc.headingDegrees,
     locationAccuracy: curLoc.accuracy,
     speedAccuracy: curLoc.speedAccuracy,
-    startTimeSeconds: getCurrentTimeSeconds(),
+    startTimeSeconds: currTimeSeconds,
   );
 }
 

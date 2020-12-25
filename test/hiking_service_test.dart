@@ -34,15 +34,26 @@ void main() {
       latitude: 1.2,
       longitude: 2.3,
       accuracy: LocationAccuracyType.high,
-      altitude: 4.3,
+      altitude: 4.6,
       speedMetersPerSec: 5.1,
       speedAccuracy: LocationAccuracyType.medium,
       headingDegrees: 7.1,
       timeStampSec: 456,
     );
-    final actual = getInitialMetrics(loc);
+    final actual = getInitialMetrics(loc, 456);
 
     expect(actual.latitudeStart, 1.2);
     expect(actual.latitudeEnd, 1.2);
+    expect(actual.longitudeStart, 2.3);
+    expect(actual.longitudeEnd, 2.3);
+    expect(actual.altitude, 4.6);
+    expect(actual.altitudeMax, 4.6);
+    expect(actual.altitudeMin, 4.6);
+    expect(actual.speedMetersPerSec, 5.1);
+    expect(actual.averageSpeedMetersPerSec, 5.1);
+    expect(actual.headingDegrees, 7.1);
+    expect(actual.locationAccuracy, LocationAccuracyType.high);
+    expect(actual.speedAccuracy, LocationAccuracyType.medium);
+    expect(actual.startTimeSeconds, 456);
   });
 }
