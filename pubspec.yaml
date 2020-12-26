@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  background_location: ^0.2.2
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.1
@@ -32,7 +33,6 @@ dependencies:
   freezed_annotation: ^0.12.0
   kt_dart: ^0.8.0
   lint: ^1.5.1
-  location: ^3.2.0
   logger: ^0.7.0+2
   logger_flutter: ^0.7.0
   mapbox_gl: ^0.9.0

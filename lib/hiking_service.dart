@@ -1,11 +1,11 @@
 import 'dart:math';
 
+import 'package:background_location/background_location.dart';
 import 'package:hiking_app/location_service.dart';
 import 'package:hiking_app/models/hike_metrics.dart';
 import 'package:hiking_app/models/location_accuracy_type.dart';
 import 'package:hiking_app/models/location_status.dart';
 import 'package:kt_dart/collection.dart';
-import 'package:location/location.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -107,15 +107,15 @@ HikeMetrics getInitialMetrics(LocationStatus curLoc, double currTimeSeconds) {
 }
 
 /// Create LocationStatus object from Device location data
-LocationStatus toLocationStatus(LocationData locationData) {
+LocationStatus toLocationStatus(Location locationData) {
   return LocationStatus(
     latitude: locationData.latitude ?? 0.0,
     longitude: locationData.longitude ?? 0.0,
     accuracy: toAccuracyType(locationData.accuracy ?? 0.0),
     altitude: locationData.altitude ?? 0.0,
     speedMetersPerSec: locationData.speed ?? 0.0,
-    speedAccuracy: toAccuracyType(locationData.speedAccuracy ?? 0.0),
-    headingDegrees: locationData.heading ?? 0.0,
+    // speedAccuracy: toAccuracyType(locationData.speedAccuracy ?? 0.0),
+    headingDegrees: locationData.bearing ?? 0.0,
     timeStampSec: toSeconds(locationData.time ?? 0),
   );
 }
