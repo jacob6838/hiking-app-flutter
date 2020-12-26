@@ -28,11 +28,13 @@ class LocationService {
   Future<Location> get location async => _location.getCurrentLocation();
 
   LocationService() {
+    print("HIKER: Init LocationService()");
+
     // Request permission to use location
     BackgroundLocation.getPermissions(
-      onGranted: () {
-        BackgroundLocation.setNotificationTitle("Test Title");
-        BackgroundLocation.startLocationService();
+      onGranted: () async {
+        await BackgroundLocation.setNotificationTitle("Using location");
+        await BackgroundLocation.startLocationService();
         BackgroundLocation.getLocationUpdates((location) {
           if (location == null) return;
           print("HIKER: speed = ${location.speed} mps, lat = ${location.latitude}, lon = ${location.longitude}");

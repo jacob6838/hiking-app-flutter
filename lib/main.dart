@@ -82,6 +82,7 @@ class MyHomePageState extends State<MyHomePage> {
                 stream: _hikingService.currentHikerMetrics$,
                 builder: (context, AsyncSnapshot<HikeMetrics> snapshot) {
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         _toDistanceTraveledString(snapshot?.data),
@@ -93,6 +94,14 @@ class MyHomePageState extends State<MyHomePage> {
                       ),
                       Text(
                         _toTimeElapsedString(snapshot?.data),
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                      ),
+                      Text(
+                        _toCurrentAltitude(snapshot?.data),
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                      ),
+                      Text(
+                        _toCurrentLatLon(snapshot?.data),
                         style: const TextStyle(color: Colors.black, fontSize: 14),
                       ),
                     ],
@@ -116,6 +125,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   void onEnableBtnClicked() {
     _hikingService.toggleStatus();
+    print("HIKER: onEnableBtnClicked");
   }
 
   String _enableBtnName(bool activeStatus) {
@@ -149,8 +159,20 @@ class MyHomePageState extends State<MyHomePage> {
 
   String _toTimeElapsedString(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
-
     return "time Elapsed: ${hikeMetrics.metricPeriodSeconds.round()} sec";
+  }
+
+  String _toCurrentAltitude(HikeMetrics hikeMetrics) {
+    if (hikeMetrics == null) return "stuff";
+    final alt = metersToFeet(hikeMetrics.altitude);
+    return "altitude: $alt ft";
+  }
+
+  String _toCurrentLatLon(HikeMetrics hikeMetrics) {
+    if (hikeMetrics == null) return "stuff";
+    final lat = hikeMetrics.latitude;
+    final lon = hikeMetrics.longitude;
+    return "location: ($lat, $lon)";
   }
 }
 

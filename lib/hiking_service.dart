@@ -12,11 +12,11 @@ import 'package:rxdart/rxdart.dart';
 const int millisecondsPerSecond = 1000;
 
 /// Number of seconds between updates
-const int updateIntervalSec = 10;
+const int updateIntervalSec = 2;
 
 /// Minimum distance between location updates published to UI.
 /// TODO: Dynamically update this based on instantaneous accuracy.
-const int minimumDistanceThreshold = 4;
+const int minimumDistanceThreshold = 0;
 
 class HikingService {
   final LocationService _locationService;
@@ -39,7 +39,12 @@ class HikingService {
   HikingService({LocationService locationService})
       : _lastUpdateTimeSec = 0,
         _locationService = locationService {
-    _locationService.locationStream.where((_) => _hikeIsActive).map(toLocationStatus).listen(_handleLocationUpdate);
+    _locationService.locationStream
+        .doOnData((event) => print("HIKER: location update received."))
+        .where((_) => _hikeIsActive)
+        .map(toLocationStatus)
+        .doOnData((event) => print("HIKER: calling _handleLocationUpdate."))
+        .listen(_handleLocationUpdate);
   }
 
   Stream<bool> get currentHikerStatus$ => _activeStatusSub.stream.asBroadcastStream();
@@ -50,24 +55,35 @@ class HikingService {
 
   Future<void> toggleStatus() async {
     _hikeIsActive = !_hikeIsActive;
+    _activeStatusSub.add(_hikeIsActive);
     if (_hikeIsActive) {
-      _prevLocation = toLocationStatus(await _locationService.location);
-      _hikeMetricsTotal = getInitialMetrics(_prevLocation, getCurrentTimeSeconds());
+      // _prevLocation = toLocationStatus(await _locationService.location);
+      _prevLocation = LocationStatus();
+      // _hikeMetricsTotal = getInitialMetrics(_prevLocation, getCurrentTimeSeconds());
       _currentPath.clear();
     }
-    _activeStatusSub.add(_hikeIsActive);
   }
 
   /// Process an updated location from device
   void _handleLocationUpdate(LocationStatus locationStatus) {
+    if (_prevLocation == null || _prevLocation.timeStampSec == 0.0) {
+      print(locationStatus.toString());
+      _prevLocation = locationStatus;
+      _hikeMetricsTotal = getInitialMetrics(_prevLocation, getCurrentTimeSeconds());
+      _currentHikerMetricsSub.add(_hikeMetricsTotal);
+      return;
+    }
+
+    print("HIKER: _handleLocationUpdate called.");
+
     final double deltaSec = locationStatus.timeStampSec - _prevLocation.timeStampSec;
-    if (deltaSec < updateIntervalSec) return;
+    // if (deltaSec < updateIntervalSec) return;
 
     final deltaDistance = SphericalUtil.computeDistanceBetween(
       LatLng(locationStatus.latitude, locationStatus.longitude),
       LatLng(_prevLocation.latitude, _prevLocation.longitude),
     ).toDouble();
-    if (deltaDistance < minimumDistanceThreshold) return;
+    // if (deltaDistance < minimumDistanceThreshold) return;
 
     _prevLocation = locationStatus;
 
@@ -131,6 +147,8 @@ HikeMetrics accumulateMetrics(
   final speedMetersPerSec = deltaDistance / updatePeriodSec;
 
   final deltaAltitude = currLoc.altitude - prevMetrics.altitude;
+
+  print(prevMetrics.toString());
 
   return prevMetrics.copyWith(
     latitude: currLoc.latitude,
