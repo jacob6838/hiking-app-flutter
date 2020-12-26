@@ -12,11 +12,11 @@ import 'package:rxdart/rxdart.dart';
 const int millisecondsPerSecond = 1000;
 
 /// Number of seconds between updates
-const int updateIntervalSec = 2;
+const int updateIntervalSec = 10;
 
 /// Minimum distance between location updates published to UI.
 /// TODO: Dynamically update this based on instantaneous accuracy.
-const int minimumDistanceThreshold = 0;
+const int minimumDistanceThreshold = 4;
 
 class HikingService {
   final LocationService _locationService;
@@ -83,7 +83,7 @@ class HikingService {
       LatLng(locationStatus.latitude, locationStatus.longitude),
       LatLng(_prevLocation.latitude, _prevLocation.longitude),
     ).toDouble();
-    // if (deltaDistance < minimumDistanceThreshold) return;
+    if (deltaDistance < minimumDistanceThreshold) return;
 
     _prevLocation = locationStatus;
 

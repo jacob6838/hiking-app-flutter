@@ -123,19 +123,19 @@ class MyHomePageState extends State<MyHomePage> {
                         style: const TextStyle(color: Colors.black, fontSize: 14),
                       ),
                       Text(
-                        _toAverageSpeedMetersPerSec(snapshot?.data),
-                        style: const TextStyle(color: Colors.black, fontSize: 14),
-                      ),
-                      Text(
-                        _toSpeedMax(snapshot?.data),
-                        style: const TextStyle(color: Colors.black, fontSize: 14),
-                      ),
-                      Text(
                         _toAltitudeMin(snapshot?.data),
                         style: const TextStyle(color: Colors.black, fontSize: 14),
                       ),
                       Text(
                         _toAltitudeMax(snapshot?.data),
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                      ),
+                      Text(
+                        _toAverageSpeedMetersPerSec(snapshot?.data),
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                      ),
+                      Text(
+                        _toSpeedMax(snapshot?.data),
                         style: const TextStyle(color: Colors.black, fontSize: 14),
                       ),
                       Text(
@@ -189,8 +189,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   String _toDistanceTraveledString(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
-
-    final miles = metersToFeet(hikeMetrics.distanceTraveled) / 5280;
+    final miles = metersToFeet(hikeMetrics.distanceTraveled) / feetToMiles;
     return "distance traveled: ${miles.toStringAsFixed(2)} mi";
   }
 
@@ -203,8 +202,6 @@ class MyHomePageState extends State<MyHomePage> {
 
   String _toTimeElapsedString(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
-    const int minPerHour = 60;
-    const int secPerMin = 60;
     final int minutes = (hikeMetrics.metricPeriodSeconds / secPerMin).round() % minPerHour;
     final int hours = ((hikeMetrics.metricPeriodSeconds / secPerMin) / minPerHour).floor();
     return "time Elapsed: ${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}";
@@ -213,14 +210,14 @@ class MyHomePageState extends State<MyHomePage> {
   String _toCurrentAltitude(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
     final alt = metersToFeet(hikeMetrics.altitude).round();
-    return "altitude: $alt ft, ${hikeMetrics.altitude} m";
+    return "altitude: $alt ft, ${hikeMetrics.altitude.round()} m";
   }
 
   String _toCurrentLatLon(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
     final lat = hikeMetrics.latitude;
     final lon = hikeMetrics.longitude;
-    return "location: ${lat.toStringAsFixed(7)}, ${lon.toStringAsFixed(7)}";
+    return "position: ${lat.toStringAsFixed(7)}, ${lon.toStringAsFixed(7)}";
   }
 
   String _toCurrentAccuracy(HikeMetrics hikeMetrics) {
@@ -239,8 +236,8 @@ class MyHomePageState extends State<MyHomePage> {
   String _toSpeedMetersPerSec(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
     int speed = 0;
-    if (hikeMetrics.speedMetersPerSec != 0) {
-      speed = (1 / (hikeMetrics.speedMetersPerSec * 0.0372823)).round();
+    if (hikeMetrics.speedMetersPerSec > 0.05) {
+      speed = (1 / (hikeMetrics.speedMetersPerSec * metersPerSecToMilesPerMin)).round();
     }
     return "speed: $speed min/mile";
   }
@@ -260,8 +257,8 @@ class MyHomePageState extends State<MyHomePage> {
   String _toAverageSpeedMetersPerSec(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
     int speed = 0;
-    if (hikeMetrics.averageSpeedMetersPerSec != 0) {
-      speed = (1 / (hikeMetrics.averageSpeedMetersPerSec * 0.0372823)).round();
+    if (hikeMetrics.averageSpeedMetersPerSec > 0.01) {
+      speed = (1 / (hikeMetrics.averageSpeedMetersPerSec * metersPerSecToMilesPerMin)).round();
     }
     return "average speed: $speed min/mile";
   }
@@ -269,32 +266,37 @@ class MyHomePageState extends State<MyHomePage> {
   String _toSpeedMax(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
     int speed = 0;
-    if (hikeMetrics.speedMax != 0) {
-      speed = (1 / (hikeMetrics.speedMax * 0.0372823)).round();
+    if (hikeMetrics.speedMax > 0.05) {
+      speed = (1 / (hikeMetrics.speedMax * metersPerSecToMilesPerMin)).round();
     }
-    return "max speed: $speed";
+    return "max speed: $speed min/mile";
   }
 
   String _toAltitudeMin(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
-    final altMin = hikeMetrics.altitudeMin.round();
-    return "min altitude: $altMin";
+    final altMin = metersToFeet(hikeMetrics.altitudeMin).round();
+    return "min altitude: $altMin ft";
   }
 
   String _toAltitudeMax(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
-    final altMax = hikeMetrics.altitudeMax.round();
-    return "max altitude: $altMax";
+    final altMax = metersToFeet(hikeMetrics.altitudeMax).round();
+    return "max altitude: $altMax ft";
   }
 
   String _toNetHeading(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
     final heading = hikeMetrics.netHeadingDegrees.round();
-    return "net heading: $heading";
+    return "net heading: $heading deg";
   }
 }
 
 const double feetPerMeter = 3.28084;
+const double metersPerSecToMilesPerMin = 0.0372823;
+const feetToMiles = 1 / 5280;
+
+const int minPerHour = 60;
+const int secPerMin = 60;
 
 double metersToFeet(double distance) {
   return distance * feetPerMeter;
