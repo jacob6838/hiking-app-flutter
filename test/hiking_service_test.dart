@@ -26,7 +26,7 @@ void main() {
     expect(actual.speedMetersPerSec, 5.7);
     expect(actual.speedAccuracy, LocationAccuracyType.low);
     expect(actual.headingDegrees, 7.4);
-    expect(actual.timeStampSec, 9);
+    expect(actual.timeStampSec, 8.8000);
   });
 
   test('Verify getInitialMetrics generates correct initial values', () {
@@ -43,9 +43,10 @@ void main() {
     final actual = getInitialMetrics(loc, 456);
 
     expect(actual.latitudeStart, 1.2);
-    expect(actual.latitudeEnd, 1.2);
     expect(actual.longitudeStart, 2.3);
-    expect(actual.longitudeEnd, 2.3);
+    expect(actual.altitudeStart, 4.6);
+    expect(actual.latitude, 1.2);
+    expect(actual.longitude, 2.3);
     expect(actual.altitude, 4.6);
     expect(actual.altitudeMax, 4.6);
     expect(actual.altitudeMin, 4.6);
@@ -54,6 +55,6 @@ void main() {
     expect(actual.headingDegrees, 7.1);
     expect(actual.locationAccuracy, LocationAccuracyType.high);
     expect(actual.speedAccuracy, LocationAccuracyType.medium);
-    expect(actual.startTimeSeconds, 456);
+    expect(actual.timeStartSec, 456);
   });
 }

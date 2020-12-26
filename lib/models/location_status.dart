@@ -13,6 +13,6 @@ abstract class LocationStatus with _$LocationStatus {
     @Default(0.0) double speedMetersPerSec,
     @Default(LocationAccuracyType.low) LocationAccuracyType speedAccuracy,
     @Default(0.0) double headingDegrees,
-    @Default(0) int timeStampSec,
+    @Default(0.0) double timeStampSec,
   }) = _LocationStatus;
 }

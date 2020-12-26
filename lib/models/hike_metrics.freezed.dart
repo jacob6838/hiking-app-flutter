@@ -15,10 +15,12 @@ class _$HikeMetricsTearOff {
 
 // ignore: unused_element
   _HikeMetrics call(
-      {double latitudeStart = 0.0,
+      {double timeStartSec = 0.0,
+      double latitudeStart = 0.0,
       double longitudeStart = 0.0,
-      double latitudeEnd = 0.0,
-      double longitudeEnd = 0.0,
+      double altitudeStart = 0.0,
+      double latitude = 0.0,
+      double longitude = 0.0,
       double altitude = 0.0,
       double speedMetersPerSec = 0.0,
       double headingDegrees = 0.0,
@@ -26,20 +28,23 @@ class _$HikeMetricsTearOff {
       LocationAccuracyType speedAccuracy = LocationAccuracyType.low,
       double altitudeMax = 0.0,
       double altitudeMin = 0.0,
+      double speedMax = 0.0,
+      double speedMin = 0.0,
       double averageSpeedMetersPerSec = 0.0,
-      double averageHeadingDegrees = 0.0,
+      double netHeadingDegrees = 0.0,
       double distanceTraveled = 0.0,
       double netElevationChange = 0.0,
       double cumulativeClimbMeters = 0.0,
       double cumulativeDescentMeters = 0.0,
-      int startTimeSeconds = 0,
-      int metricPeriodSeconds = 0,
+      double metricPeriodSeconds = 0.0,
       KtList<LocationStatus> path = const KtList.empty()}) {
     return _HikeMetrics(
+      timeStartSec: timeStartSec,
       latitudeStart: latitudeStart,
       longitudeStart: longitudeStart,
-      latitudeEnd: latitudeEnd,
-      longitudeEnd: longitudeEnd,
+      altitudeStart: altitudeStart,
+      latitude: latitude,
+      longitude: longitude,
       altitude: altitude,
       speedMetersPerSec: speedMetersPerSec,
       headingDegrees: headingDegrees,
@@ -47,13 +52,14 @@ class _$HikeMetricsTearOff {
       speedAccuracy: speedAccuracy,
       altitudeMax: altitudeMax,
       altitudeMin: altitudeMin,
+      speedMax: speedMax,
+      speedMin: speedMin,
       averageSpeedMetersPerSec: averageSpeedMetersPerSec,
-      averageHeadingDegrees: averageHeadingDegrees,
+      netHeadingDegrees: netHeadingDegrees,
       distanceTraveled: distanceTraveled,
       netElevationChange: netElevationChange,
       cumulativeClimbMeters: cumulativeClimbMeters,
       cumulativeDescentMeters: cumulativeDescentMeters,
-      startTimeSeconds: startTimeSeconds,
       metricPeriodSeconds: metricPeriodSeconds,
       path: path,
     );
@@ -66,10 +72,12 @@ const $HikeMetrics = _$HikeMetricsTearOff();
 
 /// @nodoc
 mixin _$HikeMetrics {
+  double get timeStartSec;
   double get latitudeStart;
   double get longitudeStart;
-  double get latitudeEnd;
-  double get longitudeEnd;
+  double get altitudeStart;
+  double get latitude;
+  double get longitude;
   double get altitude;
   double get speedMetersPerSec;
   double get headingDegrees;
@@ -77,14 +85,15 @@ mixin _$HikeMetrics {
   LocationAccuracyType get speedAccuracy;
   double get altitudeMax;
   double get altitudeMin;
+  double get speedMax;
+  double get speedMin;
   double get averageSpeedMetersPerSec;
-  double get averageHeadingDegrees;
+  double get netHeadingDegrees;
   double get distanceTraveled;
   double get netElevationChange;
   double get cumulativeClimbMeters;
   double get cumulativeDescentMeters;
-  int get startTimeSeconds;
-  int get metricPeriodSeconds;
+  double get metricPeriodSeconds;
   KtList<LocationStatus> get path;
 
   $HikeMetricsCopyWith<HikeMetrics> get copyWith;
@@ -96,10 +105,12 @@ abstract class $HikeMetricsCopyWith<$Res> {
           HikeMetrics value, $Res Function(HikeMetrics) then) =
       _$HikeMetricsCopyWithImpl<$Res>;
   $Res call(
-      {double latitudeStart,
+      {double timeStartSec,
+      double latitudeStart,
       double longitudeStart,
-      double latitudeEnd,
-      double longitudeEnd,
+      double altitudeStart,
+      double latitude,
+      double longitude,
       double altitude,
       double speedMetersPerSec,
       double headingDegrees,
@@ -107,14 +118,15 @@ abstract class $HikeMetricsCopyWith<$Res> {
       LocationAccuracyType speedAccuracy,
       double altitudeMax,
       double altitudeMin,
+      double speedMax,
+      double speedMin,
       double averageSpeedMetersPerSec,
-      double averageHeadingDegrees,
+      double netHeadingDegrees,
       double distanceTraveled,
       double netElevationChange,
       double cumulativeClimbMeters,
       double cumulativeDescentMeters,
-      int startTimeSeconds,
-      int metricPeriodSeconds,
+      double metricPeriodSeconds,
       KtList<LocationStatus> path});
 }
 
@@ -128,10 +140,12 @@ class _$HikeMetricsCopyWithImpl<$Res> implements $HikeMetricsCopyWith<$Res> {
 
   @override
   $Res call({
+    Object timeStartSec = freezed,
     Object latitudeStart = freezed,
     Object longitudeStart = freezed,
-    Object latitudeEnd = freezed,
-    Object longitudeEnd = freezed,
+    Object altitudeStart = freezed,
+    Object latitude = freezed,
+    Object longitude = freezed,
     Object altitude = freezed,
     Object speedMetersPerSec = freezed,
     Object headingDegrees = freezed,
@@ -139,28 +153,32 @@ class _$HikeMetricsCopyWithImpl<$Res> implements $HikeMetricsCopyWith<$Res> {
     Object speedAccuracy = freezed,
     Object altitudeMax = freezed,
     Object altitudeMin = freezed,
+    Object speedMax = freezed,
+    Object speedMin = freezed,
     Object averageSpeedMetersPerSec = freezed,
-    Object averageHeadingDegrees = freezed,
+    Object netHeadingDegrees = freezed,
     Object distanceTraveled = freezed,
     Object netElevationChange = freezed,
     Object cumulativeClimbMeters = freezed,
     Object cumulativeDescentMeters = freezed,
-    Object startTimeSeconds = freezed,
     Object metricPeriodSeconds = freezed,
     Object path = freezed,
   }) {
     return _then(_value.copyWith(
+      timeStartSec: timeStartSec == freezed
+          ? _value.timeStartSec
+          : timeStartSec as double,
       latitudeStart: latitudeStart == freezed
           ? _value.latitudeStart
           : latitudeStart as double,
       longitudeStart: longitudeStart == freezed
           ? _value.longitudeStart
           : longitudeStart as double,
-      latitudeEnd:
-          latitudeEnd == freezed ? _value.latitudeEnd : latitudeEnd as double,
-      longitudeEnd: longitudeEnd == freezed
-          ? _value.longitudeEnd
-          : longitudeEnd as double,
+      altitudeStart: altitudeStart == freezed
+          ? _value.altitudeStart
+          : altitudeStart as double,
+      latitude: latitude == freezed ? _value.latitude : latitude as double,
+      longitude: longitude == freezed ? _value.longitude : longitude as double,
       altitude: altitude == freezed ? _value.altitude : altitude as double,
       speedMetersPerSec: speedMetersPerSec == freezed
           ? _value.speedMetersPerSec
@@ -178,12 +196,14 @@ class _$HikeMetricsCopyWithImpl<$Res> implements $HikeMetricsCopyWith<$Res> {
           altitudeMax == freezed ? _value.altitudeMax : altitudeMax as double,
       altitudeMin:
           altitudeMin == freezed ? _value.altitudeMin : altitudeMin as double,
+      speedMax: speedMax == freezed ? _value.speedMax : speedMax as double,
+      speedMin: speedMin == freezed ? _value.speedMin : speedMin as double,
       averageSpeedMetersPerSec: averageSpeedMetersPerSec == freezed
           ? _value.averageSpeedMetersPerSec
           : averageSpeedMetersPerSec as double,
-      averageHeadingDegrees: averageHeadingDegrees == freezed
-          ? _value.averageHeadingDegrees
-          : averageHeadingDegrees as double,
+      netHeadingDegrees: netHeadingDegrees == freezed
+          ? _value.netHeadingDegrees
+          : netHeadingDegrees as double,
       distanceTraveled: distanceTraveled == freezed
           ? _value.distanceTraveled
           : distanceTraveled as double,
@@ -196,12 +216,9 @@ class _$HikeMetricsCopyWithImpl<$Res> implements $HikeMetricsCopyWith<$Res> {
       cumulativeDescentMeters: cumulativeDescentMeters == freezed
           ? _value.cumulativeDescentMeters
           : cumulativeDescentMeters as double,
-      startTimeSeconds: startTimeSeconds == freezed
-          ? _value.startTimeSeconds
-          : startTimeSeconds as int,
       metricPeriodSeconds: metricPeriodSeconds == freezed
           ? _value.metricPeriodSeconds
-          : metricPeriodSeconds as int,
+          : metricPeriodSeconds as double,
       path: path == freezed ? _value.path : path as KtList<LocationStatus>,
     ));
   }
@@ -215,10 +232,12 @@ abstract class _$HikeMetricsCopyWith<$Res>
       __$HikeMetricsCopyWithImpl<$Res>;
   @override
   $Res call(
-      {double latitudeStart,
+      {double timeStartSec,
+      double latitudeStart,
       double longitudeStart,
-      double latitudeEnd,
-      double longitudeEnd,
+      double altitudeStart,
+      double latitude,
+      double longitude,
       double altitude,
       double speedMetersPerSec,
       double headingDegrees,
@@ -226,14 +245,15 @@ abstract class _$HikeMetricsCopyWith<$Res>
       LocationAccuracyType speedAccuracy,
       double altitudeMax,
       double altitudeMin,
+      double speedMax,
+      double speedMin,
       double averageSpeedMetersPerSec,
-      double averageHeadingDegrees,
+      double netHeadingDegrees,
       double distanceTraveled,
       double netElevationChange,
       double cumulativeClimbMeters,
       double cumulativeDescentMeters,
-      int startTimeSeconds,
-      int metricPeriodSeconds,
+      double metricPeriodSeconds,
       KtList<LocationStatus> path});
 }
 
@@ -249,10 +269,12 @@ class __$HikeMetricsCopyWithImpl<$Res> extends _$HikeMetricsCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object timeStartSec = freezed,
     Object latitudeStart = freezed,
     Object longitudeStart = freezed,
-    Object latitudeEnd = freezed,
-    Object longitudeEnd = freezed,
+    Object altitudeStart = freezed,
+    Object latitude = freezed,
+    Object longitude = freezed,
     Object altitude = freezed,
     Object speedMetersPerSec = freezed,
     Object headingDegrees = freezed,
@@ -260,28 +282,32 @@ class __$HikeMetricsCopyWithImpl<$Res> extends _$HikeMetricsCopyWithImpl<$Res>
     Object speedAccuracy = freezed,
     Object altitudeMax = freezed,
     Object altitudeMin = freezed,
+    Object speedMax = freezed,
+    Object speedMin = freezed,
     Object averageSpeedMetersPerSec = freezed,
-    Object averageHeadingDegrees = freezed,
+    Object netHeadingDegrees = freezed,
     Object distanceTraveled = freezed,
     Object netElevationChange = freezed,
     Object cumulativeClimbMeters = freezed,
     Object cumulativeDescentMeters = freezed,
-    Object startTimeSeconds = freezed,
     Object metricPeriodSeconds = freezed,
     Object path = freezed,
   }) {
     return _then(_HikeMetrics(
+      timeStartSec: timeStartSec == freezed
+          ? _value.timeStartSec
+          : timeStartSec as double,
       latitudeStart: latitudeStart == freezed
           ? _value.latitudeStart
           : latitudeStart as double,
       longitudeStart: longitudeStart == freezed
           ? _value.longitudeStart
           : longitudeStart as double,
-      latitudeEnd:
-          latitudeEnd == freezed ? _value.latitudeEnd : latitudeEnd as double,
-      longitudeEnd: longitudeEnd == freezed
-          ? _value.longitudeEnd
-          : longitudeEnd as double,
+      altitudeStart: altitudeStart == freezed
+          ? _value.altitudeStart
+          : altitudeStart as double,
+      latitude: latitude == freezed ? _value.latitude : latitude as double,
+      longitude: longitude == freezed ? _value.longitude : longitude as double,
       altitude: altitude == freezed ? _value.altitude : altitude as double,
       speedMetersPerSec: speedMetersPerSec == freezed
           ? _value.speedMetersPerSec
@@ -299,12 +325,14 @@ class __$HikeMetricsCopyWithImpl<$Res> extends _$HikeMetricsCopyWithImpl<$Res>
           altitudeMax == freezed ? _value.altitudeMax : altitudeMax as double,
       altitudeMin:
           altitudeMin == freezed ? _value.altitudeMin : altitudeMin as double,
+      speedMax: speedMax == freezed ? _value.speedMax : speedMax as double,
+      speedMin: speedMin == freezed ? _value.speedMin : speedMin as double,
       averageSpeedMetersPerSec: averageSpeedMetersPerSec == freezed
           ? _value.averageSpeedMetersPerSec
           : averageSpeedMetersPerSec as double,
-      averageHeadingDegrees: averageHeadingDegrees == freezed
-          ? _value.averageHeadingDegrees
-          : averageHeadingDegrees as double,
+      netHeadingDegrees: netHeadingDegrees == freezed
+          ? _value.netHeadingDegrees
+          : netHeadingDegrees as double,
       distanceTraveled: distanceTraveled == freezed
           ? _value.distanceTraveled
           : distanceTraveled as double,
@@ -317,12 +345,9 @@ class __$HikeMetricsCopyWithImpl<$Res> extends _$HikeMetricsCopyWithImpl<$Res>
       cumulativeDescentMeters: cumulativeDescentMeters == freezed
           ? _value.cumulativeDescentMeters
           : cumulativeDescentMeters as double,
-      startTimeSeconds: startTimeSeconds == freezed
-          ? _value.startTimeSeconds
-          : startTimeSeconds as int,
       metricPeriodSeconds: metricPeriodSeconds == freezed
           ? _value.metricPeriodSeconds
-          : metricPeriodSeconds as int,
+          : metricPeriodSeconds as double,
       path: path == freezed ? _value.path : path as KtList<LocationStatus>,
     ));
   }
@@ -331,10 +356,12 @@ class __$HikeMetricsCopyWithImpl<$Res> extends _$HikeMetricsCopyWithImpl<$Res>
 /// @nodoc
 class _$_HikeMetrics implements _HikeMetrics {
   const _$_HikeMetrics(
-      {this.latitudeStart = 0.0,
+      {this.timeStartSec = 0.0,
+      this.latitudeStart = 0.0,
       this.longitudeStart = 0.0,
-      this.latitudeEnd = 0.0,
-      this.longitudeEnd = 0.0,
+      this.altitudeStart = 0.0,
+      this.latitude = 0.0,
+      this.longitude = 0.0,
       this.altitude = 0.0,
       this.speedMetersPerSec = 0.0,
       this.headingDegrees = 0.0,
@@ -342,19 +369,22 @@ class _$_HikeMetrics implements _HikeMetrics {
       this.speedAccuracy = LocationAccuracyType.low,
       this.altitudeMax = 0.0,
       this.altitudeMin = 0.0,
+      this.speedMax = 0.0,
+      this.speedMin = 0.0,
       this.averageSpeedMetersPerSec = 0.0,
-      this.averageHeadingDegrees = 0.0,
+      this.netHeadingDegrees = 0.0,
       this.distanceTraveled = 0.0,
       this.netElevationChange = 0.0,
       this.cumulativeClimbMeters = 0.0,
       this.cumulativeDescentMeters = 0.0,
-      this.startTimeSeconds = 0,
-      this.metricPeriodSeconds = 0,
+      this.metricPeriodSeconds = 0.0,
       this.path = const KtList.empty()})
-      : assert(latitudeStart != null),
+      : assert(timeStartSec != null),
+        assert(latitudeStart != null),
         assert(longitudeStart != null),
-        assert(latitudeEnd != null),
-        assert(longitudeEnd != null),
+        assert(altitudeStart != null),
+        assert(latitude != null),
+        assert(longitude != null),
         assert(altitude != null),
         assert(speedMetersPerSec != null),
         assert(headingDegrees != null),
@@ -362,16 +392,20 @@ class _$_HikeMetrics implements _HikeMetrics {
         assert(speedAccuracy != null),
         assert(altitudeMax != null),
         assert(altitudeMin != null),
+        assert(speedMax != null),
+        assert(speedMin != null),
         assert(averageSpeedMetersPerSec != null),
-        assert(averageHeadingDegrees != null),
+        assert(netHeadingDegrees != null),
         assert(distanceTraveled != null),
         assert(netElevationChange != null),
         assert(cumulativeClimbMeters != null),
         assert(cumulativeDescentMeters != null),
-        assert(startTimeSeconds != null),
         assert(metricPeriodSeconds != null),
         assert(path != null);
 
+  @JsonKey(defaultValue: 0.0)
+  @override
+  final double timeStartSec;
   @JsonKey(defaultValue: 0.0)
   @override
   final double latitudeStart;
@@ -380,10 +414,13 @@ class _$_HikeMetrics implements _HikeMetrics {
   final double longitudeStart;
   @JsonKey(defaultValue: 0.0)
   @override
-  final double latitudeEnd;
+  final double altitudeStart;
   @JsonKey(defaultValue: 0.0)
   @override
-  final double longitudeEnd;
+  final double latitude;
+  @JsonKey(defaultValue: 0.0)
+  @override
+  final double longitude;
   @JsonKey(defaultValue: 0.0)
   @override
   final double altitude;
@@ -407,10 +444,16 @@ class _$_HikeMetrics implements _HikeMetrics {
   final double altitudeMin;
   @JsonKey(defaultValue: 0.0)
   @override
+  final double speedMax;
+  @JsonKey(defaultValue: 0.0)
+  @override
+  final double speedMin;
+  @JsonKey(defaultValue: 0.0)
+  @override
   final double averageSpeedMetersPerSec;
   @JsonKey(defaultValue: 0.0)
   @override
-  final double averageHeadingDegrees;
+  final double netHeadingDegrees;
   @JsonKey(defaultValue: 0.0)
   @override
   final double distanceTraveled;
@@ -423,37 +466,40 @@ class _$_HikeMetrics implements _HikeMetrics {
   @JsonKey(defaultValue: 0.0)
   @override
   final double cumulativeDescentMeters;
-  @JsonKey(defaultValue: 0)
+  @JsonKey(defaultValue: 0.0)
   @override
-  final int startTimeSeconds;
-  @JsonKey(defaultValue: 0)
-  @override
-  final int metricPeriodSeconds;
+  final double metricPeriodSeconds;
   @JsonKey(defaultValue: const KtList.empty())
   @override
   final KtList<LocationStatus> path;
 
   @override
   String toString() {
-    return 'HikeMetrics(latitudeStart: $latitudeStart, longitudeStart: $longitudeStart, latitudeEnd: $latitudeEnd, longitudeEnd: $longitudeEnd, altitude: $altitude, speedMetersPerSec: $speedMetersPerSec, headingDegrees: $headingDegrees, locationAccuracy: $locationAccuracy, speedAccuracy: $speedAccuracy, altitudeMax: $altitudeMax, altitudeMin: $altitudeMin, averageSpeedMetersPerSec: $averageSpeedMetersPerSec, averageHeadingDegrees: $averageHeadingDegrees, distanceTraveled: $distanceTraveled, netElevationChange: $netElevationChange, cumulativeClimbMeters: $cumulativeClimbMeters, cumulativeDescentMeters: $cumulativeDescentMeters, startTimeSeconds: $startTimeSeconds, metricPeriodSeconds: $metricPeriodSeconds, path: $path)';
+    return 'HikeMetrics(timeStartSec: $timeStartSec, latitudeStart: $latitudeStart, longitudeStart: $longitudeStart, altitudeStart: $altitudeStart, latitude: $latitude, longitude: $longitude, altitude: $altitude, speedMetersPerSec: $speedMetersPerSec, headingDegrees: $headingDegrees, locationAccuracy: $locationAccuracy, speedAccuracy: $speedAccuracy, altitudeMax: $altitudeMax, altitudeMin: $altitudeMin, speedMax: $speedMax, speedMin: $speedMin, averageSpeedMetersPerSec: $averageSpeedMetersPerSec, netHeadingDegrees: $netHeadingDegrees, distanceTraveled: $distanceTraveled, netElevationChange: $netElevationChange, cumulativeClimbMeters: $cumulativeClimbMeters, cumulativeDescentMeters: $cumulativeDescentMeters, metricPeriodSeconds: $metricPeriodSeconds, path: $path)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _HikeMetrics &&
+            (identical(other.timeStartSec, timeStartSec) ||
+                const DeepCollectionEquality()
+                    .equals(other.timeStartSec, timeStartSec)) &&
             (identical(other.latitudeStart, latitudeStart) ||
                 const DeepCollectionEquality()
                     .equals(other.latitudeStart, latitudeStart)) &&
             (identical(other.longitudeStart, longitudeStart) ||
                 const DeepCollectionEquality()
                     .equals(other.longitudeStart, longitudeStart)) &&
-            (identical(other.latitudeEnd, latitudeEnd) ||
+            (identical(other.altitudeStart, altitudeStart) ||
                 const DeepCollectionEquality()
-                    .equals(other.latitudeEnd, latitudeEnd)) &&
-            (identical(other.longitudeEnd, longitudeEnd) ||
+                    .equals(other.altitudeStart, altitudeStart)) &&
+            (identical(other.latitude, latitude) ||
                 const DeepCollectionEquality()
-                    .equals(other.longitudeEnd, longitudeEnd)) &&
+                    .equals(other.latitude, latitude)) &&
+            (identical(other.longitude, longitude) ||
+                const DeepCollectionEquality()
+                    .equals(other.longitude, longitude)) &&
             (identical(other.altitude, altitude) ||
                 const DeepCollectionEquality()
                     .equals(other.altitude, altitude)) &&
@@ -475,13 +521,19 @@ class _$_HikeMetrics implements _HikeMetrics {
             (identical(other.altitudeMin, altitudeMin) ||
                 const DeepCollectionEquality()
                     .equals(other.altitudeMin, altitudeMin)) &&
+            (identical(other.speedMax, speedMax) ||
+                const DeepCollectionEquality()
+                    .equals(other.speedMax, speedMax)) &&
+            (identical(other.speedMin, speedMin) ||
+                const DeepCollectionEquality()
+                    .equals(other.speedMin, speedMin)) &&
             (identical(other.averageSpeedMetersPerSec, averageSpeedMetersPerSec) ||
                 const DeepCollectionEquality().equals(
                     other.averageSpeedMetersPerSec,
                     averageSpeedMetersPerSec)) &&
-            (identical(other.averageHeadingDegrees, averageHeadingDegrees) ||
-                const DeepCollectionEquality().equals(
-                    other.averageHeadingDegrees, averageHeadingDegrees)) &&
+            (identical(other.netHeadingDegrees, netHeadingDegrees) ||
+                const DeepCollectionEquality()
+                    .equals(other.netHeadingDegrees, netHeadingDegrees)) &&
             (identical(other.distanceTraveled, distanceTraveled) ||
                 const DeepCollectionEquality()
                     .equals(other.distanceTraveled, distanceTraveled)) &&
@@ -491,24 +543,20 @@ class _$_HikeMetrics implements _HikeMetrics {
             (identical(other.cumulativeClimbMeters, cumulativeClimbMeters) ||
                 const DeepCollectionEquality().equals(
                     other.cumulativeClimbMeters, cumulativeClimbMeters)) &&
-            (identical(other.cumulativeDescentMeters, cumulativeDescentMeters) ||
-                const DeepCollectionEquality().equals(
-                    other.cumulativeDescentMeters, cumulativeDescentMeters)) &&
-            (identical(other.startTimeSeconds, startTimeSeconds) ||
-                const DeepCollectionEquality()
-                    .equals(other.startTimeSeconds, startTimeSeconds)) &&
-            (identical(other.metricPeriodSeconds, metricPeriodSeconds) ||
-                const DeepCollectionEquality().equals(other.metricPeriodSeconds, metricPeriodSeconds)) &&
+            (identical(other.cumulativeDescentMeters, cumulativeDescentMeters) || const DeepCollectionEquality().equals(other.cumulativeDescentMeters, cumulativeDescentMeters)) &&
+            (identical(other.metricPeriodSeconds, metricPeriodSeconds) || const DeepCollectionEquality().equals(other.metricPeriodSeconds, metricPeriodSeconds)) &&
             (identical(other.path, path) || const DeepCollectionEquality().equals(other.path, path)));
   }
 
   @override
   int get hashCode =>
       runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(timeStartSec) ^
       const DeepCollectionEquality().hash(latitudeStart) ^
       const DeepCollectionEquality().hash(longitudeStart) ^
-      const DeepCollectionEquality().hash(latitudeEnd) ^
-      const DeepCollectionEquality().hash(longitudeEnd) ^
+      const DeepCollectionEquality().hash(altitudeStart) ^
+      const DeepCollectionEquality().hash(latitude) ^
+      const DeepCollectionEquality().hash(longitude) ^
       const DeepCollectionEquality().hash(altitude) ^
       const DeepCollectionEquality().hash(speedMetersPerSec) ^
       const DeepCollectionEquality().hash(headingDegrees) ^
@@ -516,13 +564,14 @@ class _$_HikeMetrics implements _HikeMetrics {
       const DeepCollectionEquality().hash(speedAccuracy) ^
       const DeepCollectionEquality().hash(altitudeMax) ^
       const DeepCollectionEquality().hash(altitudeMin) ^
+      const DeepCollectionEquality().hash(speedMax) ^
+      const DeepCollectionEquality().hash(speedMin) ^
       const DeepCollectionEquality().hash(averageSpeedMetersPerSec) ^
-      const DeepCollectionEquality().hash(averageHeadingDegrees) ^
+      const DeepCollectionEquality().hash(netHeadingDegrees) ^
       const DeepCollectionEquality().hash(distanceTraveled) ^
       const DeepCollectionEquality().hash(netElevationChange) ^
       const DeepCollectionEquality().hash(cumulativeClimbMeters) ^
       const DeepCollectionEquality().hash(cumulativeDescentMeters) ^
-      const DeepCollectionEquality().hash(startTimeSeconds) ^
       const DeepCollectionEquality().hash(metricPeriodSeconds) ^
       const DeepCollectionEquality().hash(path);
 
@@ -533,10 +582,12 @@ class _$_HikeMetrics implements _HikeMetrics {
 
 abstract class _HikeMetrics implements HikeMetrics {
   const factory _HikeMetrics(
-      {double latitudeStart,
+      {double timeStartSec,
+      double latitudeStart,
       double longitudeStart,
-      double latitudeEnd,
-      double longitudeEnd,
+      double altitudeStart,
+      double latitude,
+      double longitude,
       double altitude,
       double speedMetersPerSec,
       double headingDegrees,
@@ -544,24 +595,29 @@ abstract class _HikeMetrics implements HikeMetrics {
       LocationAccuracyType speedAccuracy,
       double altitudeMax,
       double altitudeMin,
+      double speedMax,
+      double speedMin,
       double averageSpeedMetersPerSec,
-      double averageHeadingDegrees,
+      double netHeadingDegrees,
       double distanceTraveled,
       double netElevationChange,
       double cumulativeClimbMeters,
       double cumulativeDescentMeters,
-      int startTimeSeconds,
-      int metricPeriodSeconds,
+      double metricPeriodSeconds,
       KtList<LocationStatus> path}) = _$_HikeMetrics;
 
+  @override
+  double get timeStartSec;
   @override
   double get latitudeStart;
   @override
   double get longitudeStart;
   @override
-  double get latitudeEnd;
+  double get altitudeStart;
   @override
-  double get longitudeEnd;
+  double get latitude;
+  @override
+  double get longitude;
   @override
   double get altitude;
   @override
@@ -577,9 +633,13 @@ abstract class _HikeMetrics implements HikeMetrics {
   @override
   double get altitudeMin;
   @override
+  double get speedMax;
+  @override
+  double get speedMin;
+  @override
   double get averageSpeedMetersPerSec;
   @override
-  double get averageHeadingDegrees;
+  double get netHeadingDegrees;
   @override
   double get distanceTraveled;
   @override
@@ -589,9 +649,7 @@ abstract class _HikeMetrics implements HikeMetrics {
   @override
   double get cumulativeDescentMeters;
   @override
-  int get startTimeSeconds;
-  @override
-  int get metricPeriodSeconds;
+  double get metricPeriodSeconds;
   @override
   KtList<LocationStatus> get path;
   @override

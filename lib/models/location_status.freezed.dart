@@ -22,7 +22,7 @@ class _$LocationStatusTearOff {
       double speedMetersPerSec = 0.0,
       LocationAccuracyType speedAccuracy = LocationAccuracyType.low,
       double headingDegrees = 0.0,
-      int timeStampSec = 0}) {
+      double timeStampSec = 0}) {
     return _LocationStatus(
       latitude: latitude,
       longitude: longitude,
@@ -49,7 +49,7 @@ mixin _$LocationStatus {
   double get speedMetersPerSec;
   LocationAccuracyType get speedAccuracy;
   double get headingDegrees;
-  int get timeStampSec;
+  double get timeStampSec;
 
   $LocationStatusCopyWith<LocationStatus> get copyWith;
 }
@@ -67,7 +67,7 @@ abstract class $LocationStatusCopyWith<$Res> {
       double speedMetersPerSec,
       LocationAccuracyType speedAccuracy,
       double headingDegrees,
-      int timeStampSec});
+      double timeStampSec});
 }
 
 /// @nodoc
@@ -106,8 +106,9 @@ class _$LocationStatusCopyWithImpl<$Res>
       headingDegrees: headingDegrees == freezed
           ? _value.headingDegrees
           : headingDegrees as double,
-      timeStampSec:
-          timeStampSec == freezed ? _value.timeStampSec : timeStampSec as int,
+      timeStampSec: timeStampSec == freezed
+          ? _value.timeStampSec
+          : timeStampSec as double,
     ));
   }
 }
@@ -127,7 +128,7 @@ abstract class _$LocationStatusCopyWith<$Res>
       double speedMetersPerSec,
       LocationAccuracyType speedAccuracy,
       double headingDegrees,
-      int timeStampSec});
+      double timeStampSec});
 }
 
 /// @nodoc
@@ -168,8 +169,9 @@ class __$LocationStatusCopyWithImpl<$Res>
       headingDegrees: headingDegrees == freezed
           ? _value.headingDegrees
           : headingDegrees as double,
-      timeStampSec:
-          timeStampSec == freezed ? _value.timeStampSec : timeStampSec as int,
+      timeStampSec: timeStampSec == freezed
+          ? _value.timeStampSec
+          : timeStampSec as double,
     ));
   }
 }
@@ -217,7 +219,7 @@ class _$_LocationStatus implements _LocationStatus {
   final double headingDegrees;
   @JsonKey(defaultValue: 0)
   @override
-  final int timeStampSec;
+  final double timeStampSec;
 
   @override
   String toString() {
@@ -280,7 +282,7 @@ abstract class _LocationStatus implements LocationStatus {
       double speedMetersPerSec,
       LocationAccuracyType speedAccuracy,
       double headingDegrees,
-      int timeStampSec}) = _$_LocationStatus;
+      double timeStampSec}) = _$_LocationStatus;
 
   @override
   double get latitude;
@@ -297,7 +299,7 @@ abstract class _LocationStatus implements LocationStatus {
   @override
   double get headingDegrees;
   @override
-  int get timeStampSec;
+  double get timeStampSec;
   @override
   _$LocationStatusCopyWith<_LocationStatus> get copyWith;
 }
