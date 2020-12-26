@@ -34,7 +34,7 @@ class HikingService {
 
   final BehaviorSubject<bool> _activeStatusSub = BehaviorSubject.seeded(false);
   final BehaviorSubject<LocationStatus> _currentLocationStatusSub = BehaviorSubject.seeded(const LocationStatus());
-  final BehaviorSubject<HikeMetrics> _currentHikerStatusSub = BehaviorSubject.seeded(const HikeMetrics());
+  final BehaviorSubject<HikeMetrics> _currentHikerMetricsSub = BehaviorSubject.seeded(const HikeMetrics());
 
   HikingService({LocationService locationService})
       : _lastUpdateTimeSec = 0,
@@ -42,11 +42,11 @@ class HikingService {
     _locationService.locationStream.where((_) => _hikeIsActive).map(toLocationStatus).listen(_handleLocationUpdate);
   }
 
-  Stream<bool> get hikingMetrics$ => _activeStatusSub.stream.asBroadcastStream();
+  Stream<bool> get currentHikerStatus$ => _activeStatusSub.stream.asBroadcastStream();
 
   Stream<LocationStatus> get currentLocationStatus$ => _currentLocationStatusSub.stream.asBroadcastStream();
 
-  Stream<HikeMetrics> get currentHikerStatus$ => _currentHikerStatusSub.stream.asBroadcastStream();
+  Stream<HikeMetrics> get currentHikerMetrics$ => _currentHikerMetricsSub.stream.asBroadcastStream();
 
   Future<void> toggleStatus() async {
     _hikeIsActive = !_hikeIsActive;
@@ -76,13 +76,13 @@ class HikingService {
 
     /// Calculate hiker status update and publish value for UI
     final currStatus = accumulateMetrics(
-      _currentHikerStatusSub.value,
+      _currentHikerMetricsSub.value,
       _prevLocation,
       deltaDistance,
       _currentPath,
       deltaSec,
     );
-    _currentHikerStatusSub.add(currStatus);
+    _currentHikerMetricsSub.add(currStatus);
   }
 }
 

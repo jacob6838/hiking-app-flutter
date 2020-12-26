@@ -78,8 +78,28 @@ class MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
           children: <Widget>[
+            StreamBuilder<HikeMetrics>(
+                stream: _hikingService.currentHikerMetrics$,
+                builder: (context, AsyncSnapshot<HikeMetrics> snapshot) {
+                  return Column(
+                    children: [
+                      Text(
+                        _toDistanceTraveledString(snapshot?.data),
+                        style: TextStyle(color: Colors.orange, fontSize: 30),
+                      ),
+                      Text(
+                        _toElevationChangeString(snapshot?.data),
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                      Text(
+                        _toTimeElapsedString(snapshot?.data),
+                        style: Theme.of(context).textTheme.headline4,
+                      ),
+                    ],
+                  );
+                }),
             StreamBuilder<bool>(
-                stream: _hikingService.hikingMetrics$,
+                stream: _hikingService.currentHikerStatus$,
                 builder: (context, AsyncSnapshot<bool> snapshot) {
                   final bool activeStatus = snapshot?.data ?? false;
                   return RaisedButton(onPressed: () => onEnableBtnClicked(), child: Text(_enableBtnName(activeStatus)));
@@ -128,7 +148,7 @@ class MyHomePageState extends State<MyHomePage> {
   String _toTimeElapsedString(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
 
-    return "time Elapsed: ${hikeMetrics.metricPeriodSeconds} s";
+    return "time Elapsed: ${hikeMetrics.metricPeriodSeconds.round()} seconds";
   }
 }
 
