@@ -85,15 +85,15 @@ class MyHomePageState extends State<MyHomePage> {
                     children: [
                       Text(
                         _toDistanceTraveledString(snapshot?.data),
-                        style: TextStyle(color: Colors.orange, fontSize: 30),
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
                       ),
                       Text(
                         _toElevationChangeString(snapshot?.data),
-                        style: Theme.of(context).textTheme.headline5,
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
                       ),
                       Text(
                         _toTimeElapsedString(snapshot?.data),
-                        style: Theme.of(context).textTheme.headline4,
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
                       ),
                     ],
                   );
@@ -136,19 +136,21 @@ class MyHomePageState extends State<MyHomePage> {
   String _toDistanceTraveledString(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
 
-    return "Distance traveled: ${hikeMetrics.distanceTraveled} m";
+    final feet = metersToFeet(hikeMetrics.distanceTraveled);
+    return "Distance traveled: $feet ft";
   }
 
   String _toElevationChangeString(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
 
-    return "Elevation change: ${hikeMetrics.netElevationChange} m";
+    final feet = metersToFeet(hikeMetrics.netElevationChange);
+    return "Elevation change: $feet ft";
   }
 
   String _toTimeElapsedString(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
 
-    return "time Elapsed: ${hikeMetrics.metricPeriodSeconds.round()} seconds";
+    return "time Elapsed: ${hikeMetrics.metricPeriodSeconds.round()} sec";
   }
 }
 
