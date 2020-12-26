@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hiking_app/hiking_service.dart';
+import 'package:hiking_app/models/location_accuracy_type.dart';
 import 'package:hiking_app/models/location_status.dart';
 import 'package:hiking_app/providers.dart';
 import 'package:provider/provider.dart';
@@ -85,6 +86,27 @@ class MyHomePageState extends State<MyHomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
+                        _toCurrentAltitude(snapshot?.data),
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                      ),
+                      Text(
+                        _toCurrentLatLon(snapshot?.data),
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                      ),
+                      Text(
+                        _toSpeedMetersPerSec(snapshot?.data),
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                      ),
+                      Text(
+                        _toCurrentAccuracy(snapshot?.data),
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                      ),
+                      const Padding(padding: EdgeInsets.all(16.0)),
+                      Text(
+                        _toTimeElapsedString(snapshot?.data),
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                      ),
+                      Text(
                         _toDistanceTraveledString(snapshot?.data),
                         style: const TextStyle(color: Colors.black, fontSize: 14),
                       ),
@@ -93,15 +115,31 @@ class MyHomePageState extends State<MyHomePage> {
                         style: const TextStyle(color: Colors.black, fontSize: 14),
                       ),
                       Text(
-                        _toTimeElapsedString(snapshot?.data),
+                        _toCumulativeClimbMeters(snapshot?.data),
                         style: const TextStyle(color: Colors.black, fontSize: 14),
                       ),
                       Text(
-                        _toCurrentAltitude(snapshot?.data),
+                        _toCumulativeDescentMeters(snapshot?.data),
                         style: const TextStyle(color: Colors.black, fontSize: 14),
                       ),
                       Text(
-                        _toCurrentLatLon(snapshot?.data),
+                        _toAverageSpeedMetersPerSec(snapshot?.data),
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                      ),
+                      Text(
+                        _toSpeedMax(snapshot?.data),
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                      ),
+                      Text(
+                        _toAltitudeMin(snapshot?.data),
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                      ),
+                      Text(
+                        _toAltitudeMax(snapshot?.data),
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                      ),
+                      Text(
+                        _toNetHeading(snapshot?.data),
                         style: const TextStyle(color: Colors.black, fontSize: 14),
                       ),
                     ],
@@ -111,12 +149,18 @@ class MyHomePageState extends State<MyHomePage> {
                 stream: _hikingService.currentHikerStatus$,
                 builder: (context, AsyncSnapshot<bool> snapshot) {
                   final bool activeStatus = snapshot?.data ?? false;
-                  return RaisedButton(onPressed: () => onEnableBtnClicked(), child: Text(_enableBtnName(activeStatus)));
+                  return ButtonTheme(
+                      minWidth: 200.0,
+                      height: 100.0,
+                      buttonColor: Colors.white38,
+                      child: RaisedButton(
+                          onPressed: () => onEnableBtnClicked(),
+                          child: Text(_enableBtnName(activeStatus), style: const TextStyle(color: Colors.black, fontSize: 24))));
                 }),
-            FlatButton(
-              onPressed: onEnableBtnClicked,
-              child: const Text('BEGIN HIKE'),
-            ), // This trailing comma makes auto-formatting nicer for build methods.
+            // FlatButton(
+            //   onPressed: onEnableBtnClicked,
+            //   child: const Text('hey :P'),
+            // ), // This trailing comma makes auto-formatting nicer for build methods.
           ],
         ),
       ),
@@ -130,9 +174,9 @@ class MyHomePageState extends State<MyHomePage> {
 
   String _enableBtnName(bool activeStatus) {
     if (activeStatus) {
-      return "Stop";
+      return "STOP";
     } else {
-      return "Start";
+      return "START";
     }
   }
 
@@ -146,33 +190,107 @@ class MyHomePageState extends State<MyHomePage> {
   String _toDistanceTraveledString(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
 
-    final feet = metersToFeet(hikeMetrics.distanceTraveled);
-    return "Distance traveled: $feet ft";
+    final miles = metersToFeet(hikeMetrics.distanceTraveled) / 5280;
+    return "distance traveled: ${miles.toStringAsFixed(2)} mi";
   }
 
   String _toElevationChangeString(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
 
-    final feet = metersToFeet(hikeMetrics.netElevationChange);
-    return "Elevation change: $feet ft";
+    final feet = metersToFeet(hikeMetrics.netElevationChange).round();
+    return "elevation change: $feet ft";
   }
 
   String _toTimeElapsedString(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
-    return "time Elapsed: ${hikeMetrics.metricPeriodSeconds.round()} sec";
+    const int minPerHour = 60;
+    const int secPerMin = 60;
+    final int minutes = (hikeMetrics.metricPeriodSeconds / secPerMin).round() % minPerHour;
+    final int hours = ((hikeMetrics.metricPeriodSeconds / secPerMin) / minPerHour).floor();
+    return "time Elapsed: ${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}";
   }
 
   String _toCurrentAltitude(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
-    final alt = metersToFeet(hikeMetrics.altitude);
-    return "altitude: $alt ft";
+    final alt = metersToFeet(hikeMetrics.altitude).round();
+    return "altitude: $alt ft, ${hikeMetrics.altitude} m";
   }
 
   String _toCurrentLatLon(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
     final lat = hikeMetrics.latitude;
     final lon = hikeMetrics.longitude;
-    return "location: ($lat, $lon)";
+    return "location: ${lat.toStringAsFixed(7)}, ${lon.toStringAsFixed(7)}";
+  }
+
+  String _toCurrentAccuracy(HikeMetrics hikeMetrics) {
+    if (hikeMetrics == null) return "stuff";
+    String accuracy = "unknown";
+    if (hikeMetrics.locationAccuracy == LocationAccuracyType.low) {
+      accuracy = "low (> 25m)";
+    } else if (hikeMetrics.locationAccuracy == LocationAccuracyType.medium) {
+      accuracy = "medium (> 8m)";
+    } else {
+      accuracy = "high (< 8m)";
+    }
+    return "accuracy: $accuracy";
+  }
+
+  String _toSpeedMetersPerSec(HikeMetrics hikeMetrics) {
+    if (hikeMetrics == null) return "stuff";
+    int speed = 0;
+    if (hikeMetrics.speedMetersPerSec != 0) {
+      speed = (1 / (hikeMetrics.speedMetersPerSec * 0.0372823)).round();
+    }
+    return "speed: $speed min/mile";
+  }
+
+  String _toCumulativeClimbMeters(HikeMetrics hikeMetrics) {
+    if (hikeMetrics == null) return "stuff";
+    final metric = hikeMetrics.cumulativeClimbMeters.round();
+    return "cumulative ascent: $metric ft";
+  }
+
+  String _toCumulativeDescentMeters(HikeMetrics hikeMetrics) {
+    if (hikeMetrics == null) return "stuff";
+    final metric = hikeMetrics.cumulativeDescentMeters.round();
+    return "cumulative descent: $metric ft";
+  }
+
+  String _toAverageSpeedMetersPerSec(HikeMetrics hikeMetrics) {
+    if (hikeMetrics == null) return "stuff";
+    int speed = 0;
+    if (hikeMetrics.averageSpeedMetersPerSec != 0) {
+      speed = (1 / (hikeMetrics.averageSpeedMetersPerSec * 0.0372823)).round();
+    }
+    return "average speed: $speed min/mile";
+  }
+
+  String _toSpeedMax(HikeMetrics hikeMetrics) {
+    if (hikeMetrics == null) return "stuff";
+    int speed = 0;
+    if (hikeMetrics.speedMax != 0) {
+      speed = (1 / (hikeMetrics.speedMax * 0.0372823)).round();
+    }
+    return "max speed: $speed";
+  }
+
+  String _toAltitudeMin(HikeMetrics hikeMetrics) {
+    if (hikeMetrics == null) return "stuff";
+    final altMin = hikeMetrics.altitudeMin.round();
+    return "min altitude: $altMin";
+  }
+
+  String _toAltitudeMax(HikeMetrics hikeMetrics) {
+    if (hikeMetrics == null) return "stuff";
+    final altMax = hikeMetrics.altitudeMax.round();
+    return "max altitude: $altMax";
+  }
+
+  String _toNetHeading(HikeMetrics hikeMetrics) {
+    if (hikeMetrics == null) return "stuff";
+    final heading = hikeMetrics.netHeadingDegrees.round();
+    return "net heading: $heading";
   }
 }
 

@@ -77,7 +77,7 @@ class HikingService {
     print("HIKER: _handleLocationUpdate called.");
 
     final double deltaSec = locationStatus.timeStampSec - _prevLocation.timeStampSec;
-    // if (deltaSec < updateIntervalSec) return;
+    if (deltaSec < updateIntervalSec) return;
 
     final deltaDistance = SphericalUtil.computeDistanceBetween(
       LatLng(locationStatus.latitude, locationStatus.longitude),
@@ -203,5 +203,11 @@ double getCurrentTimeSeconds() => DateTime.now().millisecondsSinceEpoch / millis
 
 /// Convert an accuracy value from Flutter location API to an enum
 LocationAccuracyType toAccuracyType(double accuracy) {
-  return LocationAccuracyType.low;
+  if (accuracy < 8) {
+    return LocationAccuracyType.high;
+  } else if (accuracy < 25) {
+    return LocationAccuracyType.medium;
+  } else {
+    return LocationAccuracyType.low;
+  }
 }
