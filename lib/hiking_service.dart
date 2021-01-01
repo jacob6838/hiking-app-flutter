@@ -168,7 +168,7 @@ HikeMetrics accumulateMetrics(
     ),
     netHeadingDegrees: 1.0,
     // Heading
-    distanceTraveled: deltaDistance,
+    distanceTraveled: prevMetrics.distanceTraveled + deltaDistance,
     netElevationChange: currLoc.altitude - prevMetrics.altitudeStart,
     cumulativeClimbMeters:
         deltaAltitude > 0 ? prevMetrics.cumulativeClimbMeters + deltaAltitude : prevMetrics.cumulativeClimbMeters,

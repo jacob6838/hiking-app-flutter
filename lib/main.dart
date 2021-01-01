@@ -189,7 +189,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   String _toDistanceTraveledString(HikeMetrics hikeMetrics) {
     if (hikeMetrics == null) return "stuff";
-    final miles = metersToFeet(hikeMetrics.distanceTraveled) / feetToMiles;
+    final miles = metersToFeet(hikeMetrics.distanceTraveled) / feetPerMile;
     return "distance traveled: ${miles.toStringAsFixed(2)} mi";
   }
 
@@ -293,7 +293,7 @@ class MyHomePageState extends State<MyHomePage> {
 
 const double feetPerMeter = 3.28084;
 const double metersPerSecToMilesPerMin = 0.0372823;
-const feetToMiles = 1 / 5280;
+const feetPerMile = 5280;
 
 const int minPerHour = 60;
 const int secPerMin = 60;
