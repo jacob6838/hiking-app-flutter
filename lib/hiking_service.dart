@@ -45,16 +45,15 @@ class HikingService {
       : _lastUpdateTimeSec = 0,
         _locationService = locationService {
     _locationService.locationStream
-        .doOnData((event) => print("HIKER: location update received."))
+        // .doOnData((event) => print("HIKER: location update received."))
         .where((_) => _hikeIsActive)
         .map(toLocationStatus)
-        .doOnData((event) => print("HIKER: calling _handleLocationUpdate."))
         .listen(_handleLocationUpdate);
   }
 
   Stream<LocationStatus> get currentLocation$ => _locationService.locationStream.map(toLocationStatus);
 
-  final BehaviorSubject<List<FlSpot>> elevationList = BehaviorSubject.seeded([]);
+  final BehaviorSubject<List<FlSpot>> elevationList = BehaviorSubject.seeded([FlSpot(0,0)]);
 
   Stream<bool> get currentHikerStatus$ => _activeStatusSub.stream.asBroadcastStream();
 
@@ -75,18 +74,13 @@ class HikingService {
 
   /// Process an updated location from device
   void _handleLocationUpdate(LocationStatus locationStatus) {
-    print("new loc");
     _currentLocation.add(locationStatus);
     if (_prevLocation == null || _prevLocation.timeStampSec == 0.0) {
-      elevationList.add(toFlSpotList(locationStatus));
-      print(locationStatus.toString());
       _prevLocation = locationStatus;
       _hikeMetricsTotal = getInitialMetrics(_prevLocation, getCurrentTimeSeconds());
       _currentHikerMetricsSub.add(_hikeMetricsTotal);
       return;
     }
-
-    print("HIKER: _handleLocationUpdate called.");
 
     final double deltaSec = locationStatus.timeStampSec - _prevLocation.timeStampSec;
     if (deltaSec < updateIntervalSec) return;
@@ -96,6 +90,8 @@ class HikingService {
       LatLng(_prevLocation.latitude, _prevLocation.longitude),
     ).toDouble();
     if (deltaDistance < minimumDistanceThreshold) return;
+
+    elevationList.add(toFlSpotList(locationStatus));
 
     _prevLocation = locationStatus;
 
