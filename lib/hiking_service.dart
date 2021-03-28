@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:background_location/background_location.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:hiking_app/location_service.dart';
 import 'package:hiking_app/models/hike_metrics.dart';
 import 'package:hiking_app/models/location_accuracy_type.dart';
@@ -23,6 +25,7 @@ class HikingService {
   bool _hikeIsActive = false;
   HikeMetrics _hikeMetricsTotal = const HikeMetrics();
   double _lastUpdateTimeSec = 0.0;
+  List<FlSpot> currAltitudeSpotList = [];
 
   /// List of all points for the current hike
   final KtMutableList<LocationStatus> _currentPath = mutableListOf();
@@ -31,6 +34,8 @@ class HikingService {
 
   /// Previous position used to determine when a location change is sufficiently large to warrant a hiker status update.
   LocationStatus _prevLocation;
+
+  final BehaviorSubject<LocationStatus> _currentLocation = BehaviorSubject.seeded(const LocationStatus());
 
   final BehaviorSubject<bool> _activeStatusSub = BehaviorSubject.seeded(false);
   final BehaviorSubject<LocationStatus> _currentLocationStatusSub = BehaviorSubject.seeded(const LocationStatus());
@@ -46,6 +51,10 @@ class HikingService {
         .doOnData((event) => print("HIKER: calling _handleLocationUpdate."))
         .listen(_handleLocationUpdate);
   }
+
+  Stream<LocationStatus> get currentLocation$ => _locationService.locationStream.map(toLocationStatus);
+
+  final BehaviorSubject<List<FlSpot>> elevationList = BehaviorSubject.seeded([]);
 
   Stream<bool> get currentHikerStatus$ => _activeStatusSub.stream.asBroadcastStream();
 
@@ -66,7 +75,10 @@ class HikingService {
 
   /// Process an updated location from device
   void _handleLocationUpdate(LocationStatus locationStatus) {
+    print("new loc");
+    _currentLocation.add(locationStatus);
     if (_prevLocation == null || _prevLocation.timeStampSec == 0.0) {
+      elevationList.add(toFlSpotList(locationStatus));
       print(locationStatus.toString());
       _prevLocation = locationStatus;
       _hikeMetricsTotal = getInitialMetrics(_prevLocation, getCurrentTimeSeconds());
@@ -99,6 +111,11 @@ class HikingService {
       deltaSec,
     );
     _currentHikerMetricsSub.add(currStatus);
+  }
+
+  List<FlSpot> toFlSpotList(LocationStatus location) {
+    currAltitudeSpotList.add(FlSpot(location.timeStampSec, location.altitude));
+    return currAltitudeSpotList;
   }
 }
 

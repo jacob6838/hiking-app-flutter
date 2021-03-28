@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:hiking_app/hiking_service.dart';
 import 'package:hiking_app/models/location_accuracy_type.dart';
@@ -51,6 +52,8 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     _hikingService = Provider.of<HikingService>(context);
+    const cutOffYValue = 2000.0;
+    const dateTextStyle = TextStyle(fontSize: 10, color: Colors.purple, fontWeight: FontWeight.bold);
 
     return Scaffold(
       appBar: AppBar(
@@ -78,29 +81,37 @@ class MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
-          children: <Widget>[
+          children: <Widget>[StreamBuilder<LocationStatus>(
+              stream: _hikingService.currentLocation$,
+              builder: (context, snapshot) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _toCurrentAltitude(snapshot?.data),
+                      style: const TextStyle(color: Colors.black, fontSize: 14),
+                    ),
+                    Text(
+                      _toCurrentLatLon(snapshot?.data),
+                      style: const TextStyle(color: Colors.black, fontSize: 14),
+                    ),
+                    Text(
+                      _toSpeedMetersPerSec(snapshot?.data),
+                      style: const TextStyle(color: Colors.black, fontSize: 14),
+                    ),
+                    Text(
+                      _toCurrentAccuracy(snapshot?.data),
+                      style: const TextStyle(color: Colors.black, fontSize: 14),
+                    ),
+                  ],
+                );
+              }),
             StreamBuilder<HikeMetrics>(
                 stream: _hikingService.currentHikerMetrics$,
                 builder: (context, AsyncSnapshot<HikeMetrics> snapshot) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        _toCurrentAltitude(snapshot?.data),
-                        style: const TextStyle(color: Colors.black, fontSize: 14),
-                      ),
-                      Text(
-                        _toCurrentLatLon(snapshot?.data),
-                        style: const TextStyle(color: Colors.black, fontSize: 14),
-                      ),
-                      Text(
-                        _toSpeedMetersPerSec(snapshot?.data),
-                        style: const TextStyle(color: Colors.black, fontSize: 14),
-                      ),
-                      Text(
-                        _toCurrentAccuracy(snapshot?.data),
-                        style: const TextStyle(color: Colors.black, fontSize: 14),
-                      ),
                       const Padding(padding: EdgeInsets.all(16.0)),
                       Text(
                         _toTimeElapsedString(snapshot?.data),
@@ -157,6 +168,111 @@ class MyHomePageState extends State<MyHomePage> {
                           onPressed: () => onEnableBtnClicked(),
                           child: Text(_enableBtnName(activeStatus), style: const TextStyle(color: Colors.black, fontSize: 24))));
                 }),
+        StreamBuilder<List<FlSpot>>(
+          stream: _hikingService.elevationList,
+          builder: (context, snapshot) {
+            return SizedBox(
+              width: 300,
+              height: 140,
+              child: LineChart(
+                LineChartData(
+                  lineTouchData: LineTouchData(enabled: false),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: snapshot.data,
+                      // [
+                      //   FlSpot(0, 2000),
+                      //   FlSpot(1, 3.5),
+                      //   FlSpot(2, 4.5),
+                      //   FlSpot(3, 1),
+                      //   FlSpot(4, 4),
+                      //   FlSpot(5, 6),
+                      //   FlSpot(6, 6.5),
+                      //   FlSpot(7, 6),
+                      //   FlSpot(8, 4),
+                      //   FlSpot(9, 6),
+                      //   FlSpot(10, 6),
+                      //   FlSpot(11000000, 7),
+                      // ],
+                      // isCurved: true,
+                      barWidth: 4,
+                      colors: [
+                        Colors.purpleAccent,
+                      ],
+                      dotData: FlDotData(
+                        show: false,
+                      ),
+                    ),
+                  ],
+                  minY: 1450,
+                  maxY: 1550,
+                  // minY: 0,
+                  titlesData: FlTitlesData(
+                    bottomTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 14,
+                        getTextStyles: (value) => dateTextStyle,
+                        interval: 60,
+                        // getTitles: (value) {
+                        //   return value.toString();
+                        //   // return DateTime.fromMillisecondsSinceEpoch((value*1000).toInt()).toString();
+                        //   switch (value.toInt()) {
+                        //     case 0:
+                        //       return 'Jan';
+                        //     case 1:
+                        //       return 'Feb';
+                        //     case 2:
+                        //       return 'Mar';
+                        //     case 3:
+                        //       return 'Apr';
+                        //     case 4:
+                        //       return 'May';
+                        //     case 5:
+                        //       return 'Jun';
+                        //     case 6:
+                        //       return 'Jul';
+                        //     case 7:
+                        //       return 'Aug';
+                        //     case 8:
+                        //       return 'Sep';
+                        //     case 9:
+                        //       return 'Oct';
+                        //     case 10:
+                        //       return 'Nov';
+                        //     case 11:
+                        //       return 'Dec';
+                        //     default:
+                        //       return '';
+                        //   }
+                        // }
+                        ),
+                    leftTitles: SideTitles(
+                      showTitles: true,
+                      interval: 100,
+                      // getTitles: (value) {
+                      //   return value.toString();
+                      // },
+                    ),
+                  ),
+                  axisTitleData: FlAxisTitleData(
+                      leftTitle: AxisTitle(showTitle: true, titleText: 'Value', margin: 4),
+                      bottomTitle: AxisTitle(
+                          showTitle: true,
+                          margin: 0,
+                          titleText: '2019',
+                          textStyle: dateTextStyle,
+                          textAlign: TextAlign.right)),
+                  gridData: FlGridData(
+                    show: true,
+                    checkToShowHorizontalLine: (double value) {
+                      return value == 1 || value == 6 || value == 4 || value == 5;
+                    },
+                  ),
+                ),
+              ),
+            );
+          }
+        ),
             // FlatButton(
             //   onPressed: onEnableBtnClicked,
             //   child: const Text('hey :P'),
@@ -207,25 +323,25 @@ class MyHomePageState extends State<MyHomePage> {
     return "time Elapsed: ${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}";
   }
 
-  String _toCurrentAltitude(HikeMetrics hikeMetrics) {
-    if (hikeMetrics == null) return "stuff";
-    final alt = metersToFeet(hikeMetrics.altitude).round();
-    return "altitude: $alt ft, ${hikeMetrics.altitude.round()} m";
+  String _toCurrentAltitude(LocationStatus locationStatus) {
+    if (locationStatus == null) return "stuff";
+    final alt = metersToFeet(locationStatus.altitude).round();
+    return "altitude: $alt ft, ${locationStatus.altitude.round()} m";
   }
 
-  String _toCurrentLatLon(HikeMetrics hikeMetrics) {
-    if (hikeMetrics == null) return "stuff";
-    final lat = hikeMetrics.latitude;
-    final lon = hikeMetrics.longitude;
+  String _toCurrentLatLon(LocationStatus locationStatus) {
+    if (locationStatus == null) return "stuff";
+    final lat = locationStatus.latitude;
+    final lon = locationStatus.longitude;
     return "position: ${lat.toStringAsFixed(7)}, ${lon.toStringAsFixed(7)}";
   }
 
-  String _toCurrentAccuracy(HikeMetrics hikeMetrics) {
-    if (hikeMetrics == null) return "stuff";
+  String _toCurrentAccuracy(LocationStatus locationStatus) {
+    if (locationStatus == null) return "stuff";
     String accuracy = "unknown";
-    if (hikeMetrics.locationAccuracy == LocationAccuracyType.low) {
+    if (locationStatus.accuracy == LocationAccuracyType.low) {
       accuracy = "low (> 25m)";
-    } else if (hikeMetrics.locationAccuracy == LocationAccuracyType.medium) {
+    } else if (locationStatus.accuracy == LocationAccuracyType.medium) {
       accuracy = "medium (> 8m)";
     } else {
       accuracy = "high (< 8m)";
@@ -233,11 +349,11 @@ class MyHomePageState extends State<MyHomePage> {
     return "accuracy: $accuracy";
   }
 
-  String _toSpeedMetersPerSec(HikeMetrics hikeMetrics) {
-    if (hikeMetrics == null) return "stuff";
+  String _toSpeedMetersPerSec(LocationStatus locationStatus) {
+    if (locationStatus == null) return "stuff";
     int speed = 0;
-    if (hikeMetrics.speedMetersPerSec > 0.05) {
-      speed = (1 / (hikeMetrics.speedMetersPerSec * metersPerSecToMilesPerMin)).round();
+    if (locationStatus.speedMetersPerSec > 0.05) {
+      speed = (1 / (locationStatus.speedMetersPerSec * metersPerSecToMilesPerMin)).round();
     }
     return "speed: $speed min/mile";
   }

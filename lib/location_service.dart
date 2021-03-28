@@ -33,8 +33,12 @@ class LocationService {
     // Request permission to use location
     BackgroundLocation.getPermissions(
       onGranted: () async {
-        await BackgroundLocation.setNotificationTitle("Using location");
-        await BackgroundLocation.startLocationService();
+        BackgroundLocation.setAndroidNotification(
+          title: "Hiking App",
+          message: "Using location",
+          icon: "@mipmap/ic_launcher",
+        );
+        startLocationService();
         BackgroundLocation.getLocationUpdates((location) {
           if (location == null) return;
           print("HIKER: speed = ${location.speed} mps, lat = ${location.latitude}, lon = ${location.longitude}");
@@ -43,5 +47,13 @@ class LocationService {
       },
       onDenied: () {},
     );
+  }
+
+  void startLocationService() {
+    BackgroundLocation.startLocationService();
+  }
+
+  void stopLocationService() {
+    BackgroundLocation.startLocationService();
   }
 }
