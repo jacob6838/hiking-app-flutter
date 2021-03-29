@@ -22,7 +22,7 @@ class _$LocationStatusTearOff {
       double speedMetersPerSec = 0.0,
       LocationAccuracyType speedAccuracy = LocationAccuracyType.low,
       double headingDegrees = 0.0,
-      double timeStampSec = 0}) {
+      double timeStampSec = 0.0}) {
     return _LocationStatus(
       latitude: latitude,
       longitude: longitude,
@@ -51,6 +51,7 @@ mixin _$LocationStatus {
   double get headingDegrees;
   double get timeStampSec;
 
+  @JsonKey(ignore: true)
   $LocationStatusCopyWith<LocationStatus> get copyWith;
 }
 
@@ -186,7 +187,7 @@ class _$_LocationStatus implements _LocationStatus {
       this.speedMetersPerSec = 0.0,
       this.speedAccuracy = LocationAccuracyType.low,
       this.headingDegrees = 0.0,
-      this.timeStampSec = 0})
+      this.timeStampSec = 0.0})
       : assert(latitude != null),
         assert(longitude != null),
         assert(accuracy != null),
@@ -217,7 +218,7 @@ class _$_LocationStatus implements _LocationStatus {
   @JsonKey(defaultValue: 0.0)
   @override
   final double headingDegrees;
-  @JsonKey(defaultValue: 0)
+  @JsonKey(defaultValue: 0.0)
   @override
   final double timeStampSec;
 
@@ -268,6 +269,7 @@ class _$_LocationStatus implements _LocationStatus {
       const DeepCollectionEquality().hash(headingDegrees) ^
       const DeepCollectionEquality().hash(timeStampSec);
 
+  @JsonKey(ignore: true)
   @override
   _$LocationStatusCopyWith<_LocationStatus> get copyWith =>
       __$LocationStatusCopyWithImpl<_LocationStatus>(this, _$identity);
@@ -301,5 +303,6 @@ abstract class _LocationStatus implements LocationStatus {
   @override
   double get timeStampSec;
   @override
+  @JsonKey(ignore: true)
   _$LocationStatusCopyWith<_LocationStatus> get copyWith;
 }

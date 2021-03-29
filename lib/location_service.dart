@@ -29,7 +29,17 @@ class LocationService {
 
   LocationService() {
     print("HIKER: Init LocationService()");
+  }
 
+  void startLocationService() {
+    BackgroundLocation.startLocationService();
+  }
+
+  void stopLocationService() {
+    BackgroundLocation.stopLocationService();
+  }
+
+  void startLocationUpdates() {
     // Request permission to use location
     BackgroundLocation.getPermissions(
       onGranted: () async {
@@ -40,20 +50,12 @@ class LocationService {
         );
         startLocationService();
         BackgroundLocation.getLocationUpdates((location) {
-          if (location == null) return;
-          print("HIKER: speed = ${location.speed} mps, lat = ${location.latitude}, lon = ${location.longitude}");
-          _locationController.add(location);
+          if (location != null) {
+            _locationController.add(location);
+          }
         });
       },
       onDenied: () {},
     );
-  }
-
-  void startLocationService() {
-    BackgroundLocation.startLocationService();
-  }
-
-  void stopLocationService() {
-    BackgroundLocation.startLocationService();
   }
 }

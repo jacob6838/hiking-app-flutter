@@ -7,6 +7,7 @@ import 'package:hiking_app/providers.dart';
 import 'package:provider/provider.dart';
 
 import 'models/hike_metrics.dart';
+import 'models/plot_values.dart';
 
 void main() {
   runApp(MultiProvider(providers: globalProviders(), child: MyApp()));
@@ -52,14 +53,13 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     _hikingService = Provider.of<HikingService>(context);
-    const cutOffYValue = 2000.0;
     const dateTextStyle = TextStyle(fontSize: 10, color: Colors.purple, fontWeight: FontWeight.bold);
 
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: const Text('Hello, hiker'),
+        title: const Text('Hello, hiker!'),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -82,7 +82,7 @@ class MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
           children: <Widget>[StreamBuilder<LocationStatus>(
-              stream: _hikingService.currentLocation$,
+              stream: _hikingService.currentLocationStatus,
               builder: (context, snapshot) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,6 +106,11 @@ class MyHomePageState extends State<MyHomePage> {
                   ],
                 );
               }),
+            // ElevatedButton(
+            //   onPressed: () async {
+            //     await _hikingService.updateCurrentLocation();
+            //   },
+            //   child: const Text("Get Current Location")),
             StreamBuilder<HikeMetrics>(
                 stream: _hikingService.currentHikerMetrics$,
                 builder: (context, AsyncSnapshot<HikeMetrics> snapshot) {
@@ -165,37 +170,24 @@ class MyHomePageState extends State<MyHomePage> {
                       height: 100.0,
                       buttonColor: Colors.white38,
                       child: RaisedButton(
-                          onPressed: () => onEnableBtnClicked(),
+                          onPressed: () => onEnableBtnClicked(_hikingService),
                           child: Text(_enableBtnName(activeStatus), style: const TextStyle(color: Colors.black, fontSize: 24))));
                 }),
-        StreamBuilder<List<FlSpot>>(
-          stream: _hikingService.elevationList,
+        StreamBuilder<PlotValues>(
+          stream: _hikingService.elevationPlot,
           builder: (context, snapshot) {
+            final plotValues = snapshot.data ?? PlotValues.build();
             return SizedBox(
-              width: 300,
-              height: 140,
+              width: plotValues.width,
+              height: plotValues.height,
               child: LineChart(
                 LineChartData(
                   lineTouchData: LineTouchData(enabled: false),
                   lineBarsData: [
                     LineChartBarData(
-                      spots: snapshot.data,
-                      // [
-                      //   FlSpot(0, 2000),
-                      //   FlSpot(1, 3.5),
-                      //   FlSpot(2, 4.5),
-                      //   FlSpot(3, 1),
-                      //   FlSpot(4, 4),
-                      //   FlSpot(5, 6),
-                      //   FlSpot(6, 6.5),
-                      //   FlSpot(7, 6),
-                      //   FlSpot(8, 4),
-                      //   FlSpot(9, 6),
-                      //   FlSpot(10, 6),
-                      //   FlSpot(11000000, 7),
-                      // ],
+                      spots: plotValues.values,
                       // isCurved: true,
-                      barWidth: 4,
+                      barWidth: 3,
                       colors: [
                         Colors.purpleAccent,
                       ],
@@ -204,64 +196,47 @@ class MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                   ],
-                  minY: 1450,
-                  maxY: 1550,
+                  minX: plotValues.xFormat.min,
+                  maxX: plotValues.xFormat.max,
+                  minY: plotValues.yFormat.min,
+                  maxY: plotValues.yFormat.max,
                   // minY: 0,
                   titlesData: FlTitlesData(
                     bottomTitles: SideTitles(
                         showTitles: true,
                         reservedSize: 14,
-                        getTextStyles: (value) => dateTextStyle,
-                        interval: 60,
-                        // getTitles: (value) {
-                        //   return value.toString();
-                        //   // return DateTime.fromMillisecondsSinceEpoch((value*1000).toInt()).toString();
-                        //   switch (value.toInt()) {
-                        //     case 0:
-                        //       return 'Jan';
-                        //     case 1:
-                        //       return 'Feb';
-                        //     case 2:
-                        //       return 'Mar';
-                        //     case 3:
-                        //       return 'Apr';
-                        //     case 4:
-                        //       return 'May';
-                        //     case 5:
-                        //       return 'Jun';
-                        //     case 6:
-                        //       return 'Jul';
-                        //     case 7:
-                        //       return 'Aug';
-                        //     case 8:
-                        //       return 'Sep';
-                        //     case 9:
-                        //       return 'Oct';
-                        //     case 10:
-                        //       return 'Nov';
-                        //     case 11:
-                        //       return 'Dec';
-                        //     default:
-                        //       return '';
-                        //   }
-                        // }
-                        ),
+                        getTextStyles: plotValues.xFormat.axisTextStyleFunc,
+                        interval: plotValues.xFormat.interval,
+                        getTitles: plotValues.xFormat.axisFormatFunc,
+                          // (value) {
+                          // final int minutes = (value / secPerMin).round() % minPerHour;
+                          // final int hours = ((value / secPerMin) / minPerHour).floor();
+                          // return "$hours:$minutes";
+                          // }
+                      ),
                     leftTitles: SideTitles(
                       showTitles: true,
-                      interval: 100,
+                      getTextStyles: plotValues.yFormat.axisTextStyleFunc,
+                      interval: plotValues.yFormat.interval,
+                      getTitles: plotValues.yFormat.axisFormatFunc,
                       // getTitles: (value) {
                       //   return value.toString();
                       // },
                     ),
                   ),
                   axisTitleData: FlAxisTitleData(
-                      leftTitle: AxisTitle(showTitle: true, titleText: 'Value', margin: 4),
                       bottomTitle: AxisTitle(
                           showTitle: true,
                           margin: 0,
-                          titleText: '2019',
-                          textStyle: dateTextStyle,
-                          textAlign: TextAlign.right)),
+                          titleText: plotValues.xFormat.axisTitle,
+                          textStyle: plotValues.xFormat.axisTextStyle,
+                          textAlign: TextAlign.right),
+                      leftTitle: AxisTitle(
+                        showTitle: true,
+                        titleText: plotValues.yFormat.axisTitle,
+                        textStyle: plotValues.yFormat.axisTextStyle,
+                        margin: 4),
+                  ),
                   gridData: FlGridData(
                     show: true,
                     checkToShowHorizontalLine: (double value) {
@@ -283,8 +258,8 @@ class MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void onEnableBtnClicked() {
-    _hikingService.toggleStatus();
+  void onEnableBtnClicked(HikingService hikingService) {
+    _hikingService.toggleStatus(hikingService);
     print("HIKER: onEnableBtnClicked");
   }
 

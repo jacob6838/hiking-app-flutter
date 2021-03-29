@@ -96,6 +96,7 @@ mixin _$HikeMetrics {
   double get metricPeriodSeconds;
   KtList<LocationStatus> get path;
 
+  @JsonKey(ignore: true)
   $HikeMetricsCopyWith<HikeMetrics> get copyWith;
 }
 
@@ -575,6 +576,7 @@ class _$_HikeMetrics implements _HikeMetrics {
       const DeepCollectionEquality().hash(metricPeriodSeconds) ^
       const DeepCollectionEquality().hash(path);
 
+  @JsonKey(ignore: true)
   @override
   _$HikeMetricsCopyWith<_HikeMetrics> get copyWith =>
       __$HikeMetricsCopyWithImpl<_HikeMetrics>(this, _$identity);
@@ -653,5 +655,6 @@ abstract class _HikeMetrics implements HikeMetrics {
   @override
   KtList<LocationStatus> get path;
   @override
+  @JsonKey(ignore: true)
   _$HikeMetricsCopyWith<_HikeMetrics> get copyWith;
 }

@@ -11,10 +11,19 @@ import 'package:kt_dart/collection.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 import 'package:rxdart/rxdart.dart';
 
+import 'main.dart';
+import 'models/plot_values.dart';
+
 const int millisecondsPerSecond = 1000;
 
+// - scaling of altitude plot was static
+// - bottom plot legend is illedgible
+// - 500 foot jump on Mom's phone that was not counted in cumulative ascent/descent
+// - Jacob's phone stopped updating (battery optimization??)
+// - update metrics even if no new data
+
 /// Number of seconds between updates
-const int updateIntervalSec = 10;
+const int updateIntervalSec = 30;
 
 /// Minimum distance between location updates published to UI.
 /// TODO: Dynamically update this based on instantaneous accuracy.
@@ -25,7 +34,7 @@ class HikingService {
   bool _hikeIsActive = false;
   HikeMetrics _hikeMetricsTotal = const HikeMetrics();
   double _lastUpdateTimeSec = 0.0;
-  List<FlSpot> currAltitudeSpotList = [];
+  PlotValues elevationPlotValues;
 
   /// List of all points for the current hike
   final KtMutableList<LocationStatus> _currentPath = mutableListOf();
@@ -35,8 +44,6 @@ class HikingService {
   /// Previous position used to determine when a location change is sufficiently large to warrant a hiker status update.
   LocationStatus _prevLocation;
 
-  final BehaviorSubject<LocationStatus> _currentLocation = BehaviorSubject.seeded(const LocationStatus());
-
   final BehaviorSubject<bool> _activeStatusSub = BehaviorSubject.seeded(false);
   final BehaviorSubject<LocationStatus> _currentLocationStatusSub = BehaviorSubject.seeded(const LocationStatus());
   final BehaviorSubject<HikeMetrics> _currentHikerMetricsSub = BehaviorSubject.seeded(const HikeMetrics());
@@ -45,36 +52,62 @@ class HikingService {
       : _lastUpdateTimeSec = 0,
         _locationService = locationService {
     _locationService.locationStream
-        // .doOnData((event) => print("HIKER: location update received."))
         .where((_) => _hikeIsActive)
+        // .doOnData((event) => print("HIKER: location update received."))
         .map(toLocationStatus)
         .listen(_handleLocationUpdate);
+    // updateCurrentLocation();
   }
 
-  Stream<LocationStatus> get currentLocation$ => _locationService.locationStream.map(toLocationStatus);
 
-  final BehaviorSubject<List<FlSpot>> elevationList = BehaviorSubject.seeded([FlSpot(0,0)]);
+  final BehaviorSubject<PlotValues> elevationPlot = BehaviorSubject<PlotValues>();
 
   Stream<bool> get currentHikerStatus$ => _activeStatusSub.stream.asBroadcastStream();
 
-  Stream<LocationStatus> get currentLocationStatus$ => _currentLocationStatusSub.stream.asBroadcastStream();
+  BehaviorSubject<LocationStatus> get currentLocationStatus => BehaviorSubject.seeded(const LocationStatus());
 
   Stream<HikeMetrics> get currentHikerMetrics$ => _currentHikerMetricsSub.stream.asBroadcastStream();
 
-  Future<void> toggleStatus() async {
+  Future<void> toggleStatus(HikingService hikingService) async {
     _hikeIsActive = !_hikeIsActive;
     _activeStatusSub.add(_hikeIsActive);
     if (_hikeIsActive) {
+      hikingService._locationService.startLocationUpdates();
       // _prevLocation = toLocationStatus(await _locationService.location);
-      _prevLocation = LocationStatus();
+      _prevLocation = const LocationStatus();
       // _hikeMetricsTotal = getInitialMetrics(_prevLocation, getCurrentTimeSeconds());
       _currentPath.clear();
+      elevationPlotValues = PlotValues.build(
+        values: [],
+        xFormat: PlotFormat(
+          axisTitle: "Time",
+          axisFormatFunc: (value) {
+            final int minutes = (value / secPerMin).round() % minPerHour;
+            final int hours = ((value / secPerMin) / minPerHour).floor();
+            return "$hours:$minutes";
+          },
+        ),
+        yFormat: const PlotFormat(
+          axisTitle: "Elevation (ft)",
+        ),
+        height: 150,
+        width: 300,
+      );
+    }
+    else {
+      hikingService._locationService.stopLocationService();
     }
   }
 
+  // Future<void> updateCurrentLocation() async {
+  //   await _locationService.location.then((location) => currentLocationStatus.add(toLocationStatus(location)));
+  // }
+
   /// Process an updated location from device
   void _handleLocationUpdate(LocationStatus locationStatus) {
-    _currentLocation.add(locationStatus);
+    currentLocationStatus.add(locationStatus);
+
+    /// If first point, initialize variables and return
     if (_prevLocation == null || _prevLocation.timeStampSec == 0.0) {
       _prevLocation = locationStatus;
       _hikeMetricsTotal = getInitialMetrics(_prevLocation, getCurrentTimeSeconds());
@@ -82,6 +115,7 @@ class HikingService {
       return;
     }
 
+    /// Check time elapsed, if less than updateIntervalSec then return
     final double deltaSec = locationStatus.timeStampSec - _prevLocation.timeStampSec;
     if (deltaSec < updateIntervalSec) return;
 
@@ -89,11 +123,11 @@ class HikingService {
       LatLng(locationStatus.latitude, locationStatus.longitude),
       LatLng(_prevLocation.latitude, _prevLocation.longitude),
     ).toDouble();
-    if (deltaDistance < minimumDistanceThreshold) return;
-
-    elevationList.add(toFlSpotList(locationStatus));
-
-    _prevLocation = locationStatus;
+    if (deltaDistance < minimumDistanceThreshold) {
+      _prevLocation = _prevLocation.copyWith(timeStampSec: locationStatus.timeStampSec);
+    } else {
+      _prevLocation = locationStatus;
+    }
 
     /// Save location update to current hike
     _currentPath.add(_prevLocation);
@@ -107,11 +141,29 @@ class HikingService {
       deltaSec,
     );
     _currentHikerMetricsSub.add(currStatus);
+    elevationPlot.add(toElevationPlotValues(currStatus));
   }
 
-  List<FlSpot> toFlSpotList(LocationStatus location) {
-    currAltitudeSpotList.add(FlSpot(location.timeStampSec, location.altitude));
-    return currAltitudeSpotList;
+  PlotValues toElevationPlotValues(HikeMetrics metric) {
+    List<FlSpot> elevationValues = elevationPlotValues.values;
+    elevationValues.add(FlSpot(metric.metricPeriodSeconds, metric.altitude * 3.28084));
+
+
+
+    return elevationPlotValues.copyWith(
+      values: elevationValues,
+      xFormat: elevationPlotValues.xFormat.copyWith(
+        min: 0,
+        max: metric.metricPeriodSeconds*1.1,
+        interval: metric.metricPeriodSeconds*1.1/5,
+      ),
+      yFormat: elevationPlotValues.yFormat.copyWith(
+        min: metric.altitudeMin*.9 * 3.28084,
+        max: metric.altitudeMax*1.1 * 3.28084,
+        interval: (metric.altitudeMax*1.1 - metric.altitudeMin*.9)/5 * 3.28084,
+      ),
+      width: 300,
+    );
   }
 }
 
@@ -160,8 +212,6 @@ HikeMetrics accumulateMetrics(
   final speedMetersPerSec = deltaDistance / updatePeriodSec;
 
   final deltaAltitude = currLoc.altitude - prevMetrics.altitude;
-
-  print(prevMetrics.toString());
 
   return prevMetrics.copyWith(
     latitude: currLoc.latitude,
