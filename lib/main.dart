@@ -81,31 +81,7 @@ class MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
-          children: <Widget>[StreamBuilder<LocationStatus>(
-              stream: _hikingService.currentLocationStatus,
-              builder: (context, snapshot) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _toCurrentAltitude(snapshot?.data),
-                      style: const TextStyle(color: Colors.black, fontSize: 14),
-                    ),
-                    Text(
-                      _toCurrentLatLon(snapshot?.data),
-                      style: const TextStyle(color: Colors.black, fontSize: 14),
-                    ),
-                    Text(
-                      _toSpeedMetersPerSec(snapshot?.data),
-                      style: const TextStyle(color: Colors.black, fontSize: 14),
-                    ),
-                    Text(
-                      _toCurrentAccuracy(snapshot?.data),
-                      style: const TextStyle(color: Colors.black, fontSize: 14),
-                    ),
-                  ],
-                );
-              }),
+          children: <Widget>[
             // ElevatedButton(
             //   onPressed: () async {
             //     await _hikingService.updateCurrentLocation();
@@ -117,6 +93,22 @@ class MyHomePageState extends State<MyHomePage> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(
+                        _toCurrentAltitude(snapshot?.data),
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                      ),
+                      Text(
+                        _toCurrentLatLon(snapshot?.data),
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                      ),
+                      Text(
+                        _toSpeedMetersPerSec(snapshot?.data),
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                      ),
+                      Text(
+                        _toCurrentAccuracy(snapshot?.data),
+                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                      ),
                       const Padding(padding: EdgeInsets.all(16.0)),
                       Text(
                         _toTimeElapsedString(snapshot?.data),
@@ -298,25 +290,26 @@ class MyHomePageState extends State<MyHomePage> {
     return "time Elapsed: ${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}";
   }
 
-  String _toCurrentAltitude(LocationStatus locationStatus) {
-    if (locationStatus == null) return "stuff";
-    final alt = metersToFeet(locationStatus.altitude).round();
-    return "altitude: $alt ft, ${locationStatus.altitude.round()} m";
+  String _toCurrentAltitude(HikeMetrics hikeMetrics) {
+    if (hikeMetrics == null) return "stuff";
+    final alt = metersToFeet(hikeMetrics.altitude).round();
+    print("altitude: $alt");
+    return "altitude: $alt ft, ${hikeMetrics.altitude.round()} m";
   }
 
-  String _toCurrentLatLon(LocationStatus locationStatus) {
-    if (locationStatus == null) return "stuff";
-    final lat = locationStatus.latitude;
-    final lon = locationStatus.longitude;
+  String _toCurrentLatLon(HikeMetrics hikeMetrics) {
+    if (hikeMetrics == null) return "stuff";
+    final lat = hikeMetrics.latitude;
+    final lon = hikeMetrics.longitude;
     return "position: ${lat.toStringAsFixed(7)}, ${lon.toStringAsFixed(7)}";
   }
 
-  String _toCurrentAccuracy(LocationStatus locationStatus) {
-    if (locationStatus == null) return "stuff";
+  String _toCurrentAccuracy(HikeMetrics hikeMetrics) {
+    if (hikeMetrics == null) return "stuff";
     String accuracy = "unknown";
-    if (locationStatus.accuracy == LocationAccuracyType.low) {
+    if (hikeMetrics.locationAccuracy == LocationAccuracyType.low) {
       accuracy = "low (> 25m)";
-    } else if (locationStatus.accuracy == LocationAccuracyType.medium) {
+    } else if (hikeMetrics.locationAccuracy == LocationAccuracyType.medium) {
       accuracy = "medium (> 8m)";
     } else {
       accuracy = "high (< 8m)";
@@ -324,11 +317,11 @@ class MyHomePageState extends State<MyHomePage> {
     return "accuracy: $accuracy";
   }
 
-  String _toSpeedMetersPerSec(LocationStatus locationStatus) {
-    if (locationStatus == null) return "stuff";
+  String _toSpeedMetersPerSec(HikeMetrics hikeMetrics) {
+    if (hikeMetrics == null) return "stuff";
     int speed = 0;
-    if (locationStatus.speedMetersPerSec > 0.05) {
-      speed = (1 / (locationStatus.speedMetersPerSec * metersPerSecToMilesPerMin)).round();
+    if (hikeMetrics.speedMetersPerSec > 0.05) {
+      speed = (1 / (hikeMetrics.speedMetersPerSec * metersPerSecToMilesPerMin)).round();
     }
     return "speed: $speed min/mile";
   }

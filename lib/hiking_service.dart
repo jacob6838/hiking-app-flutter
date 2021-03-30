@@ -16,14 +16,10 @@ import 'models/plot_values.dart';
 
 const int millisecondsPerSecond = 1000;
 
-// - scaling of altitude plot was static
-// - bottom plot legend is illedgible
 // - 500 foot jump on Mom's phone that was not counted in cumulative ascent/descent
-// - Jacob's phone stopped updating (battery optimization??)
-// - update metrics even if no new data
 
 /// Number of seconds between updates
-const int updateIntervalSec = 30;
+const int updateIntervalSec = 10;
 
 /// Minimum distance between location updates published to UI.
 /// TODO: Dynamically update this based on instantaneous accuracy.
@@ -64,7 +60,7 @@ class HikingService {
 
   Stream<bool> get currentHikerStatus$ => _activeStatusSub.stream.asBroadcastStream();
 
-  BehaviorSubject<LocationStatus> get currentLocationStatus => BehaviorSubject.seeded(const LocationStatus());
+  BehaviorSubject<LocationStatus> get currentLocationStatus => BehaviorSubject<LocationStatus>();
 
   Stream<HikeMetrics> get currentHikerMetrics$ => _currentHikerMetricsSub.stream.asBroadcastStream();
 
@@ -105,7 +101,6 @@ class HikingService {
 
   /// Process an updated location from device
   void _handleLocationUpdate(LocationStatus locationStatus) {
-    currentLocationStatus.add(locationStatus);
 
     /// If first point, initialize variables and return
     if (_prevLocation == null || _prevLocation.timeStampSec == 0.0) {
@@ -118,6 +113,10 @@ class HikingService {
     /// Check time elapsed, if less than updateIntervalSec then return
     final double deltaSec = locationStatus.timeStampSec - _prevLocation.timeStampSec;
     if (deltaSec < updateIntervalSec) return;
+
+    print('Updating location');
+    print(locationStatus.toString());
+    currentLocationStatus.add(locationStatus);
 
     final deltaDistance = SphericalUtil.computeDistanceBetween(
       LatLng(locationStatus.latitude, locationStatus.longitude),
@@ -148,21 +147,23 @@ class HikingService {
     List<FlSpot> elevationValues = elevationPlotValues.values;
     elevationValues.add(FlSpot(metric.metricPeriodSeconds, metric.altitude * 3.28084));
 
-
+    double elevRange = (metric.altitudeMax - metric.altitudeMin) * 3.28084;
+    if (elevRange <= 10) {
+      elevRange = 10;
+    }
 
     return elevationPlotValues.copyWith(
       values: elevationValues,
       xFormat: elevationPlotValues.xFormat.copyWith(
         min: 0,
-        max: metric.metricPeriodSeconds*1.1,
-        interval: metric.metricPeriodSeconds*1.1/5,
+        max: metric.metricPeriodSeconds*1.05,
+        interval: metric.metricPeriodSeconds*1.05/5,
       ),
       yFormat: elevationPlotValues.yFormat.copyWith(
-        min: metric.altitudeMin*.9 * 3.28084,
-        max: metric.altitudeMax*1.1 * 3.28084,
-        interval: (metric.altitudeMax*1.1 - metric.altitudeMin*.9)/5 * 3.28084,
+        min: metric.altitudeMin * 3.28084 - elevRange*.2,
+        max: metric.altitudeMax * 3.28084 + elevRange*.2,
+        interval: elevRange*1.4/5,
       ),
-      width: 300,
     );
   }
 }
