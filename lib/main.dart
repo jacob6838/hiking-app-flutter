@@ -162,7 +162,7 @@ class MyHomePageState extends State<MyHomePage> {
                       height: 100.0,
                       buttonColor: Colors.white38,
                       child: RaisedButton(
-                          onPressed: () => onEnableBtnClicked(_hikingService),
+                          onPressed: () => onEnableBtnClicked(context, _hikingService),
                           child: Text(_enableBtnName(activeStatus), style: const TextStyle(color: Colors.black, fontSize: 24))));
                 }),
         StreamBuilder<PlotValues>(
@@ -250,8 +250,8 @@ class MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void onEnableBtnClicked(HikingService hikingService) {
-    _hikingService.toggleStatus(hikingService);
+  void onEnableBtnClicked(BuildContext context, HikingService hikingService) {
+    _hikingService.toggleStatus(context, hikingService);
     print("HIKER: onEnableBtnClicked");
   }
 

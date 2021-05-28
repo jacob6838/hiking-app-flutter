@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:background_location/background_location.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:hiking_app/location_service.dart';
 import 'package:hiking_app/models/hike_metrics.dart';
 import 'package:hiking_app/models/location_accuracy_type.dart';
@@ -64,9 +65,35 @@ class HikingService {
 
   Stream<HikeMetrics> get currentHikerMetrics$ => _currentHikerMetricsSub.stream.asBroadcastStream();
 
-  Future<void> toggleStatus(HikingService hikingService) async {
-    _hikeIsActive = !_hikeIsActive;
-    _activeStatusSub.add(_hikeIsActive);
+  Future<void> toggleStatus(BuildContext context, HikingService hikingService) async {
+    if (!_hikeIsActive) {
+      final gpsEnabled = await hikingService._locationService.requestEnableGps();
+      final locationAlwaysEnabled = await hikingService._locationService.requestEnableLocationAlways();
+      print("$gpsEnabled, $locationAlwaysEnabled");
+      if (gpsEnabled && locationAlwaysEnabled){
+        _hikeIsActive = !_hikeIsActive;
+        _activeStatusSub.add(_hikeIsActive);
+      }
+      else {
+        var reason = "";
+        if (!gpsEnabled) {
+          reason += "\n- GPS disabled";
+        }
+        if (!locationAlwaysEnabled) {
+          reason += "\n- Location permissions not allowed all the time";
+        }
+        await showDialog(
+          context: context,
+          builder: (BuildContext context) => locationPopup(context, reason),
+        );
+        return;
+      }
+    }
+    else {
+      _hikeIsActive = !_hikeIsActive;
+      _activeStatusSub.add(_hikeIsActive);
+    }
+
     if (_hikeIsActive) {
       hikingService._locationService.startLocationUpdates();
       // _prevLocation = toLocationStatus(await _locationService.location);
@@ -93,6 +120,50 @@ class HikingService {
     else {
       hikingService._locationService.stopLocationService();
     }
+  }
+
+  Widget locationDisclosurePopup(BuildContext context, String reason) {
+    return AlertDialog(
+      title: const Text('Location Permissions Disclosure'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text("This application requires certain location permissions, which have not been met. The following requirements are not satisfied: $reason"),
+        ],
+      ),
+      actions: <Widget>[
+        RaisedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
+
+  Widget locationPopup(BuildContext context, String reason) {
+    return AlertDialog(
+      title: const Text('Location Requirements Not Satisfied'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text("This application requires certain location permissions, which have not been met. The following requirements are not satisfied: $reason"),
+        ],
+      ),
+      actions: <Widget>[
+        RaisedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
+    );
   }
 
   // Future<void> updateCurrentLocation() async {

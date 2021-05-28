@@ -1,13 +1,13 @@
-/*
- * Copyright (c) 2020 Virginia Tech Transportation Institute. All rights reserved.
- */
-
 import 'dart:async';
 
 import 'package:background_location/background_location.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import 'package:location/location.dart' as loc;
 
 class LocationService {
   final _location = BackgroundLocation();
+  loc.Location locLocation = loc.Location();
 
 //  BackgroundLocation _currentLocation;
 
@@ -57,5 +57,27 @@ class LocationService {
       },
       onDenied: () {},
     );
+  }
+
+  Future<bool> locationAlwaysGranted() async => Permission.locationAlways.status.isGranted;
+
+  Future<bool> locationDisabled() async => Permission.location.isDenied;
+
+  Future<bool> requestLocationAlways() async => Permission.locationAlways.request().isGranted;
+
+  Future<bool> requestEnableLocationAlways() async {
+    var _serviceEnabled = await locationAlwaysGranted();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await requestLocationAlways();
+    }
+    return _serviceEnabled;
+  }
+
+  Future<bool> requestEnableGps() async {
+    var _serviceEnabled = await locLocation.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await locLocation.requestService();
+    }
+    return _serviceEnabled;
   }
 }
