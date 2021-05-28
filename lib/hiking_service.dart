@@ -66,11 +66,18 @@ class HikingService {
   Stream<HikeMetrics> get currentHikerMetrics$ => _currentHikerMetricsSub.stream.asBroadcastStream();
 
   Future<void> toggleStatus(BuildContext context, HikingService hikingService) async {
+
     if (!_hikeIsActive) {
-      final gpsEnabled = await hikingService._locationService.requestEnableGps();
+      if (!await hikingService._locationService.locationAlwaysGranted()) {
+        await showDialog(
+          context: context,
+          builder: (BuildContext context) => locationDisclosurePopup(context),
+        );
+      }
+
       final locationAlwaysEnabled = await hikingService._locationService.requestEnableLocationAlways();
-      print("$gpsEnabled, $locationAlwaysEnabled");
-      if (gpsEnabled && locationAlwaysEnabled){
+      final gpsEnabled = await hikingService._locationService.requestEnableGps();
+      if (gpsEnabled && locationAlwaysEnabled) {
         _hikeIsActive = !_hikeIsActive;
         _activeStatusSub.add(_hikeIsActive);
       }
@@ -122,14 +129,14 @@ class HikingService {
     }
   }
 
-  Widget locationDisclosurePopup(BuildContext context, String reason) {
+  Widget locationDisclosurePopup(BuildContext context) {
     return AlertDialog(
       title: const Text('Location Permissions Disclosure'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text("This application requires certain location permissions, which have not been met. The following requirements are not satisfied: $reason"),
+          const Text("This hiking App collects location data to enable hiking data collection and analysis, even when the app is closed or not in use."),
         ],
       ),
       actions: <Widget>[
