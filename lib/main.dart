@@ -190,33 +190,6 @@ class MyHomePageState extends State<MyHomePage> {
                     ],
                   );
                 }),
-            StreamBuilder<bool>(
-                stream: _hikingService.currentHikerStatus$,
-                builder: (context, AsyncSnapshot<bool> snapshot) {
-                  final bool activeStatus = snapshot?.data ?? false;
-                  return ButtonTheme(
-                      minWidth: 170.0,
-                      height: 70.0,
-                      buttonColor: Colors.white38,
-                      child: RaisedButton(
-                          color: isStartButtonEnabled ? Colors.green : Colors.red,
-                          onPressed: !isStartButtonEnabled
-                              ? null
-                              : () {
-                                  print("Button Pressed");
-                                  if (activeStatus) {
-                                    setState(() {
-                                      isDropdownEnabled = true;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      isDropdownEnabled = false;
-                                    });
-                                  }
-                                  onEnableBtnClicked(context, _hikingService);
-                                },
-                          child: Text(_enableBtnName(activeStatus), style: const TextStyle(color: Colors.black, fontSize: 24))));
-                }),
             StreamBuilder<PlotValues>(
                 stream: _hikingService.elevationPlot,
                 builder: (context, snapshot) {
@@ -294,7 +267,45 @@ class MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                   );
-                }),
+                }
+            ),
+            StreamBuilder<bool>(
+                stream: _hikingService.currentHikerStatus$,
+                builder: (context, AsyncSnapshot<bool> snapshot) {
+                  final bool activeStatus = snapshot?.data ?? false;
+                  return SizedBox(
+                    height: 80,
+                    width: 80,
+                    child: Container(
+                        decoration: BoxDecoration(
+                          color: !isStartButtonEnabled ? Colors.black26 : (!activeStatus ? Colors.green : Colors.red),
+                          shape: BoxShape.circle,
+                        ),
+                        child: InkWell(
+                          onTap: !isStartButtonEnabled ? null :
+                              () {
+                            print("Button Pressed");
+                            if (activeStatus) {
+                              setState(() {
+                                isDropdownEnabled = true;
+                              });
+                            } else {
+                              setState(() {
+                                isDropdownEnabled = false;
+                              });
+                            }
+                            onEnableBtnClicked(context, _hikingService);
+                          },
+                          child: Icon(
+                            !activeStatus ? Icons.play_arrow : Icons.stop_rounded,
+                            color: Colors.white,
+                            size: 60,
+                          ),
+                        )
+                    )
+                  );
+                }
+            ),
           ],
         ),
       ),
