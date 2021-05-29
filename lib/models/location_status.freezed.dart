@@ -8,6 +8,9 @@ part of 'location_status.dart';
 // **************************************************************************
 
 T _$identity<T>(T value) => value;
+LocationStatus _$LocationStatusFromJson(Map<String, dynamic> json) {
+  return _LocationStatus.fromJson(json);
+}
 
 /// @nodoc
 class _$LocationStatusTearOff {
@@ -34,6 +37,11 @@ class _$LocationStatusTearOff {
       timeStampSec: timeStampSec,
     );
   }
+
+// ignore: unused_element
+  LocationStatus fromJson(Map<String, Object> json) {
+    return LocationStatus.fromJson(json);
+  }
 }
 
 /// @nodoc
@@ -51,6 +59,7 @@ mixin _$LocationStatus {
   double get headingDegrees;
   double get timeStampSec;
 
+  Map<String, dynamic> toJson();
   @JsonKey(ignore: true)
   $LocationStatusCopyWith<LocationStatus> get copyWith;
 }
@@ -177,6 +186,8 @@ class __$LocationStatusCopyWithImpl<$Res>
   }
 }
 
+@JsonSerializable()
+
 /// @nodoc
 class _$_LocationStatus implements _LocationStatus {
   const _$_LocationStatus(
@@ -196,6 +207,9 @@ class _$_LocationStatus implements _LocationStatus {
         assert(speedAccuracy != null),
         assert(headingDegrees != null),
         assert(timeStampSec != null);
+
+  factory _$_LocationStatus.fromJson(Map<String, dynamic> json) =>
+      _$_$_LocationStatusFromJson(json);
 
   @JsonKey(defaultValue: 0.0)
   @override
@@ -273,6 +287,11 @@ class _$_LocationStatus implements _LocationStatus {
   @override
   _$LocationStatusCopyWith<_LocationStatus> get copyWith =>
       __$LocationStatusCopyWithImpl<_LocationStatus>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$_$_LocationStatusToJson(this);
+  }
 }
 
 abstract class _LocationStatus implements LocationStatus {
@@ -285,6 +304,9 @@ abstract class _LocationStatus implements LocationStatus {
       LocationAccuracyType speedAccuracy,
       double headingDegrees,
       double timeStampSec}) = _$_LocationStatus;
+
+  factory _LocationStatus.fromJson(Map<String, dynamic> json) =
+      _$_LocationStatus.fromJson;
 
   @override
   double get latitude;

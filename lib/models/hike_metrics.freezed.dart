@@ -8,6 +8,9 @@ part of 'hike_metrics.dart';
 // **************************************************************************
 
 T _$identity<T>(T value) => value;
+HikeMetrics _$HikeMetricsFromJson(Map<String, dynamic> json) {
+  return _HikeMetrics.fromJson(json);
+}
 
 /// @nodoc
 class _$HikeMetricsTearOff {
@@ -36,8 +39,7 @@ class _$HikeMetricsTearOff {
       double netElevationChange = 0.0,
       double cumulativeClimbMeters = 0.0,
       double cumulativeDescentMeters = 0.0,
-      double metricPeriodSeconds = 0.0,
-      KtList<LocationStatus> path = const KtList.empty()}) {
+      double metricPeriodSeconds = 0.0}) {
     return _HikeMetrics(
       timeStartSec: timeStartSec,
       latitudeStart: latitudeStart,
@@ -61,8 +63,12 @@ class _$HikeMetricsTearOff {
       cumulativeClimbMeters: cumulativeClimbMeters,
       cumulativeDescentMeters: cumulativeDescentMeters,
       metricPeriodSeconds: metricPeriodSeconds,
-      path: path,
     );
+  }
+
+// ignore: unused_element
+  HikeMetrics fromJson(Map<String, Object> json) {
+    return HikeMetrics.fromJson(json);
   }
 }
 
@@ -94,8 +100,8 @@ mixin _$HikeMetrics {
   double get cumulativeClimbMeters;
   double get cumulativeDescentMeters;
   double get metricPeriodSeconds;
-  KtList<LocationStatus> get path;
 
+  Map<String, dynamic> toJson();
   @JsonKey(ignore: true)
   $HikeMetricsCopyWith<HikeMetrics> get copyWith;
 }
@@ -127,8 +133,7 @@ abstract class $HikeMetricsCopyWith<$Res> {
       double netElevationChange,
       double cumulativeClimbMeters,
       double cumulativeDescentMeters,
-      double metricPeriodSeconds,
-      KtList<LocationStatus> path});
+      double metricPeriodSeconds});
 }
 
 /// @nodoc
@@ -163,7 +168,6 @@ class _$HikeMetricsCopyWithImpl<$Res> implements $HikeMetricsCopyWith<$Res> {
     Object cumulativeClimbMeters = freezed,
     Object cumulativeDescentMeters = freezed,
     Object metricPeriodSeconds = freezed,
-    Object path = freezed,
   }) {
     return _then(_value.copyWith(
       timeStartSec: timeStartSec == freezed
@@ -220,7 +224,6 @@ class _$HikeMetricsCopyWithImpl<$Res> implements $HikeMetricsCopyWith<$Res> {
       metricPeriodSeconds: metricPeriodSeconds == freezed
           ? _value.metricPeriodSeconds
           : metricPeriodSeconds as double,
-      path: path == freezed ? _value.path : path as KtList<LocationStatus>,
     ));
   }
 }
@@ -254,8 +257,7 @@ abstract class _$HikeMetricsCopyWith<$Res>
       double netElevationChange,
       double cumulativeClimbMeters,
       double cumulativeDescentMeters,
-      double metricPeriodSeconds,
-      KtList<LocationStatus> path});
+      double metricPeriodSeconds});
 }
 
 /// @nodoc
@@ -292,7 +294,6 @@ class __$HikeMetricsCopyWithImpl<$Res> extends _$HikeMetricsCopyWithImpl<$Res>
     Object cumulativeClimbMeters = freezed,
     Object cumulativeDescentMeters = freezed,
     Object metricPeriodSeconds = freezed,
-    Object path = freezed,
   }) {
     return _then(_HikeMetrics(
       timeStartSec: timeStartSec == freezed
@@ -349,10 +350,11 @@ class __$HikeMetricsCopyWithImpl<$Res> extends _$HikeMetricsCopyWithImpl<$Res>
       metricPeriodSeconds: metricPeriodSeconds == freezed
           ? _value.metricPeriodSeconds
           : metricPeriodSeconds as double,
-      path: path == freezed ? _value.path : path as KtList<LocationStatus>,
     ));
   }
 }
+
+@JsonSerializable()
 
 /// @nodoc
 class _$_HikeMetrics implements _HikeMetrics {
@@ -378,8 +380,7 @@ class _$_HikeMetrics implements _HikeMetrics {
       this.netElevationChange = 0.0,
       this.cumulativeClimbMeters = 0.0,
       this.cumulativeDescentMeters = 0.0,
-      this.metricPeriodSeconds = 0.0,
-      this.path = const KtList.empty()})
+      this.metricPeriodSeconds = 0.0})
       : assert(timeStartSec != null),
         assert(latitudeStart != null),
         assert(longitudeStart != null),
@@ -401,8 +402,10 @@ class _$_HikeMetrics implements _HikeMetrics {
         assert(netElevationChange != null),
         assert(cumulativeClimbMeters != null),
         assert(cumulativeDescentMeters != null),
-        assert(metricPeriodSeconds != null),
-        assert(path != null);
+        assert(metricPeriodSeconds != null);
+
+  factory _$_HikeMetrics.fromJson(Map<String, dynamic> json) =>
+      _$_$_HikeMetricsFromJson(json);
 
   @JsonKey(defaultValue: 0.0)
   @override
@@ -470,13 +473,10 @@ class _$_HikeMetrics implements _HikeMetrics {
   @JsonKey(defaultValue: 0.0)
   @override
   final double metricPeriodSeconds;
-  @JsonKey(defaultValue: const KtList.empty())
-  @override
-  final KtList<LocationStatus> path;
 
   @override
   String toString() {
-    return 'HikeMetrics(timeStartSec: $timeStartSec, latitudeStart: $latitudeStart, longitudeStart: $longitudeStart, altitudeStart: $altitudeStart, latitude: $latitude, longitude: $longitude, altitude: $altitude, speedMetersPerSec: $speedMetersPerSec, headingDegrees: $headingDegrees, locationAccuracy: $locationAccuracy, speedAccuracy: $speedAccuracy, altitudeMax: $altitudeMax, altitudeMin: $altitudeMin, speedMax: $speedMax, speedMin: $speedMin, averageSpeedMetersPerSec: $averageSpeedMetersPerSec, netHeadingDegrees: $netHeadingDegrees, distanceTraveled: $distanceTraveled, netElevationChange: $netElevationChange, cumulativeClimbMeters: $cumulativeClimbMeters, cumulativeDescentMeters: $cumulativeDescentMeters, metricPeriodSeconds: $metricPeriodSeconds, path: $path)';
+    return 'HikeMetrics(timeStartSec: $timeStartSec, latitudeStart: $latitudeStart, longitudeStart: $longitudeStart, altitudeStart: $altitudeStart, latitude: $latitude, longitude: $longitude, altitude: $altitude, speedMetersPerSec: $speedMetersPerSec, headingDegrees: $headingDegrees, locationAccuracy: $locationAccuracy, speedAccuracy: $speedAccuracy, altitudeMax: $altitudeMax, altitudeMin: $altitudeMin, speedMax: $speedMax, speedMin: $speedMin, averageSpeedMetersPerSec: $averageSpeedMetersPerSec, netHeadingDegrees: $netHeadingDegrees, distanceTraveled: $distanceTraveled, netElevationChange: $netElevationChange, cumulativeClimbMeters: $cumulativeClimbMeters, cumulativeDescentMeters: $cumulativeDescentMeters, metricPeriodSeconds: $metricPeriodSeconds)';
   }
 
   @override
@@ -545,8 +545,7 @@ class _$_HikeMetrics implements _HikeMetrics {
                 const DeepCollectionEquality().equals(
                     other.cumulativeClimbMeters, cumulativeClimbMeters)) &&
             (identical(other.cumulativeDescentMeters, cumulativeDescentMeters) || const DeepCollectionEquality().equals(other.cumulativeDescentMeters, cumulativeDescentMeters)) &&
-            (identical(other.metricPeriodSeconds, metricPeriodSeconds) || const DeepCollectionEquality().equals(other.metricPeriodSeconds, metricPeriodSeconds)) &&
-            (identical(other.path, path) || const DeepCollectionEquality().equals(other.path, path)));
+            (identical(other.metricPeriodSeconds, metricPeriodSeconds) || const DeepCollectionEquality().equals(other.metricPeriodSeconds, metricPeriodSeconds)));
   }
 
   @override
@@ -573,13 +572,17 @@ class _$_HikeMetrics implements _HikeMetrics {
       const DeepCollectionEquality().hash(netElevationChange) ^
       const DeepCollectionEquality().hash(cumulativeClimbMeters) ^
       const DeepCollectionEquality().hash(cumulativeDescentMeters) ^
-      const DeepCollectionEquality().hash(metricPeriodSeconds) ^
-      const DeepCollectionEquality().hash(path);
+      const DeepCollectionEquality().hash(metricPeriodSeconds);
 
   @JsonKey(ignore: true)
   @override
   _$HikeMetricsCopyWith<_HikeMetrics> get copyWith =>
       __$HikeMetricsCopyWithImpl<_HikeMetrics>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$_$_HikeMetricsToJson(this);
+  }
 }
 
 abstract class _HikeMetrics implements HikeMetrics {
@@ -605,8 +608,10 @@ abstract class _HikeMetrics implements HikeMetrics {
       double netElevationChange,
       double cumulativeClimbMeters,
       double cumulativeDescentMeters,
-      double metricPeriodSeconds,
-      KtList<LocationStatus> path}) = _$_HikeMetrics;
+      double metricPeriodSeconds}) = _$_HikeMetrics;
+
+  factory _HikeMetrics.fromJson(Map<String, dynamic> json) =
+      _$_HikeMetrics.fromJson;
 
   @override
   double get timeStartSec;
@@ -652,8 +657,6 @@ abstract class _HikeMetrics implements HikeMetrics {
   double get cumulativeDescentMeters;
   @override
   double get metricPeriodSeconds;
-  @override
-  KtList<LocationStatus> get path;
   @override
   @JsonKey(ignore: true)
   _$HikeMetricsCopyWith<_HikeMetrics> get copyWith;

@@ -49,6 +49,9 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
   HikingService _hikingService;
+  String dropdownValue = "live";
+  bool isStartButtonEnabled = true;
+  bool isDropdownEnabled = true;
 
   @override
   Widget build(BuildContext context) {
@@ -82,11 +85,45 @@ class MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
           children: <Widget>[
-            // ElevatedButton(
-            //   onPressed: () async {
-            //     await _hikingService.updateCurrentLocation();
-            //   },
-            //   child: const Text("Get Current Location")),
+            StreamBuilder<List<String>>(
+                stream: _hikingService.archiveService.currentArchiveList,
+                builder: (context, snapshot) {
+                  return DropdownButton<String>(
+                    value: dropdownValue,
+                    icon: const Icon(Icons.arrow_downward),
+                    iconSize: 24,
+                    elevation: 16,
+                    style: const TextStyle(color: Colors.deepPurple),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.deepPurpleAccent,
+                    ),
+                    onChanged: !isDropdownEnabled
+                        ? null
+                        : (String newValue) {
+                            print(newValue);
+                            if (newValue == "live") {
+                              setState(() {
+                                isStartButtonEnabled = true;
+                              });
+                            } else {
+                              setState(() {
+                                isStartButtonEnabled = false;
+                              });
+                            }
+                            _hikingService.archiveService.activateArchive(newValue);
+                            setState(() {
+                              dropdownValue = newValue;
+                            });
+                          },
+                    items: snapshot.data?.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    })?.toList(),
+                  );
+                }),
             StreamBuilder<HikeMetrics>(
                 stream: _hikingService.currentHikerMetrics$,
                 builder: (context, AsyncSnapshot<HikeMetrics> snapshot) {
@@ -158,92 +195,106 @@ class MyHomePageState extends State<MyHomePage> {
                 builder: (context, AsyncSnapshot<bool> snapshot) {
                   final bool activeStatus = snapshot?.data ?? false;
                   return ButtonTheme(
-                      minWidth: 200.0,
-                      height: 100.0,
+                      minWidth: 170.0,
+                      height: 70.0,
                       buttonColor: Colors.white38,
                       child: RaisedButton(
-                          onPressed: () => onEnableBtnClicked(context, _hikingService),
+                          color: isStartButtonEnabled ? Colors.green : Colors.red,
+                          onPressed: !isStartButtonEnabled
+                              ? null
+                              : () {
+                                  print("Button Pressed");
+                                  if (activeStatus) {
+                                    setState(() {
+                                      isDropdownEnabled = true;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      isDropdownEnabled = false;
+                                    });
+                                  }
+                                  onEnableBtnClicked(context, _hikingService);
+                                },
                           child: Text(_enableBtnName(activeStatus), style: const TextStyle(color: Colors.black, fontSize: 24))));
                 }),
-        StreamBuilder<PlotValues>(
-          stream: _hikingService.elevationPlot,
-          builder: (context, snapshot) {
-            final plotValues = snapshot.data ?? PlotValues.build();
-            return SizedBox(
-              width: plotValues.width,
-              height: plotValues.height,
-              child: LineChart(
-                LineChartData(
-                  lineTouchData: LineTouchData(enabled: false),
-                  lineBarsData: [
-                    LineChartBarData(
-                      spots: plotValues.values,
-                      // isCurved: true,
-                      barWidth: 3,
-                      colors: [
-                        Colors.purpleAccent,
-                      ],
-                      dotData: FlDotData(
-                        show: false,
+            StreamBuilder<PlotValues>(
+                stream: _hikingService.elevationPlot,
+                builder: (context, snapshot) {
+                  final plotValues = snapshot.data ?? PlotValues();
+                  return SizedBox(
+                    width: plotValues.width,
+                    height: plotValues.height,
+                    child: LineChart(
+                      LineChartData(
+                        lineTouchData: LineTouchData(enabled: false),
+                        lineBarsData: [
+                          LineChartBarData(
+                            spots: plotValues.values.map((it) => FlSpot(it[0], it[1])).toList(),
+                            // isCurved: true,
+                            barWidth: 3,
+                            colors: [
+                              Colors.purpleAccent,
+                            ],
+                            dotData: FlDotData(
+                              show: false,
+                            ),
+                          ),
+                        ],
+                        minX: plotValues.xFormat.min,
+                        maxX: plotValues.xFormat.max,
+                        minY: plotValues.yFormat.min,
+                        maxY: plotValues.yFormat.max,
+                        // minY: 0,
+                        titlesData: FlTitlesData(
+                          bottomTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 14,
+                            // getTextStyles: plotValues.xFormat.axisTextStyleFunc,
+                            interval: plotValues.xFormat.interval,
+                            getTitles: (value) {
+                              final int minutes = (value / secPerMin).round() % minPerHour;
+                              final int hours = ((value / secPerMin) / minPerHour).floor();
+                              return "$hours:$minutes";
+                            },
+                            // (value) {
+                            // final int minutes = (value / secPerMin).round() % minPerHour;
+                            // final int hours = ((value / secPerMin) / minPerHour).floor();
+                            // return "$hours:$minutes";
+                            // }
+                          ),
+                          leftTitles: SideTitles(
+                            showTitles: true,
+                            // getTextStyles: plotValues.yFormat.axisTextStyleFunc,
+                            interval: plotValues.yFormat.interval,
+                            // getTitles: plotValues.yFormat.axisFormatFunc,
+                            // getTitles: (value) {
+                            //   return value.toString();
+                            // },
+                          ),
+                        ),
+                        axisTitleData: FlAxisTitleData(
+                          bottomTitle: AxisTitle(
+                              showTitle: true,
+                              margin: 0,
+                              titleText: plotValues.xFormat.axisTitle,
+                              // textStyle: plotValues.xFormat.axisTextStyle,
+                              textAlign: TextAlign.right),
+                          leftTitle: AxisTitle(
+                              showTitle: true,
+                              titleText: plotValues.yFormat.axisTitle,
+                              // textStyle: plotValues.yFormat.axisTextStyle,
+                              margin: 4),
+                        ),
+                        gridData: FlGridData(
+                          show: true,
+                          checkToShowHorizontalLine: (double value) {
+                            return value == 1 || value == 6 || value == 4 || value == 5;
+                          },
+                        ),
                       ),
                     ),
-                  ],
-                  minX: plotValues.xFormat.min,
-                  maxX: plotValues.xFormat.max,
-                  minY: plotValues.yFormat.min,
-                  maxY: plotValues.yFormat.max,
-                  // minY: 0,
-                  titlesData: FlTitlesData(
-                    bottomTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: 14,
-                        getTextStyles: plotValues.xFormat.axisTextStyleFunc,
-                        interval: plotValues.xFormat.interval,
-                        getTitles: plotValues.xFormat.axisFormatFunc,
-                          // (value) {
-                          // final int minutes = (value / secPerMin).round() % minPerHour;
-                          // final int hours = ((value / secPerMin) / minPerHour).floor();
-                          // return "$hours:$minutes";
-                          // }
-                      ),
-                    leftTitles: SideTitles(
-                      showTitles: true,
-                      getTextStyles: plotValues.yFormat.axisTextStyleFunc,
-                      interval: plotValues.yFormat.interval,
-                      getTitles: plotValues.yFormat.axisFormatFunc,
-                      // getTitles: (value) {
-                      //   return value.toString();
-                      // },
-                    ),
-                  ),
-                  axisTitleData: FlAxisTitleData(
-                      bottomTitle: AxisTitle(
-                          showTitle: true,
-                          margin: 0,
-                          titleText: plotValues.xFormat.axisTitle,
-                          textStyle: plotValues.xFormat.axisTextStyle,
-                          textAlign: TextAlign.right),
-                      leftTitle: AxisTitle(
-                        showTitle: true,
-                        titleText: plotValues.yFormat.axisTitle,
-                        textStyle: plotValues.yFormat.axisTextStyle,
-                        margin: 4),
-                  ),
-                  gridData: FlGridData(
-                    show: true,
-                    checkToShowHorizontalLine: (double value) {
-                      return value == 1 || value == 6 || value == 4 || value == 5;
-                    },
-                  ),
-                ),
-              ),
-            );
-          }
-        ),
-            // FlatButton(
-            //   onPressed: onEnableBtnClicked,
-            //   child: const Text('hey :P'),
-            // ), // This trailing comma makes auto-formatting nicer for build methods.
+                  );
+                }),
           ],
         ),
       ),

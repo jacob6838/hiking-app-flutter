@@ -8,14 +8,17 @@ part of 'plot_values.dart';
 // **************************************************************************
 
 T _$identity<T>(T value) => value;
+PlotValues _$PlotValuesFromJson(Map<String, dynamic> json) {
+  return _PlotValues.fromJson(json);
+}
 
 /// @nodoc
 class _$PlotValuesTearOff {
   const _$PlotValuesTearOff();
 
 // ignore: unused_element
-  _PlotValues _hidden(
-      {List<FlSpot> values,
+  _PlotValues _(
+      {List<List<double>> values,
       PlotFormat xFormat,
       PlotFormat yFormat,
       double height,
@@ -28,6 +31,11 @@ class _$PlotValuesTearOff {
       width: width,
     );
   }
+
+// ignore: unused_element
+  PlotValues fromJson(Map<String, Object> json) {
+    return PlotValues.fromJson(json);
+  }
 }
 
 /// @nodoc
@@ -36,12 +44,13 @@ const $PlotValues = _$PlotValuesTearOff();
 
 /// @nodoc
 mixin _$PlotValues {
-  List<FlSpot> get values;
+  List<List<double>> get values;
   PlotFormat get xFormat;
   PlotFormat get yFormat;
   double get height;
   double get width;
 
+  Map<String, dynamic> toJson();
   @JsonKey(ignore: true)
   $PlotValuesCopyWith<PlotValues> get copyWith;
 }
@@ -52,7 +61,7 @@ abstract class $PlotValuesCopyWith<$Res> {
           PlotValues value, $Res Function(PlotValues) then) =
       _$PlotValuesCopyWithImpl<$Res>;
   $Res call(
-      {List<FlSpot> values,
+      {List<List<double>> values,
       PlotFormat xFormat,
       PlotFormat yFormat,
       double height,
@@ -79,7 +88,7 @@ class _$PlotValuesCopyWithImpl<$Res> implements $PlotValuesCopyWith<$Res> {
     Object width = freezed,
   }) {
     return _then(_value.copyWith(
-      values: values == freezed ? _value.values : values as List<FlSpot>,
+      values: values == freezed ? _value.values : values as List<List<double>>,
       xFormat: xFormat == freezed ? _value.xFormat : xFormat as PlotFormat,
       yFormat: yFormat == freezed ? _value.yFormat : yFormat as PlotFormat,
       height: height == freezed ? _value.height : height as double,
@@ -115,7 +124,7 @@ abstract class _$PlotValuesCopyWith<$Res> implements $PlotValuesCopyWith<$Res> {
       __$PlotValuesCopyWithImpl<$Res>;
   @override
   $Res call(
-      {List<FlSpot> values,
+      {List<List<double>> values,
       PlotFormat xFormat,
       PlotFormat yFormat,
       double height,
@@ -146,7 +155,7 @@ class __$PlotValuesCopyWithImpl<$Res> extends _$PlotValuesCopyWithImpl<$Res>
     Object width = freezed,
   }) {
     return _then(_PlotValues(
-      values: values == freezed ? _value.values : values as List<FlSpot>,
+      values: values == freezed ? _value.values : values as List<List<double>>,
       xFormat: xFormat == freezed ? _value.xFormat : xFormat as PlotFormat,
       yFormat: yFormat == freezed ? _value.yFormat : yFormat as PlotFormat,
       height: height == freezed ? _value.height : height as double,
@@ -155,13 +164,18 @@ class __$PlotValuesCopyWithImpl<$Res> extends _$PlotValuesCopyWithImpl<$Res>
   }
 }
 
+@JsonSerializable()
+
 /// @nodoc
 class _$_PlotValues implements _PlotValues {
   const _$_PlotValues(
       {this.values, this.xFormat, this.yFormat, this.height, this.width});
 
+  factory _$_PlotValues.fromJson(Map<String, dynamic> json) =>
+      _$_$_PlotValuesFromJson(json);
+
   @override
-  final List<FlSpot> values;
+  final List<List<double>> values;
   @override
   final PlotFormat xFormat;
   @override
@@ -173,7 +187,7 @@ class _$_PlotValues implements _PlotValues {
 
   @override
   String toString() {
-    return 'PlotValues._hidden(values: $values, xFormat: $xFormat, yFormat: $yFormat, height: $height, width: $width)';
+    return 'PlotValues._(values: $values, xFormat: $xFormat, yFormat: $yFormat, height: $height, width: $width)';
   }
 
   @override
@@ -207,18 +221,26 @@ class _$_PlotValues implements _PlotValues {
   @override
   _$PlotValuesCopyWith<_PlotValues> get copyWith =>
       __$PlotValuesCopyWithImpl<_PlotValues>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$_$_PlotValuesToJson(this);
+  }
 }
 
 abstract class _PlotValues implements PlotValues {
   const factory _PlotValues(
-      {List<FlSpot> values,
+      {List<List<double>> values,
       PlotFormat xFormat,
       PlotFormat yFormat,
       double height,
       double width}) = _$_PlotValues;
 
+  factory _PlotValues.fromJson(Map<String, dynamic> json) =
+      _$_PlotValues.fromJson;
+
   @override
-  List<FlSpot> get values;
+  List<List<double>> get values;
   @override
   PlotFormat get xFormat;
   @override
@@ -232,28 +254,28 @@ abstract class _PlotValues implements PlotValues {
   _$PlotValuesCopyWith<_PlotValues> get copyWith;
 }
 
+PlotFormat _$PlotFormatFromJson(Map<String, dynamic> json) {
+  return _PlotFormat.fromJson(json);
+}
+
 /// @nodoc
 class _$PlotFormatTearOff {
   const _$PlotFormatTearOff();
 
 // ignore: unused_element
   _PlotFormat call(
-      {double min,
-      double max,
-      String axisTitle,
-      String Function(double) axisFormatFunc,
-      double interval,
-      TextStyle axisTextStyle,
-      TextStyle Function(double) axisTextStyleFunc}) {
+      {double min, double max, String axisTitle, double interval}) {
     return _PlotFormat(
       min: min,
       max: max,
       axisTitle: axisTitle,
-      axisFormatFunc: axisFormatFunc,
       interval: interval,
-      axisTextStyle: axisTextStyle,
-      axisTextStyleFunc: axisTextStyleFunc,
     );
+  }
+
+// ignore: unused_element
+  PlotFormat fromJson(Map<String, Object> json) {
+    return PlotFormat.fromJson(json);
   }
 }
 
@@ -265,12 +287,10 @@ const $PlotFormat = _$PlotFormatTearOff();
 mixin _$PlotFormat {
   double get min;
   double get max;
-  String get axisTitle;
-  String Function(double) get axisFormatFunc;
+  String get axisTitle; // AxisFormat axisFormatFunc,
   double get interval;
-  TextStyle get axisTextStyle;
-  TextStyle Function(double) get axisTextStyleFunc;
 
+  Map<String, dynamic> toJson();
   @JsonKey(ignore: true)
   $PlotFormatCopyWith<PlotFormat> get copyWith;
 }
@@ -280,14 +300,7 @@ abstract class $PlotFormatCopyWith<$Res> {
   factory $PlotFormatCopyWith(
           PlotFormat value, $Res Function(PlotFormat) then) =
       _$PlotFormatCopyWithImpl<$Res>;
-  $Res call(
-      {double min,
-      double max,
-      String axisTitle,
-      String Function(double) axisFormatFunc,
-      double interval,
-      TextStyle axisTextStyle,
-      TextStyle Function(double) axisTextStyleFunc});
+  $Res call({double min, double max, String axisTitle, double interval});
 }
 
 /// @nodoc
@@ -303,25 +316,13 @@ class _$PlotFormatCopyWithImpl<$Res> implements $PlotFormatCopyWith<$Res> {
     Object min = freezed,
     Object max = freezed,
     Object axisTitle = freezed,
-    Object axisFormatFunc = freezed,
     Object interval = freezed,
-    Object axisTextStyle = freezed,
-    Object axisTextStyleFunc = freezed,
   }) {
     return _then(_value.copyWith(
       min: min == freezed ? _value.min : min as double,
       max: max == freezed ? _value.max : max as double,
       axisTitle: axisTitle == freezed ? _value.axisTitle : axisTitle as String,
-      axisFormatFunc: axisFormatFunc == freezed
-          ? _value.axisFormatFunc
-          : axisFormatFunc as String Function(double),
       interval: interval == freezed ? _value.interval : interval as double,
-      axisTextStyle: axisTextStyle == freezed
-          ? _value.axisTextStyle
-          : axisTextStyle as TextStyle,
-      axisTextStyleFunc: axisTextStyleFunc == freezed
-          ? _value.axisTextStyleFunc
-          : axisTextStyleFunc as TextStyle Function(double),
     ));
   }
 }
@@ -332,14 +333,7 @@ abstract class _$PlotFormatCopyWith<$Res> implements $PlotFormatCopyWith<$Res> {
           _PlotFormat value, $Res Function(_PlotFormat) then) =
       __$PlotFormatCopyWithImpl<$Res>;
   @override
-  $Res call(
-      {double min,
-      double max,
-      String axisTitle,
-      String Function(double) axisFormatFunc,
-      double interval,
-      TextStyle axisTextStyle,
-      TextStyle Function(double) axisTextStyleFunc});
+  $Res call({double min, double max, String axisTitle, double interval});
 }
 
 /// @nodoc
@@ -357,39 +351,25 @@ class __$PlotFormatCopyWithImpl<$Res> extends _$PlotFormatCopyWithImpl<$Res>
     Object min = freezed,
     Object max = freezed,
     Object axisTitle = freezed,
-    Object axisFormatFunc = freezed,
     Object interval = freezed,
-    Object axisTextStyle = freezed,
-    Object axisTextStyleFunc = freezed,
   }) {
     return _then(_PlotFormat(
       min: min == freezed ? _value.min : min as double,
       max: max == freezed ? _value.max : max as double,
       axisTitle: axisTitle == freezed ? _value.axisTitle : axisTitle as String,
-      axisFormatFunc: axisFormatFunc == freezed
-          ? _value.axisFormatFunc
-          : axisFormatFunc as String Function(double),
       interval: interval == freezed ? _value.interval : interval as double,
-      axisTextStyle: axisTextStyle == freezed
-          ? _value.axisTextStyle
-          : axisTextStyle as TextStyle,
-      axisTextStyleFunc: axisTextStyleFunc == freezed
-          ? _value.axisTextStyleFunc
-          : axisTextStyleFunc as TextStyle Function(double),
     ));
   }
 }
 
+@JsonSerializable()
+
 /// @nodoc
 class _$_PlotFormat implements _PlotFormat {
-  const _$_PlotFormat(
-      {this.min,
-      this.max,
-      this.axisTitle,
-      this.axisFormatFunc,
-      this.interval,
-      this.axisTextStyle,
-      this.axisTextStyleFunc});
+  const _$_PlotFormat({this.min, this.max, this.axisTitle, this.interval});
+
+  factory _$_PlotFormat.fromJson(Map<String, dynamic> json) =>
+      _$_$_PlotFormatFromJson(json);
 
   @override
   final double min;
@@ -397,18 +377,12 @@ class _$_PlotFormat implements _PlotFormat {
   final double max;
   @override
   final String axisTitle;
-  @override
-  final String Function(double) axisFormatFunc;
-  @override
+  @override // AxisFormat axisFormatFunc,
   final double interval;
-  @override
-  final TextStyle axisTextStyle;
-  @override
-  final TextStyle Function(double) axisTextStyleFunc;
 
   @override
   String toString() {
-    return 'PlotFormat(min: $min, max: $max, axisTitle: $axisTitle, axisFormatFunc: $axisFormatFunc, interval: $interval, axisTextStyle: $axisTextStyle, axisTextStyleFunc: $axisTextStyleFunc)';
+    return 'PlotFormat(min: $min, max: $max, axisTitle: $axisTitle, interval: $interval)';
   }
 
   @override
@@ -422,18 +396,9 @@ class _$_PlotFormat implements _PlotFormat {
             (identical(other.axisTitle, axisTitle) ||
                 const DeepCollectionEquality()
                     .equals(other.axisTitle, axisTitle)) &&
-            (identical(other.axisFormatFunc, axisFormatFunc) ||
-                const DeepCollectionEquality()
-                    .equals(other.axisFormatFunc, axisFormatFunc)) &&
             (identical(other.interval, interval) ||
                 const DeepCollectionEquality()
-                    .equals(other.interval, interval)) &&
-            (identical(other.axisTextStyle, axisTextStyle) ||
-                const DeepCollectionEquality()
-                    .equals(other.axisTextStyle, axisTextStyle)) &&
-            (identical(other.axisTextStyleFunc, axisTextStyleFunc) ||
-                const DeepCollectionEquality()
-                    .equals(other.axisTextStyleFunc, axisTextStyleFunc)));
+                    .equals(other.interval, interval)));
   }
 
   @override
@@ -442,15 +407,17 @@ class _$_PlotFormat implements _PlotFormat {
       const DeepCollectionEquality().hash(min) ^
       const DeepCollectionEquality().hash(max) ^
       const DeepCollectionEquality().hash(axisTitle) ^
-      const DeepCollectionEquality().hash(axisFormatFunc) ^
-      const DeepCollectionEquality().hash(interval) ^
-      const DeepCollectionEquality().hash(axisTextStyle) ^
-      const DeepCollectionEquality().hash(axisTextStyleFunc);
+      const DeepCollectionEquality().hash(interval);
 
   @JsonKey(ignore: true)
   @override
   _$PlotFormatCopyWith<_PlotFormat> get copyWith =>
       __$PlotFormatCopyWithImpl<_PlotFormat>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$_$_PlotFormatToJson(this);
+  }
 }
 
 abstract class _PlotFormat implements PlotFormat {
@@ -458,10 +425,10 @@ abstract class _PlotFormat implements PlotFormat {
       {double min,
       double max,
       String axisTitle,
-      String Function(double) axisFormatFunc,
-      double interval,
-      TextStyle axisTextStyle,
-      TextStyle Function(double) axisTextStyleFunc}) = _$_PlotFormat;
+      double interval}) = _$_PlotFormat;
+
+  factory _PlotFormat.fromJson(Map<String, dynamic> json) =
+      _$_PlotFormat.fromJson;
 
   @override
   double get min;
@@ -469,14 +436,8 @@ abstract class _PlotFormat implements PlotFormat {
   double get max;
   @override
   String get axisTitle;
-  @override
-  String Function(double) get axisFormatFunc;
-  @override
+  @override // AxisFormat axisFormatFunc,
   double get interval;
-  @override
-  TextStyle get axisTextStyle;
-  @override
-  TextStyle Function(double) get axisTextStyleFunc;
   @override
   @JsonKey(ignore: true)
   _$PlotFormatCopyWith<_PlotFormat> get copyWith;

@@ -5,8 +5,10 @@ import 'location_accuracy_type.dart';
 import 'location_status.dart';
 
 part 'hike_metrics.freezed.dart';
+part 'hike_metrics.g.dart';
 
 @freezed
+@JsonSerializable()
 abstract class HikeMetrics with _$HikeMetrics {
   const factory HikeMetrics({
     @Default(0.0) double timeStartSec,
@@ -31,6 +33,9 @@ abstract class HikeMetrics with _$HikeMetrics {
     @Default(0.0) double cumulativeClimbMeters,
     @Default(0.0) double cumulativeDescentMeters,
     @Default(0.0) double metricPeriodSeconds,
-    @Default(KtList.empty()) KtList<LocationStatus> path,
+    // @Default(KtList.empty()) KtList<LocationStatus> path,
   }) = _HikeMetrics;
+
+  factory HikeMetrics.fromJson(Map<String, dynamic> json) => _$HikeMetricsFromJson(json);
+  Map<String, dynamic> toJson() => _$HikeMetricsToJson(this);
 }

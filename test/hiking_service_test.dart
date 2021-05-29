@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hiking_app/hiking_service.dart';
+import 'package:hiking_app/models/data_archive.dart';
 import 'package:hiking_app/models/hike_metrics.dart';
 import 'package:hiking_app/models/location_accuracy_type.dart';
 import 'package:hiking_app/models/location_status.dart';

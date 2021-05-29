@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:background_location/background_location.dart';
@@ -5,13 +7,18 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hiking_app/location_service.dart';
+import 'package:hiking_app/models/data_archive.dart';
 import 'package:hiking_app/models/hike_metrics.dart';
 import 'package:hiking_app/models/location_accuracy_type.dart';
 import 'package:hiking_app/models/location_status.dart';
+import 'package:intl/intl.dart';
 import 'package:kt_dart/collection.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'archive_service.dart';
 import 'main.dart';
 import 'models/plot_values.dart';
 
@@ -32,6 +39,7 @@ class HikingService {
   HikeMetrics _hikeMetricsTotal = const HikeMetrics();
   double _lastUpdateTimeSec = 0.0;
   PlotValues elevationPlotValues;
+  ArchiveService archiveService = ArchiveService();
 
   /// List of all points for the current hike
   final KtMutableList<LocationStatus> _currentPath = mutableListOf();
@@ -54,8 +62,9 @@ class HikingService {
         .map(toLocationStatus)
         .listen(_handleLocationUpdate);
     // updateCurrentLocation();
-  }
 
+    archiveService.activeDataArchive.listen(_handleArchiveChange);
+  }
 
   final BehaviorSubject<PlotValues> elevationPlot = BehaviorSubject<PlotValues>();
 
@@ -66,7 +75,6 @@ class HikingService {
   Stream<HikeMetrics> get currentHikerMetrics$ => _currentHikerMetricsSub.stream.asBroadcastStream();
 
   Future<void> toggleStatus(BuildContext context, HikingService hikingService) async {
-
     if (!_hikeIsActive) {
       if (!await hikingService._locationService.locationAlwaysGranted()) {
         await showDialog(
@@ -80,8 +88,7 @@ class HikingService {
       if (gpsEnabled && locationAlwaysEnabled) {
         _hikeIsActive = !_hikeIsActive;
         _activeStatusSub.add(_hikeIsActive);
-      }
-      else {
+      } else {
         var reason = "";
         if (!gpsEnabled) {
           reason += "\n- GPS disabled";
@@ -95,8 +102,7 @@ class HikingService {
         );
         return;
       }
-    }
-    else {
+    } else {
       _hikeIsActive = !_hikeIsActive;
       _activeStatusSub.add(_hikeIsActive);
     }
@@ -107,15 +113,10 @@ class HikingService {
       _prevLocation = const LocationStatus();
       // _hikeMetricsTotal = getInitialMetrics(_prevLocation, getCurrentTimeSeconds());
       _currentPath.clear();
-      elevationPlotValues = PlotValues.build(
+      elevationPlotValues = PlotValues(
         values: [],
         xFormat: PlotFormat(
           axisTitle: "Time",
-          axisFormatFunc: (value) {
-            final int minutes = (value / secPerMin).round() % minPerHour;
-            final int hours = ((value / secPerMin) / minPerHour).floor();
-            return "$hours:$minutes";
-          },
         ),
         yFormat: const PlotFormat(
           axisTitle: "Elevation (ft)",
@@ -123,10 +124,23 @@ class HikingService {
         height: 150,
         width: 300,
       );
-    }
-    else {
+    } else {
       hikingService._locationService.stopLocationService();
+      archiveCurrentTripData();
     }
+  }
+
+  void _handleArchiveChange(DataArchive dataArchive) async {
+    _currentHikerMetricsSub.value = dataArchive.hikeMetrics;
+    elevationPlot.value = dataArchive.elevationPlot;
+  }
+
+  void archiveCurrentTripData() async {
+    final dataArchive = DataArchive(hikeMetrics: _currentHikerMetricsSub.value, elevationPlot: elevationPlot.value);
+    DateTime now = DateTime.now();
+    final name = DateFormat('yyyy-MM-dd_kk:mm:ss').format(now);
+    await archiveService.createArchive(name, dataArchive);
+    print(archiveService.currentArchiveList.value);
   }
 
   Widget locationDisclosurePopup(BuildContext context) {
@@ -136,7 +150,8 @@ class HikingService {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          const Text("This hiking App collects location data to enable hiking data collection and analysis, even when the app is closed or not in use."),
+          const Text(
+              "This hiking App collects location data to enable hiking data collection and analysis, even when the app is closed or not in use."),
         ],
       ),
       actions: <Widget>[
@@ -158,7 +173,8 @@ class HikingService {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text("This application requires certain location permissions, which have not been met. The following requirements are not satisfied: $reason"),
+          Text(
+              "This application requires certain location permissions, which have not been met. The following requirements are not satisfied: $reason"),
         ],
       ),
       actions: <Widget>[
@@ -179,7 +195,6 @@ class HikingService {
 
   /// Process an updated location from device
   void _handleLocationUpdate(LocationStatus locationStatus) {
-
     /// If first point, initialize variables and return
     if (_prevLocation == null || _prevLocation.timeStampSec == 0.0) {
       _prevLocation = locationStatus;
@@ -222,8 +237,8 @@ class HikingService {
   }
 
   PlotValues toElevationPlotValues(HikeMetrics metric) {
-    List<FlSpot> elevationValues = elevationPlotValues.values;
-    elevationValues.add(FlSpot(metric.metricPeriodSeconds, metric.altitude * 3.28084));
+    List<List<double>> elevationValues = elevationPlotValues.values;
+    elevationValues.add([metric.metricPeriodSeconds, metric.altitude * 3.28084]);
 
     double elevRange = (metric.altitudeMax - metric.altitudeMin) * 3.28084;
     if (elevRange <= 10) {
@@ -234,13 +249,13 @@ class HikingService {
       values: elevationValues,
       xFormat: elevationPlotValues.xFormat.copyWith(
         min: 0,
-        max: metric.metricPeriodSeconds*1.05,
-        interval: metric.metricPeriodSeconds*1.05/5,
+        max: metric.metricPeriodSeconds * 1.05,
+        interval: metric.metricPeriodSeconds * 1.05 / 5,
       ),
       yFormat: elevationPlotValues.yFormat.copyWith(
-        min: metric.altitudeMin * 3.28084 - elevRange*.2,
-        max: metric.altitudeMax * 3.28084 + elevRange*.2,
-        interval: elevRange*1.4/5,
+        min: metric.altitudeMin * 3.28084 - elevRange * .2,
+        max: metric.altitudeMax * 3.28084 + elevRange * .2,
+        interval: elevRange * 1.4 / 5,
       ),
     );
   }
