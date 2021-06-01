@@ -34,7 +34,7 @@ abstract class PlotValues with _$PlotValues {
         xFormat: xFormat ?? const PlotFormat(),
         yFormat: yFormat ?? const PlotFormat(),
         height: height ?? 140,
-        width: width ?? 300,
+        width: width ?? 180,
     );
   }
 

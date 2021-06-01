@@ -39,3 +39,51 @@ abstract class HikeMetrics with _$HikeMetrics {
   factory HikeMetrics.fromJson(Map<String, dynamic> json) => _$HikeMetricsFromJson(json);
   Map<String, dynamic> toJson() => _$HikeMetricsToJson(this);
 }
+
+@freezed
+@JsonSerializable()
+abstract class HikeMetricsData with _$HikeMetricsData {
+  const factory HikeMetricsData({
+    Metric timeStartSec,
+    Metric latitudeStart,
+    Metric longitudeStart,
+    Metric altitudeStart,
+    Metric latitude,
+    Metric longitude,
+    Metric altitude,
+    Metric speedMetersPerSec,
+    Metric headingDegrees,
+    Metric locationAccuracy,
+    Metric speedAccuracy,
+    Metric altitudeMax,
+    Metric altitudeMin,
+    Metric speedMax,
+    Metric speedMin,
+    Metric averageSpeedMetersPerSec,
+    Metric netHeadingDegrees,
+    Metric distanceTraveled,
+    Metric netElevationChange,
+    Metric cumulativeClimbMeters,
+    Metric cumulativeDescentMeters,
+    Metric metricPeriodSeconds,
+    // @Default(KtList.empty()) KtList<LocationStatus> path,
+  }) = _HikeMetricsData;
+
+  factory HikeMetricsData.fromJson(Map<String, dynamic> json) => _$HikeMetricsDataFromJson(json);
+  Map<String, dynamic> toJson() => _$HikeMetricsDataToJson(this);
+}
+
+@freezed
+@JsonSerializable()
+abstract class Metric with _$Metric {
+  const factory Metric({
+    @Default("") String name,
+    @Default("") String value,
+    @Default(true) bool visible,
+    // @Default(KtList.empty()) KtList<LocationStatus> path,
+  }) = _Metric;
+
+  factory Metric.fromJson(Map<String, dynamic> json) => _$MetricFromJson(json);
+  Map<String, dynamic> toJson() => _$MetricToJson(this);
+}
+

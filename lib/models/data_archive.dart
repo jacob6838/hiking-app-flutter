@@ -12,6 +12,7 @@ abstract class DataArchive with _$DataArchive {
   const factory DataArchive({
     @nullable HikeMetrics hikeMetrics,
     @nullable PlotValues elevationPlot,
+    @nullable PlotValues speedPlot,
   }) = _DataArchive;
   factory DataArchive.fromJson(Map<String, dynamic> json) => _$DataArchiveFromJson(json);
   Map<String, dynamic> toJson() => _$DataArchiveToJson(this);

@@ -39,6 +39,7 @@ class HikingService {
   HikeMetrics _hikeMetricsTotal = const HikeMetrics();
   double _lastUpdateTimeSec = 0.0;
   PlotValues elevationPlotValues;
+  PlotValues speedPlotValues;
   ArchiveService archiveService = ArchiveService();
 
   /// List of all points for the current hike
@@ -48,6 +49,7 @@ class HikingService {
 
   /// Previous position used to determine when a location change is sufficiently large to warrant a hiker status update.
   LocationStatus _prevLocation;
+  HikeMetrics _prevHikeMetrics;
 
   final BehaviorSubject<bool> _activeStatusSub = BehaviorSubject.seeded(false);
   final BehaviorSubject<LocationStatus> _currentLocationStatusSub = BehaviorSubject.seeded(const LocationStatus());
@@ -67,6 +69,7 @@ class HikingService {
   }
 
   final BehaviorSubject<PlotValues> elevationPlot = BehaviorSubject<PlotValues>();
+  final BehaviorSubject<PlotValues> speedPlot = BehaviorSubject<PlotValues>();
 
   Stream<bool> get currentHikerStatus$ => _activeStatusSub.stream.asBroadcastStream();
 
@@ -74,7 +77,7 @@ class HikingService {
 
   Stream<HikeMetrics> get currentHikerMetrics$ => _currentHikerMetricsSub.stream.asBroadcastStream();
 
-  Future<void> toggleStatus(BuildContext context, HikingService hikingService) async {
+  Future<String> toggleStatus(BuildContext context, HikingService hikingService) async {
     if (!_hikeIsActive) {
       if (!await hikingService._locationService.locationAlwaysGranted()) {
         await showDialog(
@@ -100,7 +103,7 @@ class HikingService {
           context: context,
           builder: (BuildContext context) => locationPopup(context, reason),
         );
-        return;
+        return null;
       }
     } else {
       _hikeIsActive = !_hikeIsActive;
@@ -115,32 +118,47 @@ class HikingService {
       _currentPath.clear();
       elevationPlotValues = PlotValues(
         values: [],
-        xFormat: PlotFormat(
+        xFormat: const PlotFormat(
           axisTitle: "Time",
         ),
         yFormat: const PlotFormat(
           axisTitle: "Elevation (ft)",
         ),
         height: 150,
-        width: 300,
+        width: 180,
+      );
+      speedPlotValues = PlotValues(
+        values: [],
+        xFormat: const PlotFormat(
+          axisTitle: "Time",
+        ),
+        yFormat: const PlotFormat(
+          axisTitle: "Speed (mi/hr)",
+        ),
+        height: 150,
+        width: 180,
       );
     } else {
       hikingService._locationService.stopLocationService();
-      archiveCurrentTripData();
+      return archiveCurrentTripData();
     }
+    return null;
   }
 
   void _handleArchiveChange(DataArchive dataArchive) async {
     _currentHikerMetricsSub.value = dataArchive.hikeMetrics;
     elevationPlot.value = dataArchive.elevationPlot;
+    speedPlot.value = dataArchive.speedPlot;
   }
 
-  void archiveCurrentTripData() async {
-    final dataArchive = DataArchive(hikeMetrics: _currentHikerMetricsSub.value, elevationPlot: elevationPlot.value);
+  Future<String> archiveCurrentTripData() async {
+    final dataArchive = DataArchive(hikeMetrics: _currentHikerMetricsSub.value,
+        elevationPlot: elevationPlot.value,
+        speedPlot: speedPlot.value);
     DateTime now = DateTime.now();
     final name = DateFormat('yyyy-MM-dd_kk:mm:ss').format(now);
     await archiveService.createArchive(name, dataArchive);
-    print(archiveService.currentArchiveList.value);
+    return name;
   }
 
   Widget locationDisclosurePopup(BuildContext context) {
@@ -217,8 +235,10 @@ class HikingService {
     ).toDouble();
     if (deltaDistance < minimumDistanceThreshold) {
       _prevLocation = _prevLocation.copyWith(timeStampSec: locationStatus.timeStampSec);
+      _prevHikeMetrics = _prevHikeMetrics.copyWith(metricPeriodSeconds: _prevHikeMetrics.metricPeriodSeconds + deltaSec);
     } else {
       _prevLocation = locationStatus;
+      _prevHikeMetrics = _currentHikerMetricsSub.value;
     }
 
     /// Save location update to current hike
@@ -226,14 +246,15 @@ class HikingService {
 
     /// Calculate hiker status update and publish value for UI
     final currStatus = accumulateMetrics(
-      _currentHikerMetricsSub.value,
-      _prevLocation,
-      deltaDistance,
-      _currentPath,
-      deltaSec,
+      prevMetrics: _prevHikeMetrics,
+      currLoc: locationStatus,
+      deltaDistance: deltaDistance,
+      locationHistory: _currentPath,
+      updatePeriodSec: deltaSec,
     );
     _currentHikerMetricsSub.add(currStatus);
     elevationPlot.add(toElevationPlotValues(currStatus));
+    speedPlot.add(toSpeedPlotValues(currStatus));
   }
 
   PlotValues toElevationPlotValues(HikeMetrics metric) {
@@ -256,6 +277,30 @@ class HikingService {
         min: metric.altitudeMin * 3.28084 - elevRange * .2,
         max: metric.altitudeMax * 3.28084 + elevRange * .2,
         interval: elevRange * 1.4 / 5,
+      ),
+    );
+  }
+
+  PlotValues toSpeedPlotValues(HikeMetrics metric) {
+    List<List<double>> speedValues = speedPlotValues.values;
+    speedValues.add([metric.metricPeriodSeconds, metric.speedMetersPerSec * 2.237]);
+
+    double speedRange = (metric.speedMax - 0) * 2.237;
+    if (speedRange <= .1) {
+      speedRange = .1;
+    }
+
+    return speedPlotValues.copyWith(
+      values: speedValues,
+      xFormat: speedPlotValues.xFormat.copyWith(
+        min: 0,
+        max: metric.metricPeriodSeconds * 1.05,
+        interval: metric.metricPeriodSeconds * 1.05 / 5,
+      ),
+      yFormat: speedPlotValues.yFormat.copyWith(
+        min: 0,
+        max: metric.speedMax * 2.237 + speedRange * .2,
+        interval: speedRange * 1.2 / 5,
       ),
     );
   }
@@ -296,13 +341,13 @@ LocationStatus toLocationStatus(Location locationData) {
 }
 
 /// Calculate hiker status update data
-HikeMetrics accumulateMetrics(
+HikeMetrics accumulateMetrics({
   HikeMetrics prevMetrics,
   LocationStatus currLoc,
   double deltaDistance,
   KtList<LocationStatus> locationHistory,
   double updatePeriodSec,
-) {
+}) {
   final speedMetersPerSec = deltaDistance / updatePeriodSec;
 
   final deltaAltitude = currLoc.altitude - prevMetrics.altitude;

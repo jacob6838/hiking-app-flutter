@@ -19,24 +19,17 @@ class ArchiveService {
   Future<List<String>> listArchives() async {
     final path = await _getDocsDir();
     final docs = Directory(path);
-    List<String> names = ["live"];
+    List<String> names = [];
     if (await docs.exists()) {
       names = await docs.list().map((it) => getNameFromPath(it.path)).toList();
       names.sort();
       names = names.reversed.toList();
-      names.insert(0, "live");
     }
     print(names);
     return names;
   }
 
   Future<DataArchive> activateArchive(String name) async {
-    if (name == "live") {
-      const archive = DataArchive(hikeMetrics: HikeMetrics());
-      print(archive.hikeMetrics.cumulativeClimbMeters);
-      activeDataArchive.value = archive;
-      return archive;
-    }
     final path = await _getDocsDir();
     final file = File('$path/$name.json');
     final archive = await _getArchiveFromFile(file);
@@ -49,6 +42,14 @@ class ArchiveService {
     await _writeArchiveToFile(file, data);
     currentArchiveList.value = await listArchives();
     return file;
+  }
+
+  Future<bool> deleteArchive(String name) async {
+    final path = await _getDocsDir();
+    final file = File('$path/$name.json');
+    await file.delete();
+    currentArchiveList.value = await listArchives();
+    return true;
   }
 
   Future<File> _writeArchiveToFile(File file, DataArchive data) {

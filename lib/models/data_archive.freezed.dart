@@ -18,10 +18,13 @@ class _$DataArchiveTearOff {
 
 // ignore: unused_element
   _DataArchive call(
-      {@nullable HikeMetrics hikeMetrics, @nullable PlotValues elevationPlot}) {
+      {@nullable HikeMetrics hikeMetrics,
+      @nullable PlotValues elevationPlot,
+      @nullable PlotValues speedPlot}) {
     return _DataArchive(
       hikeMetrics: hikeMetrics,
       elevationPlot: elevationPlot,
+      speedPlot: speedPlot,
     );
   }
 
@@ -41,6 +44,8 @@ mixin _$DataArchive {
   HikeMetrics get hikeMetrics;
   @nullable
   PlotValues get elevationPlot;
+  @nullable
+  PlotValues get speedPlot;
 
   Map<String, dynamic> toJson();
   @JsonKey(ignore: true)
@@ -53,10 +58,13 @@ abstract class $DataArchiveCopyWith<$Res> {
           DataArchive value, $Res Function(DataArchive) then) =
       _$DataArchiveCopyWithImpl<$Res>;
   $Res call(
-      {@nullable HikeMetrics hikeMetrics, @nullable PlotValues elevationPlot});
+      {@nullable HikeMetrics hikeMetrics,
+      @nullable PlotValues elevationPlot,
+      @nullable PlotValues speedPlot});
 
   $HikeMetricsCopyWith<$Res> get hikeMetrics;
   $PlotValuesCopyWith<$Res> get elevationPlot;
+  $PlotValuesCopyWith<$Res> get speedPlot;
 }
 
 /// @nodoc
@@ -71,6 +79,7 @@ class _$DataArchiveCopyWithImpl<$Res> implements $DataArchiveCopyWith<$Res> {
   $Res call({
     Object hikeMetrics = freezed,
     Object elevationPlot = freezed,
+    Object speedPlot = freezed,
   }) {
     return _then(_value.copyWith(
       hikeMetrics: hikeMetrics == freezed
@@ -79,6 +88,8 @@ class _$DataArchiveCopyWithImpl<$Res> implements $DataArchiveCopyWith<$Res> {
       elevationPlot: elevationPlot == freezed
           ? _value.elevationPlot
           : elevationPlot as PlotValues,
+      speedPlot:
+          speedPlot == freezed ? _value.speedPlot : speedPlot as PlotValues,
     ));
   }
 
@@ -101,6 +112,16 @@ class _$DataArchiveCopyWithImpl<$Res> implements $DataArchiveCopyWith<$Res> {
       return _then(_value.copyWith(elevationPlot: value));
     });
   }
+
+  @override
+  $PlotValuesCopyWith<$Res> get speedPlot {
+    if (_value.speedPlot == null) {
+      return null;
+    }
+    return $PlotValuesCopyWith<$Res>(_value.speedPlot, (value) {
+      return _then(_value.copyWith(speedPlot: value));
+    });
+  }
 }
 
 /// @nodoc
@@ -111,12 +132,16 @@ abstract class _$DataArchiveCopyWith<$Res>
       __$DataArchiveCopyWithImpl<$Res>;
   @override
   $Res call(
-      {@nullable HikeMetrics hikeMetrics, @nullable PlotValues elevationPlot});
+      {@nullable HikeMetrics hikeMetrics,
+      @nullable PlotValues elevationPlot,
+      @nullable PlotValues speedPlot});
 
   @override
   $HikeMetricsCopyWith<$Res> get hikeMetrics;
   @override
   $PlotValuesCopyWith<$Res> get elevationPlot;
+  @override
+  $PlotValuesCopyWith<$Res> get speedPlot;
 }
 
 /// @nodoc
@@ -133,6 +158,7 @@ class __$DataArchiveCopyWithImpl<$Res> extends _$DataArchiveCopyWithImpl<$Res>
   $Res call({
     Object hikeMetrics = freezed,
     Object elevationPlot = freezed,
+    Object speedPlot = freezed,
   }) {
     return _then(_DataArchive(
       hikeMetrics: hikeMetrics == freezed
@@ -141,6 +167,8 @@ class __$DataArchiveCopyWithImpl<$Res> extends _$DataArchiveCopyWithImpl<$Res>
       elevationPlot: elevationPlot == freezed
           ? _value.elevationPlot
           : elevationPlot as PlotValues,
+      speedPlot:
+          speedPlot == freezed ? _value.speedPlot : speedPlot as PlotValues,
     ));
   }
 }
@@ -150,7 +178,9 @@ class __$DataArchiveCopyWithImpl<$Res> extends _$DataArchiveCopyWithImpl<$Res>
 /// @nodoc
 class _$_DataArchive implements _DataArchive {
   const _$_DataArchive(
-      {@nullable this.hikeMetrics, @nullable this.elevationPlot});
+      {@nullable this.hikeMetrics,
+      @nullable this.elevationPlot,
+      @nullable this.speedPlot});
 
   factory _$_DataArchive.fromJson(Map<String, dynamic> json) =>
       _$_$_DataArchiveFromJson(json);
@@ -161,10 +191,13 @@ class _$_DataArchive implements _DataArchive {
   @override
   @nullable
   final PlotValues elevationPlot;
+  @override
+  @nullable
+  final PlotValues speedPlot;
 
   @override
   String toString() {
-    return 'DataArchive(hikeMetrics: $hikeMetrics, elevationPlot: $elevationPlot)';
+    return 'DataArchive(hikeMetrics: $hikeMetrics, elevationPlot: $elevationPlot, speedPlot: $speedPlot)';
   }
 
   @override
@@ -176,14 +209,18 @@ class _$_DataArchive implements _DataArchive {
                     .equals(other.hikeMetrics, hikeMetrics)) &&
             (identical(other.elevationPlot, elevationPlot) ||
                 const DeepCollectionEquality()
-                    .equals(other.elevationPlot, elevationPlot)));
+                    .equals(other.elevationPlot, elevationPlot)) &&
+            (identical(other.speedPlot, speedPlot) ||
+                const DeepCollectionEquality()
+                    .equals(other.speedPlot, speedPlot)));
   }
 
   @override
   int get hashCode =>
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(hikeMetrics) ^
-      const DeepCollectionEquality().hash(elevationPlot);
+      const DeepCollectionEquality().hash(elevationPlot) ^
+      const DeepCollectionEquality().hash(speedPlot);
 
   @JsonKey(ignore: true)
   @override
@@ -199,7 +236,8 @@ class _$_DataArchive implements _DataArchive {
 abstract class _DataArchive implements DataArchive {
   const factory _DataArchive(
       {@nullable HikeMetrics hikeMetrics,
-      @nullable PlotValues elevationPlot}) = _$_DataArchive;
+      @nullable PlotValues elevationPlot,
+      @nullable PlotValues speedPlot}) = _$_DataArchive;
 
   factory _DataArchive.fromJson(Map<String, dynamic> json) =
       _$_DataArchive.fromJson;
@@ -210,6 +248,9 @@ abstract class _DataArchive implements DataArchive {
   @override
   @nullable
   PlotValues get elevationPlot;
+  @override
+  @nullable
+  PlotValues get speedPlot;
   @override
   @JsonKey(ignore: true)
   _$DataArchiveCopyWith<_DataArchive> get copyWith;
