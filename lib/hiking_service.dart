@@ -43,7 +43,7 @@ class HikingService {
   ArchiveService archiveService = ArchiveService();
 
   /// List of all points for the current hike
-  final KtMutableList<LocationStatus> _currentPath = mutableListOf();
+  final List<LocationStatus> _currentPath = [];
 
   int reportPeriodSec;
 
@@ -54,6 +54,7 @@ class HikingService {
   final BehaviorSubject<bool> _activeStatusSub = BehaviorSubject.seeded(false);
   final BehaviorSubject<LocationStatus> _currentLocationStatusSub = BehaviorSubject.seeded(const LocationStatus());
   final BehaviorSubject<HikeMetrics> _currentHikerMetricsSub = BehaviorSubject.seeded(const HikeMetrics());
+  final BehaviorSubject<List<LocationStatus>> currentPathSub = BehaviorSubject.seeded([]);
 
   HikingService({LocationService locationService})
       : _lastUpdateTimeSec = 0,
@@ -147,12 +148,14 @@ class HikingService {
 
   void _handleArchiveChange(DataArchive dataArchive) async {
     _currentHikerMetricsSub.value = dataArchive.hikeMetrics;
+    currentPathSub.value = dataArchive.locationHistory;
     elevationPlot.value = dataArchive.elevationPlot;
     speedPlot.value = dataArchive.speedPlot;
   }
 
   Future<String> archiveCurrentTripData() async {
     final dataArchive = DataArchive(hikeMetrics: _currentHikerMetricsSub.value,
+        locationHistory: currentPathSub.value,
         elevationPlot: elevationPlot.value,
         speedPlot: speedPlot.value);
     DateTime now = DateTime.now();
@@ -161,15 +164,25 @@ class HikingService {
     return name;
   }
 
+  void clearData() {
+    currentPathSub.add([]);
+    _currentHikerMetricsSub.add(HikeMetrics());
+    elevationPlot.add(PlotValues());
+    speedPlot.add(PlotValues());
+  }
+
   Widget locationDisclosurePopup(BuildContext context) {
     return AlertDialog(
       title: const Text('Location Permissions Disclosure'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const Text(
-              "This hiking App collects location data to enable hiking data collection and analysis, even when the app is closed or not in use."),
+        children: const <Widget>[
+          Text(
+            "This hiking App collects location data to enable hiking data "
+                "collection and analysis, even when the app is closed or "
+                "not in use."
+        ),
         ],
       ),
       actions: <Widget>[
@@ -253,6 +266,7 @@ class HikingService {
       updatePeriodSec: deltaSec,
     );
     _currentHikerMetricsSub.add(currStatus);
+    currentPathSub.add(_currentPath);
     elevationPlot.add(toElevationPlotValues(currStatus));
     speedPlot.add(toSpeedPlotValues(currStatus));
   }
@@ -285,7 +299,7 @@ class HikingService {
     List<List<double>> speedValues = speedPlotValues.values;
     speedValues.add([metric.metricPeriodSeconds, metric.speedMetersPerSec * 2.237]);
 
-    double speedRange = (metric.speedMax - 0) * 2.237;
+    double speedRange = metric.speedMax * 2.237;
     if (speedRange <= .1) {
       speedRange = .1;
     }
@@ -299,7 +313,7 @@ class HikingService {
       ),
       yFormat: speedPlotValues.yFormat.copyWith(
         min: 0,
-        max: metric.speedMax * 2.237 + speedRange * .2,
+        max: speedRange * 1.2,
         interval: speedRange * 1.2 / 5,
       ),
     );
@@ -345,7 +359,7 @@ HikeMetrics accumulateMetrics({
   HikeMetrics prevMetrics,
   LocationStatus currLoc,
   double deltaDistance,
-  KtList<LocationStatus> locationHistory,
+  List<LocationStatus> locationHistory,
   double updatePeriodSec,
 }) {
   final speedMetersPerSec = deltaDistance / updatePeriodSec;

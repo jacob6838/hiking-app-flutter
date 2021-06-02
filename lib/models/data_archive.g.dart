@@ -14,6 +14,11 @@ _$_DataArchive _$_$_DataArchiveFromJson(Map<String, dynamic> json) {
     hikeMetrics: json['hikeMetrics'] == null
         ? null
         : HikeMetrics.fromJson(json['hikeMetrics'] as Map<String, dynamic>),
+    locationHistory: (json['locationHistory'] as List)
+        ?.map((e) => e == null
+            ? null
+            : LocationStatus.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
     elevationPlot: json['elevationPlot'] == null
         ? null
         : PlotValues.fromJson(json['elevationPlot'] as Map<String, dynamic>),
@@ -26,6 +31,7 @@ _$_DataArchive _$_$_DataArchiveFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$_$_DataArchiveToJson(_$_DataArchive instance) =>
     <String, dynamic>{
       'hikeMetrics': instance.hikeMetrics,
+      'locationHistory': instance.locationHistory,
       'elevationPlot': instance.elevationPlot,
       'speedPlot': instance.speedPlot,
     };

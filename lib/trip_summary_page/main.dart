@@ -1,8 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hiking_app/active_trip_page/main.dart';
 import 'package:hiking_app/active_trip_page/metric_plot.dart';
 import 'package:hiking_app/active_trip_page/metrics_table.dart';
+import 'package:hiking_app/models/hike_metrics.dart';
+import 'package:hiking_app/models/location_status.dart';
 import 'package:hiking_app/models/plot_values.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +29,9 @@ class TripSummaryPageState extends State<TripSummaryPage> {
   String dropdownValue;
   bool isStartButtonEnabled = true;
   bool isDropdownEnabled = true;
+  GoogleMapController mapController;
+
+  Completer<GoogleMapController> _controller = Completer();
 
   @override
   void initState() {
@@ -54,9 +64,8 @@ class TripSummaryPageState extends State<TripSummaryPage> {
         ],
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
+        child: ListView(
+          shrinkWrap: true,
           children: <Widget>[
             Row(
               children: <Widget> [
@@ -69,7 +78,7 @@ class TripSummaryPageState extends State<TripSummaryPage> {
                   child:StreamBuilder<List<String>>(
                     stream: _hikingService.archiveService.currentArchiveList,
                     builder: (context, snapshot) {
-                      dropdownValue = dropdownValue ?? snapshot.data?.first;
+                      dropdownValue = snapshot.data?.first;
                       return DropdownButton<String>(
                         value: dropdownValue,
                         icon: const Icon(Icons.arrow_downward),
@@ -122,6 +131,41 @@ class TripSummaryPageState extends State<TripSummaryPage> {
                 ),
               ],
             ),
+            StreamBuilder<List<LocationStatus>>(
+                stream: _hikingService.currentPathSub,
+                builder: (context, snapshot) {
+                  return Container(
+                    height: 300,
+                    child: GoogleMap(
+                      polylines: {
+                        Polyline(
+                            polylineId: const PolylineId("path"),
+                            // points: [
+                            //   LatLng(40.275266, -74.7244817),
+                            //   LatLng(40.2753119, -74.7242424),
+                            // ]
+                            points: snapshot.data?.map((loc) {print("LOCATION: $loc");  mapController.animateCamera(CameraUpdate.newCameraPosition(
+                              CameraPosition(
+                                target: LatLng(loc.latitude, loc.longitude),
+                                zoom: 15,
+                                //bearing: location.bearing,
+                              ))); return locationStatusToLatLong(loc);})
+                                ?.toList() ?? []
+                        )
+                      },
+                      onMapCreated: (GoogleMapController controller) {
+                        mapController = controller;
+                        _controller.complete(controller);
+                      },
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(40.275266, -74.7244817), //locationStatusToLatLong(snapshot.data?.first ?? LocationStatus(latitude: 40, longitude: -74)),
+                        zoom: 18.0,
+                      ),
+                      gestureRecognizers: Set()..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
+                    ),
+                  );
+                }
+            ),
             MetricsTable(hikingService: _hikingService, metricsHiddenMap: List.filled(22, true)),
             Row(
                 children: <Widget>[
@@ -146,7 +190,8 @@ class TripSummaryPageState extends State<TripSummaryPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed:  () {
-          Navigator.pushReplacement(
+          _hikingService.clearData();
+          Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const ActiveTripPage()),
           );
@@ -158,10 +203,14 @@ class TripSummaryPageState extends State<TripSummaryPage> {
     );
   }
 
+  LatLng locationStatusToLatLong(LocationStatus locationStatus) {
+    return LatLng(locationStatus.latitude, locationStatus.longitude);
+  }
+
   void handleClick(String value) {
     switch (value) {
       case 'New Trip':
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const ActiveTripPage()),
         );

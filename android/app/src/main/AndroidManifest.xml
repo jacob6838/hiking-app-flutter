@@ -18,6 +18,10 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="hiking_app"
         android:icon="@mipmap/launcher_icon">
+
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD13cNGFmT_BCpyk0LCoOOEriUms7BF39c"/>
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

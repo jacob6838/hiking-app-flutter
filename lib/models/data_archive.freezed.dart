@@ -19,10 +19,12 @@ class _$DataArchiveTearOff {
 // ignore: unused_element
   _DataArchive call(
       {@nullable HikeMetrics hikeMetrics,
+      @nullable List<LocationStatus> locationHistory,
       @nullable PlotValues elevationPlot,
       @nullable PlotValues speedPlot}) {
     return _DataArchive(
       hikeMetrics: hikeMetrics,
+      locationHistory: locationHistory,
       elevationPlot: elevationPlot,
       speedPlot: speedPlot,
     );
@@ -43,6 +45,8 @@ mixin _$DataArchive {
   @nullable
   HikeMetrics get hikeMetrics;
   @nullable
+  List<LocationStatus> get locationHistory;
+  @nullable
   PlotValues get elevationPlot;
   @nullable
   PlotValues get speedPlot;
@@ -59,6 +63,7 @@ abstract class $DataArchiveCopyWith<$Res> {
       _$DataArchiveCopyWithImpl<$Res>;
   $Res call(
       {@nullable HikeMetrics hikeMetrics,
+      @nullable List<LocationStatus> locationHistory,
       @nullable PlotValues elevationPlot,
       @nullable PlotValues speedPlot});
 
@@ -78,6 +83,7 @@ class _$DataArchiveCopyWithImpl<$Res> implements $DataArchiveCopyWith<$Res> {
   @override
   $Res call({
     Object hikeMetrics = freezed,
+    Object locationHistory = freezed,
     Object elevationPlot = freezed,
     Object speedPlot = freezed,
   }) {
@@ -85,6 +91,9 @@ class _$DataArchiveCopyWithImpl<$Res> implements $DataArchiveCopyWith<$Res> {
       hikeMetrics: hikeMetrics == freezed
           ? _value.hikeMetrics
           : hikeMetrics as HikeMetrics,
+      locationHistory: locationHistory == freezed
+          ? _value.locationHistory
+          : locationHistory as List<LocationStatus>,
       elevationPlot: elevationPlot == freezed
           ? _value.elevationPlot
           : elevationPlot as PlotValues,
@@ -133,6 +142,7 @@ abstract class _$DataArchiveCopyWith<$Res>
   @override
   $Res call(
       {@nullable HikeMetrics hikeMetrics,
+      @nullable List<LocationStatus> locationHistory,
       @nullable PlotValues elevationPlot,
       @nullable PlotValues speedPlot});
 
@@ -157,6 +167,7 @@ class __$DataArchiveCopyWithImpl<$Res> extends _$DataArchiveCopyWithImpl<$Res>
   @override
   $Res call({
     Object hikeMetrics = freezed,
+    Object locationHistory = freezed,
     Object elevationPlot = freezed,
     Object speedPlot = freezed,
   }) {
@@ -164,6 +175,9 @@ class __$DataArchiveCopyWithImpl<$Res> extends _$DataArchiveCopyWithImpl<$Res>
       hikeMetrics: hikeMetrics == freezed
           ? _value.hikeMetrics
           : hikeMetrics as HikeMetrics,
+      locationHistory: locationHistory == freezed
+          ? _value.locationHistory
+          : locationHistory as List<LocationStatus>,
       elevationPlot: elevationPlot == freezed
           ? _value.elevationPlot
           : elevationPlot as PlotValues,
@@ -179,6 +193,7 @@ class __$DataArchiveCopyWithImpl<$Res> extends _$DataArchiveCopyWithImpl<$Res>
 class _$_DataArchive implements _DataArchive {
   const _$_DataArchive(
       {@nullable this.hikeMetrics,
+      @nullable this.locationHistory,
       @nullable this.elevationPlot,
       @nullable this.speedPlot});
 
@@ -190,6 +205,9 @@ class _$_DataArchive implements _DataArchive {
   final HikeMetrics hikeMetrics;
   @override
   @nullable
+  final List<LocationStatus> locationHistory;
+  @override
+  @nullable
   final PlotValues elevationPlot;
   @override
   @nullable
@@ -197,7 +215,7 @@ class _$_DataArchive implements _DataArchive {
 
   @override
   String toString() {
-    return 'DataArchive(hikeMetrics: $hikeMetrics, elevationPlot: $elevationPlot, speedPlot: $speedPlot)';
+    return 'DataArchive(hikeMetrics: $hikeMetrics, locationHistory: $locationHistory, elevationPlot: $elevationPlot, speedPlot: $speedPlot)';
   }
 
   @override
@@ -207,6 +225,9 @@ class _$_DataArchive implements _DataArchive {
             (identical(other.hikeMetrics, hikeMetrics) ||
                 const DeepCollectionEquality()
                     .equals(other.hikeMetrics, hikeMetrics)) &&
+            (identical(other.locationHistory, locationHistory) ||
+                const DeepCollectionEquality()
+                    .equals(other.locationHistory, locationHistory)) &&
             (identical(other.elevationPlot, elevationPlot) ||
                 const DeepCollectionEquality()
                     .equals(other.elevationPlot, elevationPlot)) &&
@@ -219,6 +240,7 @@ class _$_DataArchive implements _DataArchive {
   int get hashCode =>
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(hikeMetrics) ^
+      const DeepCollectionEquality().hash(locationHistory) ^
       const DeepCollectionEquality().hash(elevationPlot) ^
       const DeepCollectionEquality().hash(speedPlot);
 
@@ -236,6 +258,7 @@ class _$_DataArchive implements _DataArchive {
 abstract class _DataArchive implements DataArchive {
   const factory _DataArchive(
       {@nullable HikeMetrics hikeMetrics,
+      @nullable List<LocationStatus> locationHistory,
       @nullable PlotValues elevationPlot,
       @nullable PlotValues speedPlot}) = _$_DataArchive;
 
@@ -245,6 +268,9 @@ abstract class _DataArchive implements DataArchive {
   @override
   @nullable
   HikeMetrics get hikeMetrics;
+  @override
+  @nullable
+  List<LocationStatus> get locationHistory;
   @override
   @nullable
   PlotValues get elevationPlot;
