@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hiking_app/models/plot_values.dart';
-import 'package:hiking_app/trip_summary_page/main.dart';
+import 'package:hiking_app/ui/trip_summary_page/main.dart';
 import 'package:provider/provider.dart';
 
-import '../hiking_service.dart';
+import '../../hiking_service.dart';
+import '../../main.dart';
 import 'metric_plot.dart';
 import 'metrics_table.dart';
 
@@ -42,7 +43,9 @@ class ActiveTripPageState extends State<ActiveTripPage> {
         //   ),
         // ],
       ),
-      body: Center(
+      body: ListView(
+    // shrinkWrap: true,
+    children: <Widget>[Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
@@ -112,35 +115,34 @@ class ActiveTripPageState extends State<ActiveTripPage> {
           ],
         ),
       ),
-      floatingActionButton: !isDropdownEnabled ? null : FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const TripSummaryPage()),
-          );
-        },
-        label: const Text('View Trips'),
-        icon: const Icon(Icons.remove_red_eye),
-        backgroundColor: Colors.pink,
+      ],
       ),
+      // floatingActionButton: !isDropdownEnabled ? null : FloatingActionButton.extended(
+      //   onPressed: () {
+      //     Navigator.pop(context);
+      //   },
+      //   label: const Text('View Trips'),
+      //   icon: const Icon(Icons.remove_red_eye),
+      //   backgroundColor: Colors.pink,
+      // ),
     );
   }
 
-  void handleClick(String value) {
-    switch (value) {
-      case 'Trips':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const TripSummaryPage()),
-        );
-        break;
-      case 'Settings':
-        break;
-    }
-  }
+  // void handleClick(String value) {
+  //   switch (value) {
+  //     case 'Trips':
+  //       Navigator.pop(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => const TripSummaryPage()),
+  //       );
+  //       break;
+  //     case 'Settings':
+  //       break;
+  //   }
+  // }
 
-  Future<String> onEnableBtnClicked(BuildContext context, HikingService hikingService) async {
-    return _hikingService.toggleStatus(context, hikingService);
+  Future<String> onEnableBtnClicked(BuildContext context, HikingService _hikingService) async {
+    return _hikingService.toggleStatus(context, _hikingService);
   }
 
   String _enableBtnName(bool activeStatus) {

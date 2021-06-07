@@ -1,29 +1,25 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hiking_app/active_trip_page/metrics_table.dart';
-import 'package:hiking_app/hiking_service.dart';
-import 'package:hiking_app/hiking_service_conversions.dart';
-import 'package:hiking_app/models/location_accuracy_type.dart';
-import 'package:hiking_app/models/location_status.dart';
+import 'package:hiking_app/location_service.dart';
 import 'package:hiking_app/providers.dart';
+import 'package:hiking_app/ui/trip_summary_page/main.dart';
 import 'package:provider/provider.dart';
 
-import 'active_trip_page/main.dart';
-import 'active_trip_page/metric_plot.dart';
-import 'models/hike_metrics.dart';
-import 'models/plot_values.dart';
+import 'hiking_service.dart';
 
 void main() {
   runApp(MultiProvider(providers: globalProviders(), child: MyApp()));
 }
 
 
+// HikingService hikingService;
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    print("INITIALIZING HIKING SERVICE");
+    // hikingService = HikingService(locationService: LocationService()); //Provider.of<HikingService>(context);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -46,7 +42,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const ActiveTripPage(),
+      home: const TripSummaryPage(),
     );
   }
 }

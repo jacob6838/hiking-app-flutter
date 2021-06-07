@@ -7,10 +7,11 @@ import 'package:rxdart/rxdart.dart';
 import 'models/data_archive.dart';
 
 class ArchiveService {
-  BehaviorSubject<List<String>> currentArchiveList = BehaviorSubject.seeded([]);
+  BehaviorSubject<List<String>> currentArchiveList = BehaviorSubject();
   BehaviorSubject<DataArchive> activeDataArchive = BehaviorSubject.seeded(const DataArchive(hikeMetrics: HikeMetrics()));
 
   ArchiveService() {
+    print("INITIALIZING DATA ARCHIVE");
     listArchives().then((value) => currentArchiveList.value = value);
   }
 
@@ -30,6 +31,7 @@ class ArchiveService {
   }
 
   Future<DataArchive> activateArchive(String name) async {
+    print("ACTIVATING ARCHIVE $name");
     final path = await _getDocsDir();
     final file = File('$path/$name.json');
     final archive = await _getArchiveFromFile(file);

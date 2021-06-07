@@ -1,19 +1,21 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:hiking_app/active_trip_page/main.dart';
-import 'package:hiking_app/active_trip_page/metric_plot.dart';
-import 'package:hiking_app/active_trip_page/metrics_table.dart';
-import 'package:hiking_app/models/hike_metrics.dart';
+import 'package:hiking_app/ui/about_page/main.dart';
+import 'package:hiking_app/ui/active_trip_page/main.dart';
+import 'package:hiking_app/ui/active_trip_page/metric_plot.dart';
+import 'package:hiking_app/ui/active_trip_page/metrics_table.dart';
 import 'package:hiking_app/models/location_status.dart';
 import 'package:hiking_app/models/plot_values.dart';
+import 'package:hiking_app/ui/settings_page/main.dart';
+import 'package:kt_dart/collection.dart';
 import 'package:provider/provider.dart';
 
-import '../hiking_service.dart';
+import '../../hiking_service.dart';
+import '../../main.dart';
 
 class TripSummaryPage extends StatefulWidget {
   const TripSummaryPage({Key key, this.tripName}) : super(key: key);
@@ -33,6 +35,8 @@ class TripSummaryPageState extends State<TripSummaryPage> {
 
   Completer<GoogleMapController> _controller = Completer();
 
+  String _prevDropdownValue;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -43,6 +47,16 @@ class TripSummaryPageState extends State<TripSummaryPage> {
   @override
   Widget build(BuildContext context) {
     _hikingService = Provider.of<HikingService>(context);
+    _hikingService.archiveService.currentArchiveList.listen((archiveList) async {
+      if (_prevDropdownValue == null && archiveList.isNotEmpty) {
+        print("ARCHIVE LIST: $archiveList");
+        _prevDropdownValue = archiveList.first;
+        await _hikingService.archiveService.activateArchive(_prevDropdownValue);
+        setState(() {
+          dropdownValue = _prevDropdownValue;
+        });
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -53,7 +67,7 @@ class TripSummaryPageState extends State<TripSummaryPage> {
           PopupMenuButton<String>(
             onSelected: handleClick,
             itemBuilder: (BuildContext context) {
-              return {'New Trip', 'Settings'}.map((String choice) {
+              return {'About', 'Settings'}.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
                   child: Text(choice),
@@ -65,7 +79,7 @@ class TripSummaryPageState extends State<TripSummaryPage> {
       ),
       body: Center(
         child: ListView(
-          shrinkWrap: true,
+          // shrinkWrap: true,
           children: <Widget>[
             Row(
               children: <Widget> [
@@ -78,7 +92,7 @@ class TripSummaryPageState extends State<TripSummaryPage> {
                   child:StreamBuilder<List<String>>(
                     stream: _hikingService.archiveService.currentArchiveList,
                     builder: (context, snapshot) {
-                      dropdownValue = snapshot.data?.first;
+                      final dropDownValues = snapshot.data;
                       return DropdownButton<String>(
                         value: dropdownValue,
                         icon: const Icon(Icons.arrow_downward),
@@ -91,12 +105,12 @@ class TripSummaryPageState extends State<TripSummaryPage> {
                         ),
                         onChanged: (String newValue) {
                           _hikingService.archiveService.activateArchive(newValue);
-                          print(newValue);
+                          print("Setting archive to: $newValue");
                           setState(() {
                             dropdownValue = newValue;
                           });
                         },
-                        items: snapshot.data?.map<DropdownMenuItem<String>>((String value) {
+                        items: dropDownValues?.map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(value),
@@ -134,6 +148,18 @@ class TripSummaryPageState extends State<TripSummaryPage> {
             StreamBuilder<List<LocationStatus>>(
                 stream: _hikingService.currentPathSub,
                 builder: (context, snapshot) {
+                  List<LatLng> pathList = snapshot.data?.map(locationStatusToLatLong)?.toList() ?? [];
+                  print("$mapController, ${pathList?.length}");
+                  if (pathList != []) {
+                    final pair = getPathBounds(pathList);
+                    if (pair != null) {
+                      final LatLngBounds bounds = LatLngBounds(northeast: pair.first, southwest: pair.second);
+                      if (mapController != null) {
+                        mapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 20));
+                      }
+                    }
+                  }
+
                   return Container(
                     height: 300,
                     child: GoogleMap(
@@ -144,22 +170,23 @@ class TripSummaryPageState extends State<TripSummaryPage> {
                             //   LatLng(40.275266, -74.7244817),
                             //   LatLng(40.2753119, -74.7242424),
                             // ]
-                            points: snapshot.data?.map((loc) {print("LOCATION: $loc");  mapController.animateCamera(CameraUpdate.newCameraPosition(
-                              CameraPosition(
-                                target: LatLng(loc.latitude, loc.longitude),
-                                zoom: 15,
-                                //bearing: location.bearing,
-                              ))); return locationStatusToLatLong(loc);})
-                                ?.toList() ?? []
+                            points: pathList
                         )
                       },
                       onMapCreated: (GoogleMapController controller) {
                         mapController = controller;
                         _controller.complete(controller);
+                        print("$mapController, ${pathList?.length}");
+                        final pair = getPathBounds(pathList);
+                        if (pair != null) {
+                          final LatLngBounds bounds = LatLngBounds(northeast: pair.first, southwest: pair.second);
+                          mapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 20));
+                        }
+                        // controller.animateCamera(CameraUpdate.newLatLngBounds(bounds, 0));
                       },
-                      initialCameraPosition: CameraPosition(
+                      initialCameraPosition: const CameraPosition(
                         target: LatLng(40.275266, -74.7244817), //locationStatusToLatLong(snapshot.data?.first ?? LocationStatus(latitude: 40, longitude: -74)),
-                        zoom: 18.0,
+                        zoom: 0,
                       ),
                       gestureRecognizers: Set()..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
                     ),
@@ -167,24 +194,27 @@ class TripSummaryPageState extends State<TripSummaryPage> {
                 }
             ),
             MetricsTable(hikingService: _hikingService, metricsHiddenMap: List.filled(22, true)),
-            Row(
-                children: <Widget>[
-                  StreamBuilder<PlotValues>(
-                      stream: _hikingService.elevationPlot,
-                      builder: (context, snapshot) {
-                        final plotValues = snapshot.data ?? PlotValues();
-                        return MetricPlot(hikingService: _hikingService, plotValues: plotValues);
-                      }
-                  ),
-                  StreamBuilder<PlotValues>(
-                      stream: _hikingService.speedPlot,
-                      builder: (context, snapshot) {
-                        final plotValues = snapshot.data ?? PlotValues();
-                        return MetricPlot(hikingService: _hikingService, plotValues: plotValues);
-                      }
-                  ),
-                ]
-            ),
+            Padding(
+              padding: EdgeInsets.only(bottom: 50),
+              child: Row(
+                  children: <Widget>[
+                    StreamBuilder<PlotValues>(
+                        stream: _hikingService.elevationPlot,
+                        builder: (context, snapshot) {
+                          final plotValues = snapshot.data ?? PlotValues();
+                          return MetricPlot(hikingService: _hikingService, plotValues: plotValues);
+                        }
+                    ),
+                    StreamBuilder<PlotValues>(
+                        stream: _hikingService.speedPlot,
+                        builder: (context, snapshot) {
+                          final plotValues = snapshot.data ?? PlotValues();
+                          return MetricPlot(hikingService: _hikingService, plotValues: plotValues);
+                        }
+                    ),
+                  ]
+              ),
+            )
           ],
         ),
       ),
@@ -207,21 +237,47 @@ class TripSummaryPageState extends State<TripSummaryPage> {
     return LatLng(locationStatus.latitude, locationStatus.longitude);
   }
 
+  KtPair<LatLng,LatLng> getPathBounds(List<LatLng> path) {
+    LatLng northeast;
+    LatLng southwest;
+    path.forEach((point) {
+      if (northeast == null || point.latitude > northeast.latitude) {
+        northeast = LatLng(point.latitude, northeast?.longitude ?? point.longitude);
+      }
+      if (northeast == null || point.longitude > northeast.longitude) {
+        northeast = LatLng(northeast?.latitude ?? point.latitude, point.longitude);
+      }
+
+      if (southwest == null || point.latitude < southwest.latitude) {
+        southwest = LatLng(point.latitude, southwest?.longitude ?? point.longitude);
+      }
+      if (southwest == null || point.longitude < southwest.longitude) {
+        southwest = LatLng(southwest?.latitude ?? point.latitude, point.longitude);
+      }
+    });
+    if (northeast == null || southwest == null) return null;
+    return KtPair(northeast, southwest);
+  }
+
   void handleClick(String value) {
     switch (value) {
-      case 'New Trip':
+      case 'About':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const ActiveTripPage()),
+          MaterialPageRoute(builder: (context) => AboutPage()),
         );
         break;
       case 'Settings':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SettingsPage()),
+        );
         break;
     }
   }
 
-  void onEnableBtnClicked(BuildContext context, HikingService hikingService) {
-    _hikingService.toggleStatus(context, hikingService);
+  void onEnableBtnClicked(BuildContext context, HikingService _hikingService) {
+    _hikingService.toggleStatus(context, _hikingService);
   }
 
   Widget confirmDeletionPopup(BuildContext context, String message, Function onConfirmCallback) {

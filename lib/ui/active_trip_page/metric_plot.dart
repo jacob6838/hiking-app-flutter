@@ -1,10 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:hiking_app/models/plot_values.dart';
-import 'package:provider/provider.dart';
 
-import '../hiking_service.dart';
-import '../hiking_service_conversions.dart';
+import '../../hiking_service.dart';
+import '../../hiking_service_conversions.dart';
 
 class MetricPlot extends StatefulWidget {
   const MetricPlot({Key key, this.hikingService, this.plotValues}) : super(key: key);

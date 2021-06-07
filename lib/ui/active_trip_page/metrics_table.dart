@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hiking_app/models/hike_metrics.dart';
-import 'package:kt_dart/collection.dart';
 
-import '../hiking_service.dart';
-import '../hiking_service_conversions.dart';
+import '../../hiking_service.dart';
+import '../../hiking_service_conversions.dart';
 
 class MetricsTable extends StatefulWidget {
   const MetricsTable({Key key, this.hikingService, this.metricsHiddenMap}) : super(key: key);

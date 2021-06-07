@@ -94,11 +94,13 @@ class HikingServiceConversions {
 
   String _toSpeedMetersPerSec(double val) {
     if (val == null) return "stuff";
-    int speed = 0;
-    if (val > 0.05) {
-      speed = (1 / (val * metersPerSecToMilesPerMin)).round();
-    }
-    return "$speed min/mile";
+    double speed = 0;
+    speed = val * 2.23694;
+    return "${speed.toStringAsFixed(1)} mph";
+    // if (val > 0.05) {
+    //   speed = (1 / (val * metersPerSecToMilesPerMin)).round();
+    // }
+    // return "$speed min/mile";
   }
 
   String _toCumulativeClimbMeters(double val) {
@@ -116,6 +118,8 @@ class HikingServiceConversions {
   String _toAverageSpeedMetersPerSec(double val) {
     if (val == null) return "stuff";
     int speed = 0;
+    speed = (val * 2.23694).round();
+    return "$speed mph";
     if (val > 0.01) {
       speed = (1 / (val * metersPerSecToMilesPerMin)).round();
     }
@@ -125,6 +129,8 @@ class HikingServiceConversions {
   String _toSpeedMax(double val) {
     if (val == null) return "stuff";
     int speed = 0;
+    speed = (val * 2.23694).round();
+    return "$speed mph";
     if (val > 0.05) {
       speed = (1 / (val * metersPerSecToMilesPerMin)).round();
     }
