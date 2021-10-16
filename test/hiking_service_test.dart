@@ -163,15 +163,15 @@ void main() {
       timeStampSec: 456,
     );
     const deltaDistance = 5.0;
-    const locationHistory = KtList<LocationStatus>.empty();
+    const locationHistory = <LocationStatus>[];
     const updatePeriodSec = 10.0;
 
     final actual = accumulateMetrics(
-      prevMetrics,
-      currLoc,
-      deltaDistance,
-      locationHistory,
-      updatePeriodSec,
+      prevMetrics: prevMetrics,
+      currLoc: currLoc,
+      deltaDistance: deltaDistance,
+      locationHistory: locationHistory,
+      updatePeriodSec: updatePeriodSec,
     );
 
     expect(actual.altitudeMax, currLoc.altitude);

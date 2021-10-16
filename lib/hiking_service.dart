@@ -19,10 +19,12 @@ import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'archive_service.dart';
+import 'filters/lcoation_filter.dart';
 import 'main.dart';
 import 'models/plot_values.dart';
 
 const int millisecondsPerSecond = 1000;
+const double MilesPerHourPerMetersPerSecond = 2.23694;
 
 // - 500 foot jump on Mom's phone that was not counted in cumulative ascent/descent
 
@@ -47,6 +49,8 @@ class HikingService {
 
   int reportPeriodSec;
 
+  LocationFilter locationFilter;
+
   /// Previous position used to determine when a location change is sufficiently large to warrant a hiker status update.
   LocationStatus _prevLocation;
   HikeMetrics _prevHikeMetrics;
@@ -67,6 +71,7 @@ class HikingService {
     // updateCurrentLocation();
     print("INITIALIZING ARCHIVE SUB ${archiveService.activeDataArchive.value}");
     archiveService.activeDataArchive.listen(_handleArchiveChange);
+    ;
   }
 
   final BehaviorSubject<PlotValues> elevationPlot = BehaviorSubject<PlotValues>();
@@ -229,6 +234,7 @@ class HikingService {
   void _handleLocationUpdate(LocationStatus locationStatus) {
     /// If first point, initialize variables and return
     if (_prevLocation == null || _prevLocation.timeStampSec == 0.0) {
+      locationFilter = LocationFilter(locationStatus);
       print("First Time!");
       _prevLocation = locationStatus;
       _hikeMetricsTotal = getInitialMetrics(_prevLocation, getCurrentTimeSeconds());
@@ -238,29 +244,28 @@ class HikingService {
 
       _currentHikerMetricsSub.add(_hikeMetricsTotal);
       currentPathSub.add(_currentPath);
-
-      // elevationPlot.add(toElevationPlotValues(_hikeMetricsTotal));
-      // speedPlot.add(toSpeedPlotValues(_hikeMetricsTotal));
       return;
     }
 
+    final filteredLocation = locationFilter.getValue(locationStatus);
+
     /// Check time elapsed, if less than updateIntervalSec then return
-    final double deltaSec = locationStatus.timeStampSec - _prevLocation.timeStampSec;
+    final double deltaSec = filteredLocation.timeStampSec - _prevLocation.timeStampSec;
     if (deltaSec < updateIntervalSec) return;
 
     print('Updating location');
-    print(locationStatus.toString());
-    currentLocationStatus.add(locationStatus);
+    print(filteredLocation.toString());
+    currentLocationStatus.add(filteredLocation);
 
     final deltaDistance = SphericalUtil.computeDistanceBetween(
-      LatLng(locationStatus.latitude, locationStatus.longitude),
+      LatLng(filteredLocation.latitude, filteredLocation.longitude),
       LatLng(_prevLocation.latitude, _prevLocation.longitude),
     ).toDouble();
 
-    HikeMetrics currStatus = _prevHikeMetrics;
-    if (deltaDistance < locationStatus.accuracy.value) {
+    if (deltaDistance < filteredLocation.accuracy.value / 2) {
+      print("NOT MOVED ENOUGH");
 
-      currStatus = currStatus.copyWith(
+      final HikeMetrics currMetrics = _prevHikeMetrics.copyWith(
         metricPeriodSeconds: _prevHikeMetrics.metricPeriodSeconds + deltaSec
       );
 
@@ -268,19 +273,20 @@ class HikingService {
       _currentPath.add(_prevLocation);
 
       /// Calculate hiker status update and publish value for UI
-      _currentHikerMetricsSub.add(currStatus);
+      _currentHikerMetricsSub.add(currMetrics);
       currentPathSub.add(_currentPath);
-      elevationPlot.add(toElevationPlotValues(currStatus));
-      speedPlot.add(toSpeedPlotValues(currStatus));
+      elevationPlot.add(toElevationPlotValues(currMetrics));
+      speedPlot.add(toSpeedPlotValues(currMetrics));
 
-      _prevLocation = _prevLocation.copyWith(timeStampSec: locationStatus.timeStampSec);
-      _prevHikeMetrics = currStatus;
+      _prevLocation = _prevLocation.copyWith(timeStampSec: filteredLocation.timeStampSec);
+      _prevHikeMetrics = currMetrics;
     } else {
-      final filteredLocation = filterLocation(5, locationStatus, _currentPath);
+      print("YES MOVED ENOUGH");
+      _currentPath.add(filteredLocation);
 
-      currStatus = accumulateMetrics(
+      final HikeMetrics currMetrics = accumulateMetrics(
         prevMetrics: _prevHikeMetrics,
-        currLoc: _prevLocation,
+        currLoc: filteredLocation,
         deltaDistance: deltaDistance,
         locationHistory: _currentPath,
         updatePeriodSec: deltaSec,
@@ -290,49 +296,14 @@ class HikingService {
       _currentPath.add(filteredLocation);
 
       /// Calculate hiker status update and publish value for UI
-      _currentHikerMetricsSub.add(currStatus);
+      _currentHikerMetricsSub.add(currMetrics);
       currentPathSub.add(_currentPath);
-      elevationPlot.add(toElevationPlotValues(currStatus));
-      speedPlot.add(toSpeedPlotValues(currStatus));
+      elevationPlot.add(toElevationPlotValues(currMetrics));
+      speedPlot.add(toSpeedPlotValues(currMetrics));
 
       _prevLocation = filteredLocation;
-      _prevHikeMetrics = currStatus;
+      _prevHikeMetrics = currMetrics;
     }
-  }
-
-  LocationStatus filterLocation(int numPoints, LocationStatus currLoc, List<LocationStatus> path) {
-    path.add(currLoc);
-    final pathLen = path.length;
-    if (pathLen < numPoints) {
-      for (int i = 0; i < numPoints - pathLen; i++) {
-        path.add(path[pathLen - 1]);
-      }
-    }
-    LocationStatus total = LocationStatus();
-    for (int i = pathLen - numPoints; i < pathLen; i++) {
-      print(total);
-      print(path[i]);
-      total = total.copyWith(
-        latitude: total.latitude + path[i].latitude,
-        longitude: total.longitude + path[i].longitude,
-        accuracy: path[i].accuracy,
-        altitude: total.altitude + path[i].altitude,
-        speedMetersPerSec: total.speedMetersPerSec + path[i].speedMetersPerSec,
-        speedAccuracy: path[i].speedAccuracy,
-        headingDegrees: total.headingDegrees + path[i].headingDegrees,
-        timeStampSec: path[i].timeStampSec,
-      );
-    }
-    return total.copyWith(
-      latitude: total.latitude / numPoints,
-      longitude: total.longitude / numPoints,
-      accuracy: total.accuracy,
-      altitude: total.altitude / numPoints,
-      speedMetersPerSec: total.speedMetersPerSec / numPoints,
-      speedAccuracy: total.speedAccuracy,
-      headingDegrees: total.headingDegrees / numPoints,
-      timeStampSec: total.timeStampSec,
-    );
   }
 
   PlotValues toElevationPlotValues(HikeMetrics metric) {
@@ -362,16 +333,18 @@ class HikingService {
   }
 
   PlotValues toSpeedPlotValues(HikeMetrics metric) {
-    List<List<double>> speedValues = speedPlotValues.values;
-    speedValues.add([metric.metricPeriodSeconds, metric.speedMetersPerSec * 2.237]);
+    final List<List<double>> speedValues = speedPlotValues.values;
+    speedValues.add([metric.metricPeriodSeconds, metric.speedMetersPerSec * MilesPerHourPerMetersPerSecond]);
 
-    double speedRange = metric.speedMax * 2.237;
-    if (speedRange <= .1) {
-      speedRange = .1;
+    double speedRangeMPH = metric.speedMax * MilesPerHourPerMetersPerSecond;
+    if (speedRangeMPH <= .1) {
+      speedRangeMPH = .1;
     }
-    print(speedRange);
-    print(speedRange);
-    print(metric.metricPeriodSeconds);
+    print("SPEEDS");
+    print(speedRangeMPH);
+    print(metric.speedMax);
+    print(metric.speedMetersPerSec);
+    print(speedValues);
 
     return speedPlotValues.copyWith(
       values: speedValues,
@@ -382,8 +355,8 @@ class HikingService {
       ),
       yFormat: speedPlotValues.yFormat.copyWith(
         min: 0,
-        max: speedRange * 1.2,
-        interval: speedRange * 1.2 / 5,
+        max: speedRangeMPH * 1.2,
+        interval: speedRangeMPH * 1.2 / 5,
       ),
     );
   }
@@ -434,6 +407,10 @@ HikeMetrics accumulateMetrics({
   final speedMetersPerSec = deltaDistance / updatePeriodSec;
 
   final deltaAltitude = currLoc.altitude - prevMetrics.altitude;
+
+  print("ACCUMULATING SPEEDS");
+  print("Current Speed: ${currLoc.speedMetersPerSec}");
+  print("Calculated Max Speed: ${max(prevMetrics.speedMax, currLoc.speedMetersPerSec)}");
 
   return prevMetrics.copyWith(
     latitude: currLoc.latitude,

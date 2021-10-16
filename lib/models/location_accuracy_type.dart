@@ -1,6 +1,5 @@
 enum LocationAccuracyType { high, medium, low }
 extension LocationAccuracyTypeExtension on LocationAccuracyType {
-
   int get value {
     switch (this) {
       case LocationAccuracyType.low:
