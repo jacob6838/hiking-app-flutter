@@ -19,7 +19,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'archive_service.dart';
-import 'filters/lcoation_filter.dart';
+import 'filters/location_filter.dart';
 import 'main.dart';
 import 'models/plot_values.dart';
 
@@ -46,6 +46,7 @@ class HikingService {
 
   /// List of all points for the current hike
   final List<LocationStatus> _currentPath = [];
+  final List<LocationStatus> _unfilteredPath = [];
 
   int reportPeriodSec;
 
@@ -69,7 +70,7 @@ class HikingService {
         .map(toLocationStatus)
         .listen(_handleLocationUpdate);
     // updateCurrentLocation();
-    print("INITIALIZING ARCHIVE SUB ${archiveService.activeDataArchive.value}");
+    // print("INITIALIZING ARCHIVE SUB ${archiveService.activeDataArchive.value}");
     archiveService.activeDataArchive.listen(_handleArchiveChange);
     ;
   }
@@ -152,7 +153,7 @@ class HikingService {
   }
 
   void _handleArchiveChange(DataArchive dataArchive) async {
-    print("ARCHIVE CAHANGING TO $dataArchive");
+    // print("ARCHIVE CAHANGING TO $dataArchive");
     _currentHikerMetricsSub.value = dataArchive.hikeMetrics;
     currentPathSub.value = dataArchive.locationHistory;
     elevationPlot.value = dataArchive.elevationPlot;
@@ -232,10 +233,11 @@ class HikingService {
 
   /// Process an updated location from device
   void _handleLocationUpdate(LocationStatus locationStatus) {
+    // print(locationStatus.toJson());
     /// If first point, initialize variables and return
     if (_prevLocation == null || _prevLocation.timeStampSec == 0.0) {
       locationFilter = LocationFilter(locationStatus);
-      print("First Time!");
+      // print("First Time!");
       _prevLocation = locationStatus;
       _hikeMetricsTotal = getInitialMetrics(_prevLocation, getCurrentTimeSeconds());
       _prevHikeMetrics = _hikeMetricsTotal;
@@ -247,23 +249,37 @@ class HikingService {
       return;
     }
 
-    final filteredLocation = locationFilter.getValue(locationStatus);
+    _unfilteredPath.add(locationStatus);
+
+    // final filteredLocation = locationStatus;
+    LocationStatus filteredLocation = locationFilter.getValue(locationStatus);
 
     /// Check time elapsed, if less than updateIntervalSec then return
+    // final double deltaSec = locationStatus.timeStampSec - _prevLocation.timeStampSec;
     final double deltaSec = filteredLocation.timeStampSec - _prevLocation.timeStampSec;
     if (deltaSec < updateIntervalSec) return;
 
-    print('Updating location');
-    print(filteredLocation.toString());
-    currentLocationStatus.add(filteredLocation);
+    // print('Updating location');
+    // print(filteredLocation.toString());
+    // currentLocationStatus.add(filteredLocation);
 
     final deltaDistance = SphericalUtil.computeDistanceBetween(
-      LatLng(filteredLocation.latitude, filteredLocation.longitude),
+      LatLng(locationStatus.latitude, locationStatus.longitude),
       LatLng(_prevLocation.latitude, _prevLocation.longitude),
     ).toDouble();
 
+    final totalDistance = SphericalUtil.computeDistanceBetween(
+      LatLng(locationStatus.latitude, locationStatus.longitude),
+      LatLng(_currentPath.first.latitude, _currentPath.first.longitude),
+    ).toDouble();
+    // print("DISTANCE: ${totalDistance*3.28/5280}");
+    filteredLocation = filteredLocation.copyWith(speedMetersPerSec: totalDistance/(_prevHikeMetrics.metricPeriodSeconds + deltaSec));
+
+
+    currentLocationStatus.add(locationStatus);
+
     if (deltaDistance < filteredLocation.accuracy.value / 2) {
-      print("NOT MOVED ENOUGH");
+      // print("NOT MOVED ENOUGH");
 
       final HikeMetrics currMetrics = _prevHikeMetrics.copyWith(
         metricPeriodSeconds: _prevHikeMetrics.metricPeriodSeconds + deltaSec
@@ -281,7 +297,7 @@ class HikingService {
       _prevLocation = _prevLocation.copyWith(timeStampSec: filteredLocation.timeStampSec);
       _prevHikeMetrics = currMetrics;
     } else {
-      print("YES MOVED ENOUGH");
+      // print("YES MOVED ENOUGH");
       _currentPath.add(filteredLocation);
 
       final HikeMetrics currMetrics = accumulateMetrics(
@@ -290,7 +306,9 @@ class HikingService {
         deltaDistance: deltaDistance,
         locationHistory: _currentPath,
         updatePeriodSec: deltaSec,
-      );
+      ).copyWith(distanceTraveled: totalDistance);
+
+
 
       /// Save location update to current hike
       _currentPath.add(filteredLocation);
@@ -314,8 +332,6 @@ class HikingService {
     if (elevRange <= 10) {
       elevRange = 10;
     }
-    print(elevRange);
-    print(metric.metricPeriodSeconds);
 
     return elevationPlotValues.copyWith(
       values: elevationValues,
@@ -340,11 +356,7 @@ class HikingService {
     if (speedRangeMPH <= .1) {
       speedRangeMPH = .1;
     }
-    print("SPEEDS");
-    print(speedRangeMPH);
-    print(metric.speedMax);
-    print(metric.speedMetersPerSec);
-    print(speedValues);
+
 
     return speedPlotValues.copyWith(
       values: speedValues,
@@ -365,20 +377,23 @@ class HikingService {
 /// Return initial hike metrics based on current location
 HikeMetrics getInitialMetrics(LocationStatus curLoc, double currTimeSeconds) {
   return HikeMetrics(
+    timeStartSec: currTimeSeconds,
     latitudeStart: curLoc.latitude,
     longitudeStart: curLoc.longitude,
     altitudeStart: curLoc.altitude,
     latitude: curLoc.latitude,
     longitude: curLoc.longitude,
     altitude: curLoc.altitude,
-    altitudeMax: curLoc.altitude,
-    altitudeMin: curLoc.altitude,
     speedMetersPerSec: curLoc.speedMetersPerSec,
-    averageSpeedMetersPerSec: curLoc.speedMetersPerSec,
     headingDegrees: curLoc.headingDegrees,
     locationAccuracy: curLoc.accuracy,
     speedAccuracy: curLoc.speedAccuracy,
-    timeStartSec: currTimeSeconds,
+    altitudeMax: curLoc.altitude,
+    altitudeMin: curLoc.altitude,
+    speedMax: curLoc.speedMetersPerSec,
+    speedMin: curLoc.speedMetersPerSec,
+    averageSpeedMetersPerSec: curLoc.speedMetersPerSec,
+    netHeadingDegrees: curLoc.headingDegrees,
   );
 }
 
@@ -387,9 +402,11 @@ LocationStatus toLocationStatus(Location locationData) {
   return LocationStatus(
     latitude: locationData.latitude ?? 0.0,
     longitude: locationData.longitude ?? 0.0,
+    accuracyValue: locationData.accuracy ?? 0.0,
     accuracy: toAccuracyType(locationData.accuracy ?? 0.0),
     altitude: locationData.altitude ?? 0.0,
     speedMetersPerSec: locationData.speed ?? 0.0,
+    // speedAccuracyValue: locationData. ?? 0.0,
     // speedAccuracy: toAccuracyType(locationData.speedAccuracy ?? 0.0),
     headingDegrees: locationData.bearing ?? 0.0,
     timeStampSec: toSeconds(locationData.time ?? 0),
@@ -404,19 +421,15 @@ HikeMetrics accumulateMetrics({
   List<LocationStatus> locationHistory,
   double updatePeriodSec,
 }) {
-  final speedMetersPerSec = deltaDistance / updatePeriodSec;
+  // final speedMetersPerSec = deltaDistance / updatePeriodSec;
 
   final deltaAltitude = currLoc.altitude - prevMetrics.altitude;
-
-  print("ACCUMULATING SPEEDS");
-  print("Current Speed: ${currLoc.speedMetersPerSec}");
-  print("Calculated Max Speed: ${max(prevMetrics.speedMax, currLoc.speedMetersPerSec)}");
 
   return prevMetrics.copyWith(
     latitude: currLoc.latitude,
     longitude: currLoc.longitude,
     altitude: currLoc.altitude,
-    speedMetersPerSec: speedMetersPerSec,
+    speedMetersPerSec: currLoc.speedMetersPerSec,
     headingDegrees: currLoc.headingDegrees,
     altitudeMax: max(prevMetrics.altitudeMax, currLoc.altitude),
     altitudeMin: min(prevMetrics.altitudeMin, currLoc.altitude),
@@ -426,7 +439,7 @@ HikeMetrics accumulateMetrics({
       prevMetrics.averageSpeedMetersPerSec,
       prevMetrics.metricPeriodSeconds,
       updatePeriodSec,
-      speedMetersPerSec,
+      currLoc.speedMetersPerSec,
     ),
     netHeadingDegrees: 1.0,
     // Heading
@@ -453,6 +466,7 @@ double getAvgSpeed(
   double updatePeriodSec,
   double currentSpeedMetersPerSec,
 ) {
+  // print("prevAvg: $prevAvgSpeedMetersPerSec, prevPeriod: $previousDurationSec, currAvg: $currentSpeedMetersPerSec, currPeriod: $updatePeriodSec");
   return (prevAvgSpeedMetersPerSec * previousDurationSec + currentSpeedMetersPerSec * updatePeriodSec) /
       (previousDurationSec + updatePeriodSec);
 }

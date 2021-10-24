@@ -23,7 +23,7 @@ class HikingServiceConversions {
   static const _speedMaxName = "max speed";
   static const _speedMinName = "min speed";
   static const _averageSpeedMetersPerSecName = "average speed";
-  static const _netHeadingDegreesName = "ned heading";
+  static const _netHeadingDegreesName = "net heading";
   static const _distanceTraveledName = "distance traveled";
   static const _netElevationChangeName = "net elevation change";
   static const _cumulativeClimbMetersName = "cumulative ascent";

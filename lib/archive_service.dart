@@ -39,6 +39,13 @@ class ArchiveService {
     return archive;
   }
 
+  Future<String> getArchiveContents(String name) async {
+    final path = await _getDocsDir();
+    final file = File('$path/$name.json');
+    final str = await _readDataFromFile(file);
+    return str;
+  }
+
   Future<File> createArchive(String name, DataArchive data) async {
     final file = await _newArchive(name);
     await _writeArchiveToFile(file, data);

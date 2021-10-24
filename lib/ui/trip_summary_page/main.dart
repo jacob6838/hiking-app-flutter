@@ -10,6 +10,7 @@ import 'package:hiking_app/ui/active_trip_page/metric_plot.dart';
 import 'package:hiking_app/ui/active_trip_page/metrics_table.dart';
 import 'package:hiking_app/models/location_status.dart';
 import 'package:hiking_app/models/plot_values.dart';
+import 'package:hiking_app/ui/management_page/main.dart';
 import 'package:hiking_app/ui/settings_page/main.dart';
 import 'package:kt_dart/collection.dart';
 import 'package:provider/provider.dart';
@@ -67,7 +68,7 @@ class TripSummaryPageState extends State<TripSummaryPage> {
           PopupMenuButton<String>(
             onSelected: handleClick,
             itemBuilder: (BuildContext context) {
-              return {'About', 'Settings'}.map((String choice) {
+              return {'About', 'Settings', 'Manage Trips'}.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
                   child: Text(choice),
@@ -128,7 +129,7 @@ class TripSummaryPageState extends State<TripSummaryPage> {
                         context: context,
                         builder: (BuildContext context) =>
                           confirmDeletionPopup(context, "Are you sure you want to delete trip $dropdownValue?", () async {
-                            _hikingService.archiveService.deleteArchive(dropdownValue);
+                            await _hikingService.archiveService.deleteArchive(dropdownValue);
                             setState(() {
                               dropdownValue = _hikingService.archiveService.currentArchiveList.value.first;
                             });
@@ -271,6 +272,12 @@ class TripSummaryPageState extends State<TripSummaryPage> {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => SettingsPage()),
+        );
+        break;
+      case 'Manage Trips':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ManagementPage()),
         );
         break;
     }

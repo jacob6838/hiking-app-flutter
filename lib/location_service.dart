@@ -9,17 +9,17 @@ class LocationService {
   final _location = BackgroundLocation();
   loc.Location locLocation = loc.Location();
 
-//  BackgroundLocation _currentLocation;
+ // BackgroundLocation _currentLocation;
 
-//  Future<BackgroundLocation> getLocation() async {
-//    try {
-//      var userLocation = await location.getLocation();
-//      _currentLocation = userLocation;
-//    } on Exception catch (e) {
-//      print('Could not get location: ${e.toString()}');
-//    }
-//    return _currentLocation;
-//  }
+ // Future<BackgroundLocation> getLocation() async {
+ //   try {
+ //     var userLocation = await location.getLocation();
+ //     _currentLocation = userLocation;
+ //   } on Exception catch (e) {
+ //     print('Could not get location: ${e.toString()}');
+ //   }
+ //   return _currentLocation;
+ // }
 
   final StreamController<Location> _locationController = StreamController<Location>.broadcast();
 

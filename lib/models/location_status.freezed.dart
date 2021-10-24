@@ -20,18 +20,22 @@ class _$LocationStatusTearOff {
   _LocationStatus call(
       {double latitude = 0.0,
       double longitude = 0.0,
+      double accuracyValue = 0.0,
       LocationAccuracyType accuracy = LocationAccuracyType.low,
       double altitude = 0.0,
       double speedMetersPerSec = 0.0,
+      double speedAccuracyValue = 0.0,
       LocationAccuracyType speedAccuracy = LocationAccuracyType.low,
       double headingDegrees = 0.0,
       double timeStampSec = 0.0}) {
     return _LocationStatus(
       latitude: latitude,
       longitude: longitude,
+      accuracyValue: accuracyValue,
       accuracy: accuracy,
       altitude: altitude,
       speedMetersPerSec: speedMetersPerSec,
+      speedAccuracyValue: speedAccuracyValue,
       speedAccuracy: speedAccuracy,
       headingDegrees: headingDegrees,
       timeStampSec: timeStampSec,
@@ -52,9 +56,11 @@ const $LocationStatus = _$LocationStatusTearOff();
 mixin _$LocationStatus {
   double get latitude;
   double get longitude;
+  double get accuracyValue;
   LocationAccuracyType get accuracy;
   double get altitude;
   double get speedMetersPerSec;
+  double get speedAccuracyValue;
   LocationAccuracyType get speedAccuracy;
   double get headingDegrees;
   double get timeStampSec;
@@ -72,9 +78,11 @@ abstract class $LocationStatusCopyWith<$Res> {
   $Res call(
       {double latitude,
       double longitude,
+      double accuracyValue,
       LocationAccuracyType accuracy,
       double altitude,
       double speedMetersPerSec,
+      double speedAccuracyValue,
       LocationAccuracyType speedAccuracy,
       double headingDegrees,
       double timeStampSec});
@@ -93,9 +101,11 @@ class _$LocationStatusCopyWithImpl<$Res>
   $Res call({
     Object latitude = freezed,
     Object longitude = freezed,
+    Object accuracyValue = freezed,
     Object accuracy = freezed,
     Object altitude = freezed,
     Object speedMetersPerSec = freezed,
+    Object speedAccuracyValue = freezed,
     Object speedAccuracy = freezed,
     Object headingDegrees = freezed,
     Object timeStampSec = freezed,
@@ -103,6 +113,9 @@ class _$LocationStatusCopyWithImpl<$Res>
     return _then(_value.copyWith(
       latitude: latitude == freezed ? _value.latitude : latitude as double,
       longitude: longitude == freezed ? _value.longitude : longitude as double,
+      accuracyValue: accuracyValue == freezed
+          ? _value.accuracyValue
+          : accuracyValue as double,
       accuracy: accuracy == freezed
           ? _value.accuracy
           : accuracy as LocationAccuracyType,
@@ -110,6 +123,9 @@ class _$LocationStatusCopyWithImpl<$Res>
       speedMetersPerSec: speedMetersPerSec == freezed
           ? _value.speedMetersPerSec
           : speedMetersPerSec as double,
+      speedAccuracyValue: speedAccuracyValue == freezed
+          ? _value.speedAccuracyValue
+          : speedAccuracyValue as double,
       speedAccuracy: speedAccuracy == freezed
           ? _value.speedAccuracy
           : speedAccuracy as LocationAccuracyType,
@@ -133,9 +149,11 @@ abstract class _$LocationStatusCopyWith<$Res>
   $Res call(
       {double latitude,
       double longitude,
+      double accuracyValue,
       LocationAccuracyType accuracy,
       double altitude,
       double speedMetersPerSec,
+      double speedAccuracyValue,
       LocationAccuracyType speedAccuracy,
       double headingDegrees,
       double timeStampSec});
@@ -156,9 +174,11 @@ class __$LocationStatusCopyWithImpl<$Res>
   $Res call({
     Object latitude = freezed,
     Object longitude = freezed,
+    Object accuracyValue = freezed,
     Object accuracy = freezed,
     Object altitude = freezed,
     Object speedMetersPerSec = freezed,
+    Object speedAccuracyValue = freezed,
     Object speedAccuracy = freezed,
     Object headingDegrees = freezed,
     Object timeStampSec = freezed,
@@ -166,6 +186,9 @@ class __$LocationStatusCopyWithImpl<$Res>
     return _then(_LocationStatus(
       latitude: latitude == freezed ? _value.latitude : latitude as double,
       longitude: longitude == freezed ? _value.longitude : longitude as double,
+      accuracyValue: accuracyValue == freezed
+          ? _value.accuracyValue
+          : accuracyValue as double,
       accuracy: accuracy == freezed
           ? _value.accuracy
           : accuracy as LocationAccuracyType,
@@ -173,6 +196,9 @@ class __$LocationStatusCopyWithImpl<$Res>
       speedMetersPerSec: speedMetersPerSec == freezed
           ? _value.speedMetersPerSec
           : speedMetersPerSec as double,
+      speedAccuracyValue: speedAccuracyValue == freezed
+          ? _value.speedAccuracyValue
+          : speedAccuracyValue as double,
       speedAccuracy: speedAccuracy == freezed
           ? _value.speedAccuracy
           : speedAccuracy as LocationAccuracyType,
@@ -193,17 +219,21 @@ class _$_LocationStatus implements _LocationStatus {
   const _$_LocationStatus(
       {this.latitude = 0.0,
       this.longitude = 0.0,
+      this.accuracyValue = 0.0,
       this.accuracy = LocationAccuracyType.low,
       this.altitude = 0.0,
       this.speedMetersPerSec = 0.0,
+      this.speedAccuracyValue = 0.0,
       this.speedAccuracy = LocationAccuracyType.low,
       this.headingDegrees = 0.0,
       this.timeStampSec = 0.0})
       : assert(latitude != null),
         assert(longitude != null),
+        assert(accuracyValue != null),
         assert(accuracy != null),
         assert(altitude != null),
         assert(speedMetersPerSec != null),
+        assert(speedAccuracyValue != null),
         assert(speedAccuracy != null),
         assert(headingDegrees != null),
         assert(timeStampSec != null);
@@ -217,6 +247,9 @@ class _$_LocationStatus implements _LocationStatus {
   @JsonKey(defaultValue: 0.0)
   @override
   final double longitude;
+  @JsonKey(defaultValue: 0.0)
+  @override
+  final double accuracyValue;
   @JsonKey(defaultValue: LocationAccuracyType.low)
   @override
   final LocationAccuracyType accuracy;
@@ -226,6 +259,9 @@ class _$_LocationStatus implements _LocationStatus {
   @JsonKey(defaultValue: 0.0)
   @override
   final double speedMetersPerSec;
+  @JsonKey(defaultValue: 0.0)
+  @override
+  final double speedAccuracyValue;
   @JsonKey(defaultValue: LocationAccuracyType.low)
   @override
   final LocationAccuracyType speedAccuracy;
@@ -238,7 +274,7 @@ class _$_LocationStatus implements _LocationStatus {
 
   @override
   String toString() {
-    return 'LocationStatus(latitude: $latitude, longitude: $longitude, accuracy: $accuracy, altitude: $altitude, speedMetersPerSec: $speedMetersPerSec, speedAccuracy: $speedAccuracy, headingDegrees: $headingDegrees, timeStampSec: $timeStampSec)';
+    return 'LocationStatus(latitude: $latitude, longitude: $longitude, accuracyValue: $accuracyValue, accuracy: $accuracy, altitude: $altitude, speedMetersPerSec: $speedMetersPerSec, speedAccuracyValue: $speedAccuracyValue, speedAccuracy: $speedAccuracy, headingDegrees: $headingDegrees, timeStampSec: $timeStampSec)';
   }
 
   @override
@@ -251,6 +287,9 @@ class _$_LocationStatus implements _LocationStatus {
             (identical(other.longitude, longitude) ||
                 const DeepCollectionEquality()
                     .equals(other.longitude, longitude)) &&
+            (identical(other.accuracyValue, accuracyValue) ||
+                const DeepCollectionEquality()
+                    .equals(other.accuracyValue, accuracyValue)) &&
             (identical(other.accuracy, accuracy) ||
                 const DeepCollectionEquality()
                     .equals(other.accuracy, accuracy)) &&
@@ -260,6 +299,9 @@ class _$_LocationStatus implements _LocationStatus {
             (identical(other.speedMetersPerSec, speedMetersPerSec) ||
                 const DeepCollectionEquality()
                     .equals(other.speedMetersPerSec, speedMetersPerSec)) &&
+            (identical(other.speedAccuracyValue, speedAccuracyValue) ||
+                const DeepCollectionEquality()
+                    .equals(other.speedAccuracyValue, speedAccuracyValue)) &&
             (identical(other.speedAccuracy, speedAccuracy) ||
                 const DeepCollectionEquality()
                     .equals(other.speedAccuracy, speedAccuracy)) &&
@@ -276,9 +318,11 @@ class _$_LocationStatus implements _LocationStatus {
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(latitude) ^
       const DeepCollectionEquality().hash(longitude) ^
+      const DeepCollectionEquality().hash(accuracyValue) ^
       const DeepCollectionEquality().hash(accuracy) ^
       const DeepCollectionEquality().hash(altitude) ^
       const DeepCollectionEquality().hash(speedMetersPerSec) ^
+      const DeepCollectionEquality().hash(speedAccuracyValue) ^
       const DeepCollectionEquality().hash(speedAccuracy) ^
       const DeepCollectionEquality().hash(headingDegrees) ^
       const DeepCollectionEquality().hash(timeStampSec);
@@ -298,9 +342,11 @@ abstract class _LocationStatus implements LocationStatus {
   const factory _LocationStatus(
       {double latitude,
       double longitude,
+      double accuracyValue,
       LocationAccuracyType accuracy,
       double altitude,
       double speedMetersPerSec,
+      double speedAccuracyValue,
       LocationAccuracyType speedAccuracy,
       double headingDegrees,
       double timeStampSec}) = _$_LocationStatus;
@@ -313,11 +359,15 @@ abstract class _LocationStatus implements LocationStatus {
   @override
   double get longitude;
   @override
+  double get accuracyValue;
+  @override
   LocationAccuracyType get accuracy;
   @override
   double get altitude;
   @override
   double get speedMetersPerSec;
+  @override
+  double get speedAccuracyValue;
   @override
   LocationAccuracyType get speedAccuracy;
   @override
